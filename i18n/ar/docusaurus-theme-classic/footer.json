@@ -1,0 +1,26 @@
+{
+  "link.title.Guide": {
+    "message": "Guide",
+    "description": "The title of the footer links column with title=Guide in the footer"
+  },
+  "link.title.More": {
+    "message": "More",
+    "description": "The title of the footer links column with title=More in the footer"
+  },
+  "link.item.label.Universities": {
+    "message": "Universities",
+    "description": "The label of footer link with label=Universities linking to /universities/intro"
+  },
+  "link.item.label.Scholarships": {
+    "message": "Scholarships",
+    "description": "The label of footer link with label=Scholarships linking to /scholarships/intro"
+  },
+  "link.item.label.Blog": {
+    "message": "Blog",
+    "description": "The label of footer link with label=Blog linking to /blog"
+  },
+  "copyright": {
+    "message": "Copyright © 2026 Collegesaurus. Built with Docusaurus.",
+    "description": "The footer copyright"
+  }
+}

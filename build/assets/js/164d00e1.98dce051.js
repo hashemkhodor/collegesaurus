@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkcollegesaurus=self.webpackChunkcollegesaurus||[]).push([["8409"],{5477(e){e.exports=JSON.parse('{"metadata":{"permalink":"/collegesaurus/blog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":4,"blogDescription":"Blog","blogTitle":"Blog"}}')}}]);

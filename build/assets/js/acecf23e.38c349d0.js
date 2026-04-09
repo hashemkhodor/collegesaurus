@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkcollegesaurus=self.webpackChunkcollegesaurus||[]).push([["3220"],{1912(s){s.exports=JSON.parse('{"blogBasePath":"/collegesaurus/blog","blogTitle":"Blog","authorsListPath":"/collegesaurus/blog/authors"}')}}]);

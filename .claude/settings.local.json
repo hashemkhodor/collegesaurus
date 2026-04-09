@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find scholarships/providers -name \"*.mdx\" -exec mv {} scholarships/ \\\\;)",
+      "Bash(rm -rf scholarships/providers)"
+    ]
+  }
+}

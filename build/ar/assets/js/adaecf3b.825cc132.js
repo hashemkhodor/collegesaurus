@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkcollegesaurus=self.webpackChunkcollegesaurus||[]).push([["8707"],{277(s){s.exports=JSON.parse('{"name":"docusaurus-plugin-content-docs","id":"scholarships"}')}}]);

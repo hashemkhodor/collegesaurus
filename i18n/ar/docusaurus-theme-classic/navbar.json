@@ -1,0 +1,22 @@
+{
+  "title": {
+    "message": "Collegesaurus",
+    "description": "The title in the navbar"
+  },
+  "logo.alt": {
+    "message": "Collegesaurus Logo",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.Universities": {
+    "message": "Universities",
+    "description": "Navbar item with label Universities"
+  },
+  "item.label.Scholarships": {
+    "message": "Scholarships",
+    "description": "Navbar item with label Scholarships"
+  },
+  "item.label.Blog": {
+    "message": "Blog",
+    "description": "Navbar item with label Blog"
+  }
+}
