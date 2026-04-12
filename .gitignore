@@ -106,6 +106,7 @@ dist
 
 # Docusaurus cache and generated files
 .docusaurus
+build/
 
 # Serverless directories
 .serverless/
@@ -137,6 +138,9 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# OS files
+.DS_Store
 
 # Claude Code
 .claude/
