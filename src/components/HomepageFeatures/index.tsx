@@ -15,7 +15,7 @@ type FeatureItem = {
 const FeatureList: FeatureItem[] = [
   {
     title: 'Universities in Lebanon',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    Svg: require('@site/static/img/icon-graduation.svg').default,
     description: (
       <>
         Majors, SAT and high-school requirements, deadlines, application types,
@@ -28,7 +28,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'External Scholarships',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    Svg: require('@site/static/img/icon-scholarship.svg').default,
     description: (
       <>
         Scholarships from NGOs, Lebanese foundations, and international
@@ -40,7 +40,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'Compare Side-by-Side',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    Svg: require('@site/static/img/icon-compare.svg').default,
     description: (
       <>
         Every university and scholarship page follows the same template, so

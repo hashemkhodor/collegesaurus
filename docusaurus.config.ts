@@ -86,16 +86,12 @@ const config: Config = {
   ],
 
   themeConfig: {
-    image: 'img/docusaurus-social-card.jpg',
+    // image: 'img/social-card.jpg', // TODO: add a custom social card
     colorMode: {
       respectPrefersColorScheme: true,
     },
     navbar: {
       title: 'Collegesaurus',
-      logo: {
-        alt: 'Collegesaurus Logo',
-        src: 'img/logo.svg',
-      },
       items: [
         {
           type: 'docSidebar',

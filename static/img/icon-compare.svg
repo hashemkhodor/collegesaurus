@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <rect x="30" y="50" width="60" height="110" rx="8" fill="#00A651" opacity="0.15"/>
+  <rect x="110" y="50" width="60" height="110" rx="8" fill="#CE1126" opacity="0.15"/>
+  <rect x="40" y="65" width="40" height="6" rx="3" fill="#00A651" opacity="0.6"/>
+  <rect x="40" y="80" width="35" height="6" rx="3" fill="#00A651" opacity="0.45"/>
+  <rect x="40" y="95" width="40" height="6" rx="3" fill="#00A651" opacity="0.6"/>
+  <rect x="40" y="110" width="30" height="6" rx="3" fill="#00A651" opacity="0.45"/>
+  <rect x="40" y="125" width="38" height="6" rx="3" fill="#00A651" opacity="0.6"/>
+  <rect x="120" y="65" width="40" height="6" rx="3" fill="#CE1126" opacity="0.6"/>
+  <rect x="120" y="80" width="35" height="6" rx="3" fill="#CE1126" opacity="0.45"/>
+  <rect x="120" y="95" width="40" height="6" rx="3" fill="#CE1126" opacity="0.6"/>
+  <rect x="120" y="110" width="30" height="6" rx="3" fill="#CE1126" opacity="0.45"/>
+  <rect x="120" y="125" width="38" height="6" rx="3" fill="#CE1126" opacity="0.6"/>
+  <path d="M90 95h20" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+  <path d="M90 90l-5 5 5 5" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M110 90l5 5-5 5" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
