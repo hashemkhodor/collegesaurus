@@ -1,0 +1,47 @@
+name: Report Inaccurate Information
+description: Something on the site is wrong or outdated? Let us know.
+title: "[Update] "
+labels: ["correction"]
+body:
+  - type: dropdown
+    id: section
+    attributes:
+      label: Section
+      description: Which part of the site has the inaccurate info?
+      options:
+        - Universities
+        - Scholarships
+        - Blog
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: Which specific page? (e.g. AUB, Fulbright, LAU)
+      placeholder: e.g. AUB
+    validations:
+      required: true
+  - type: textarea
+    id: current-info
+    attributes:
+      label: What needs updating?
+      description: Copy-paste or describe the information that's inaccurate.
+      placeholder: "The application deadline says March 1 but..."
+    validations:
+      required: true
+  - type: textarea
+    id: correct-info
+    attributes:
+      label: What's the correct information?
+      description: Provide the accurate data and a source link if possible.
+      placeholder: "The actual deadline is February 15. Source: https://..."
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source link
+      description: Link to the official page that confirms the correct info.
+      placeholder: https://...

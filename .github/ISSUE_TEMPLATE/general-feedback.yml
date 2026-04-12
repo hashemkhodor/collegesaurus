@@ -1,0 +1,27 @@
+name: General Feedback
+description: Suggestions, ideas, or anything else.
+title: "[Feedback] "
+labels: ["feedback"]
+body:
+  - type: textarea
+    id: feedback
+    attributes:
+      label: What's on your mind?
+      description: Feature ideas, content suggestions, website improvements — anything goes.
+      placeholder: "It would be great if the site also covered..."
+    validations:
+      required: true
+  - type: dropdown
+    id: role
+    attributes:
+      label: I am a...
+      description: Helps us understand your perspective (optional).
+      options:
+        - High school student
+        - University student
+        - University alumnus
+        - Parent
+        - Teacher / Counselor
+        - Other
+    validations:
+      required: false
