@@ -2,15 +2,15 @@
 
 **Your guide to universities and scholarships in Lebanon.**
 
-[Live Site](https://hashemkhodor.github.io/collegesaurus/) | [Report Inaccurate Info](https://github.com/hashemkhodor/collegesaurus/issues/new?template=inaccurate-info.yml) | [Suggest a University](https://github.com/hashemkhodor/collegesaurus/issues/new?template=new-university.yml) | [Suggest a Scholarship](https://github.com/hashemkhodor/collegesaurus/issues/new?template=new-scholarship.yml)
+[Live Site](https://hashemkhodor.github.io/collegesaurus/)
+
+Spot something wrong? [Report it](https://github.com/hashemkhodor/collegesaurus/issues/new?template=inaccurate-info.yml) | Know a university or scholarship we're missing? [Tell us](https://github.com/hashemkhodor/collegesaurus/issues/new?template=new-university.yml) | [General feedback](https://github.com/hashemkhodor/collegesaurus/issues/new?template=general-feedback.yml)
 
 ---
 
 ## About
 
-If you've ever tried applying to universities in Lebanon, you know how frustrating it is — deadlines scattered across different websites, tuition info buried in PDFs, scholarship requirements that change every year. Collegesaurus puts all of that in one place.
-
-The site covers application requirements, deadlines, tuition fees, financial aid, contacts, and more. It's bilingual (English and Arabic) and completely open source — anyone can help keep it accurate and up to date.
+All the Lebanese university and scholarship info you'd normally have to dig through a dozen websites to find — deadlines, tuition, requirements, financial aid, contacts — collected in one place. Bilingual (English + Arabic), open source, and always looking for contributors to keep things accurate.
 
 ## Features
 
