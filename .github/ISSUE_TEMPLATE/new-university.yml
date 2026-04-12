@@ -1,0 +1,39 @@
+name: Suggest a New University
+description: Know a Lebanese university that should be on the site? Tell us about it.
+title: "[University] "
+labels: ["new-content", "university"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: University name
+      placeholder: e.g. Notre Dame University (NDU)
+    validations:
+      required: true
+  - type: input
+    id: website
+    attributes:
+      label: Official website
+      placeholder: https://...
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Key details
+      description: |
+        Share whatever you know — any of the following helps:
+        - Type (private/public), founding year
+        - Campus locations
+        - Application deadlines and requirements
+        - Tuition fees
+        - Scholarships offered
+        - Notable programs or rankings
+      placeholder: "NDU is a private university founded in 1987, located in Zouk Mosbeh..."
+    validations:
+      required: false
+  - type: textarea
+    id: personal-experience
+    attributes:
+      label: Personal experience (optional)
+      description: Are you a student or alumnus? Any tips or insights you'd like to share?

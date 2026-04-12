@@ -1,0 +1,46 @@
+name: Suggest a New Scholarship
+description: Know a scholarship available to Lebanese students? Share it here.
+title: "[Scholarship] "
+labels: ["new-content", "scholarship"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Scholarship name
+      placeholder: e.g. Mastercard Foundation Scholars Program
+    validations:
+      required: true
+  - type: input
+    id: organization
+    attributes:
+      label: Offering organization
+      placeholder: e.g. Mastercard Foundation
+    validations:
+      required: true
+  - type: input
+    id: website
+    attributes:
+      label: Official link
+      description: Link to the scholarship page or application.
+      placeholder: https://...
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Key details
+      description: |
+        Share whatever you know — any of the following helps:
+        - Eligibility (nationality, GPA, financial need, etc.)
+        - What it covers (tuition, living expenses, travel, etc.)
+        - Which universities it applies to
+        - Application window and deadlines
+        - Required documents
+      placeholder: "This scholarship covers full tuition and living expenses for..."
+    validations:
+      required: false
+  - type: textarea
+    id: personal-experience
+    attributes:
+      label: Personal experience (optional)
+      description: Did you apply for or receive this scholarship? Any tips?
