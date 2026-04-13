@@ -72,6 +72,7 @@ const config: Config = {
         path: 'universities',
         routeBasePath: 'universities',
         sidebarPath: './sidebars/universities.ts',
+        admonitions: {},
       },
     ],
     [
@@ -81,6 +82,7 @@ const config: Config = {
         path: 'scholarships',
         routeBasePath: 'scholarships',
         sidebarPath: './sidebars/scholarships.ts',
+        admonitions: {},
       },
     ],
   ],
