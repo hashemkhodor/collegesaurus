@@ -108,16 +108,9 @@ const config: Config = {
           label: 'Scholarships',
         },
         {to: '/blog', label: 'Blog', position: 'left'},
-        {
-          type: 'docsVersionDropdown',
-          docsPluginId: 'universities',
-          position: 'right',
-        },
-        {
-          type: 'docsVersionDropdown',
-          docsPluginId: 'scholarships',
-          position: 'right',
-        },
+        // TODO: Add version dropdowns once the first version snapshot is created
+        // {type: 'docsVersionDropdown', docsPluginId: 'universities', position: 'right'},
+        // {type: 'docsVersionDropdown', docsPluginId: 'scholarships', position: 'right'},
         {type: 'localeDropdown', position: 'right'},
       ],
     },
