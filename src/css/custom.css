@@ -25,3 +25,28 @@
   --ifm-color-primary-lightest: #79d09e;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/* Alert boxes for scholarship status warnings */
+.alert-danger {
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #e74c3c;
+  background-color: rgba(231, 76, 60, 0.1);
+  border-radius: 4px;
+}
+
+.alert-warning {
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #f0ad4e;
+  background-color: rgba(240, 173, 78, 0.1);
+  border-radius: 4px;
+}
+
+.alert-info {
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #3498db;
+  background-color: rgba(52, 152, 219, 0.1);
+  border-radius: 4px;
+}
