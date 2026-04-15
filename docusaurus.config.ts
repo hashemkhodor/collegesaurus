@@ -26,7 +26,7 @@ const config: Config = {
     locales: ['en', 'ar'],
     localeConfigs: {
       en: {label: 'English', direction: 'ltr', htmlLang: 'en-US'},
-      ar: {label: 'العربية', direction: 'rtl', htmlLang: 'ar-LB'},
+      ar: {label: 'العربية', direction: 'rtl', htmlLang: 'ar'},
     },
   },
 
