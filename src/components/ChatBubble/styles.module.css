@@ -1,5 +1,5 @@
 /* =====================================================
-   Floating bubble (always visible)
+   Floating button — pill when closed, round × when open
    ===================================================== */
 
 .bubble {
@@ -7,26 +7,40 @@
   bottom: 1.25rem;
   inset-inline-end: 1.25rem;
   z-index: 1000;
-  width: 3.5rem;
-  height: 3.5rem;
-  border-radius: 50%;
   border: none;
   background: var(--ifm-color-primary);
   color: #fff;
-  font-size: 1.75rem;
-  line-height: 1;
-  display: flex;
+  cursor: pointer;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  gap: 0.55rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
   transition: transform 140ms ease, box-shadow 140ms ease,
-    background 140ms ease;
+    background 140ms ease, padding 160ms ease;
+}
+
+.bubbleClosed {
+  height: 3rem;
+  padding: 0 1.25rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.bubbleOpen {
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 1.6rem;
+  line-height: 1;
 }
 
 .bubble:hover {
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.26);
   background: var(--ifm-color-primary-dark);
 }
 
@@ -35,13 +49,40 @@
   outline-offset: 2px;
 }
 
+.bubbleIcon {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.bubbleLabel {
+  white-space: nowrap;
+}
+
+/* Gentle pulse during the first few seconds after mount so visitors
+   notice the button exists. Stops as soon as they interact. */
+@keyframes bubblePulse {
+  0%,
+  100% {
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22),
+      0 0 0 0 rgba(0, 166, 81, 0.55);
+  }
+  50% {
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22),
+      0 0 0 14px rgba(0, 166, 81, 0);
+  }
+}
+
+.bubbleAttention {
+  animation: bubblePulse 2s ease-in-out infinite;
+}
+
 /* =====================================================
    Chat panel (opens on click)
    ===================================================== */
 
 .panel {
   position: fixed;
-  bottom: 5.5rem;
+  bottom: 5rem;
   inset-inline-end: 1.25rem;
   z-index: 999;
   width: min(400px, calc(100vw - 2rem));
@@ -110,7 +151,7 @@
   }
 }
 
-/* Mobile: make the panel fill the screen for easier typing. */
+/* Mobile: slim the pill, expand the panel to full screen. */
 @media (max-width: 640px) {
   .panel {
     bottom: 0;
@@ -123,5 +164,10 @@
   .bubble {
     bottom: 0.75rem;
     inset-inline-end: 0.75rem;
+  }
+  .bubbleClosed {
+    height: 2.75rem;
+    padding: 0 1rem;
+    font-size: 0.9rem;
   }
 }
