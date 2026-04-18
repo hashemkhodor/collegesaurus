@@ -98,31 +98,20 @@ sidebar_label: [Short Name]
 
 Look at existing files like `universities/aub.mdx` or `scholarships/usaid-usp.mdx` for detailed examples of what goes under each section.
 
-#### Keeping content up to date
+#### Versioning
 
-Each file represents the **current** version of the information. When you update a page:
+The site uses Docusaurus built-in versioning to snapshot content per academic year. A version dropdown in the navbar lets readers switch between years.
 
-1. Add a "Last verified" badge at the top of the page (below the frontmatter):
+**Day-to-day:** Just edit files in `universities/` and `scholarships/` as normal — that's always the latest (upcoming) version.
 
-   ```markdown
-   > Last verified: April 2026
-   ```
+**At the end of an academic year** (maintainers only):
 
-2. Add or update the **Changelog** section at the bottom of the page using a collapsible block:
+```bash
+npm run docusaurus docs:version --id universities 2025-2026
+npm run docusaurus docs:version --id scholarships 2025-2026
+```
 
-   ```markdown
-   ## Changelog
-
-   <details>
-   <summary>Previous updates</summary>
-
-   - **April 2026** — Updated tuition fees, added new SAT minimum for Engineering
-   - **January 2026** — Initial page
-
-   </details>
-   ```
-
-This way readers can see when information was last checked and what changed, without needing separate files per year.
+This freezes a copy of all current content into `universities_versioned_docs/version-2025-2026/`. After that, continue editing the main files for the new year.
 
 #### Submitting your changes
 
