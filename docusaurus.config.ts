@@ -73,6 +73,9 @@ const config: Config = {
         routeBasePath: 'universities',
         sidebarPath: './sidebars/universities.ts',
         admonitions: {},
+        editUrl:
+          'https://github.com/hashemkhodor/collegesaurus/edit/main/',
+        editLocalizedFiles: true,
       },
     ],
     [
@@ -83,6 +86,9 @@ const config: Config = {
         routeBasePath: 'scholarships',
         sidebarPath: './sidebars/scholarships.ts',
         admonitions: {},
+        editUrl:
+          'https://github.com/hashemkhodor/collegesaurus/edit/main/',
+        editLocalizedFiles: true,
       },
     ],
   ],
@@ -140,6 +146,27 @@ const config: Config = {
           title: 'More',
           items: [
             {label: 'Blog', to: '/blog'},
+          ],
+        },
+        {
+          title: 'Contribute',
+          items: [
+            {
+              label: 'Suggest a correction',
+              href: 'https://github.com/hashemkhodor/collegesaurus/issues/new?template=inaccurate-info.yml',
+            },
+            {
+              label: 'Suggest a scholarship',
+              href: 'https://github.com/hashemkhodor/collegesaurus/issues/new?template=new-scholarship.yml',
+            },
+            {
+              label: 'Share your experience',
+              href: 'https://github.com/hashemkhodor/collegesaurus/issues/new?template=share-experience.yml',
+            },
+            {
+              label: 'How to contribute',
+              href: 'https://github.com/hashemkhodor/collegesaurus/blob/main/CONTRIBUTING.md',
+            },
           ],
         },
       ],
