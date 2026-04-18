@@ -1,0 +1,77 @@
+name: Share Your Experience
+description: You went through an admission / scholarship yourself? Help the next student with what you wish you'd known.
+title: "[Experience] "
+labels: ["experience", "new-content"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing! Real first-hand experiences are the hardest
+        thing for us to write ourselves. Fill in what you remember — blanks
+        are fine, partial info is still useful.
+
+  - type: dropdown
+    id: what-about
+    attributes:
+      label: What is this about?
+      options:
+        - A university I applied to / attended
+        - A scholarship I applied for / received
+        - Both
+    validations:
+      required: true
+
+  - type: input
+    id: school-or-program
+    attributes:
+      label: University or scholarship name
+      placeholder: e.g. AUB, LAU, USJ, Fulbright, LIFE, MEPI-TL
+    validations:
+      required: true
+
+  - type: input
+    id: year
+    attributes:
+      label: Year you applied
+      placeholder: e.g. 2024, 2025
+    validations:
+      required: true
+
+  - type: textarea
+    id: how-it-went
+    attributes:
+      label: How did it go?
+      description: |
+        Anything concrete is gold — real deadlines, real interview
+        questions, real costs you paid, tips you'd give your past self.
+      placeholder: |
+        The interview was in Beirut in late March. They asked about...
+        The real cost per year with housing was...
+        I wish I had known that...
+    validations:
+      required: true
+
+  - type: textarea
+    id: corrections
+    attributes:
+      label: Anything on our page that's wrong or missing?
+      description: We're more likely to trust your correction over a website.
+      placeholder: "The tuition rate is listed as X but I actually paid Y..."
+
+  - type: input
+    id: contact
+    attributes:
+      label: Can future students contact you? (optional)
+      description: |
+        We'll list your name + an email / LinkedIn / WhatsApp on the
+        page's "Contacts of recipients" table. Leave blank to stay
+        anonymous.
+      placeholder: "Your name + best way to reach you"
+
+  - type: checkboxes
+    id: consent
+    attributes:
+      label: Consent
+      options:
+        - label: I'm okay with this information being published on the site (with or without my name, as chosen above).
+          required: true

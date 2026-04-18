@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: How to contribute
+    url: https://github.com/hashemkhodor/collegesaurus/blob/main/CONTRIBUTING.md
+    about: Read the short contributor guide before opening an issue.
+  - name: Don't have a GitHub account?
+    url: mailto:hashemkhoder1@gmail.com?subject=Collegesaurus%20contribution
+    about: Email the maintainer directly and we'll file the issue for you.
