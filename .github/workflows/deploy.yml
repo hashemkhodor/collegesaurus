@@ -26,6 +26,15 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+        env:
+          # URL of the Collegesaurus AI Streamlit app — the floating chat
+          # bubble iframes this. Set as a GitHub Actions *variable* (not
+          # secret; it's a public URL): Settings → Secrets and variables →
+          # Actions → Variables → New repository variable, name `CHAT_URL`,
+          # value e.g. `https://collegesaurus-ai.streamlit.app`. If unset,
+          # the bubble will 404 in production — unset is fine for now while
+          # the Streamlit app isn't deployed yet.
+          CHAT_URL: ${{ vars.CHAT_URL }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: build

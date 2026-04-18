@@ -87,6 +87,14 @@ const config: Config = {
     ],
   ],
 
+  customFields: {
+    // URL of the Collegesaurus AI Streamlit app that the floating chat
+    // bubble iframes in. Override via process.env.CHAT_URL in CI so the
+    // production build points at the Streamlit Cloud deployment instead of
+    // localhost.
+    chatUrl: process.env.CHAT_URL ?? 'http://localhost:8501',
+  },
+
   themeConfig: {
     // image: 'img/social-card.jpg', // TODO: add a custom social card
     colorMode: {

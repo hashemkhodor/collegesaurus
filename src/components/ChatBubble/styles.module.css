@@ -1,0 +1,127 @@
+/* =====================================================
+   Floating bubble (always visible)
+   ===================================================== */
+
+.bubble {
+  position: fixed;
+  bottom: 1.25rem;
+  inset-inline-end: 1.25rem;
+  z-index: 1000;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  border: none;
+  background: var(--ifm-color-primary);
+  color: #fff;
+  font-size: 1.75rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  transition: transform 140ms ease, box-shadow 140ms ease,
+    background 140ms ease;
+}
+
+.bubble:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+  background: var(--ifm-color-primary-dark);
+}
+
+.bubble:focus-visible {
+  outline: 3px solid var(--ifm-color-primary-lightest);
+  outline-offset: 2px;
+}
+
+/* =====================================================
+   Chat panel (opens on click)
+   ===================================================== */
+
+.panel {
+  position: fixed;
+  bottom: 5.5rem;
+  inset-inline-end: 1.25rem;
+  z-index: 999;
+  width: min(400px, calc(100vw - 2rem));
+  height: min(600px, calc(100vh - 7rem));
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 14px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.22);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 160ms ease-out;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.75rem 0.6rem 1rem;
+  background: var(--ifm-color-primary);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.panelTitle {
+  letter-spacing: 0.01em;
+}
+
+.closeButton {
+  width: 2rem;
+  height: 2rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 120ms ease;
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.iframe {
+  flex: 1;
+  width: 100%;
+  border: none;
+  background: #fff;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile: make the panel fill the screen for easier typing. */
+@media (max-width: 640px) {
+  .panel {
+    bottom: 0;
+    inset-inline-end: 0;
+    inset-inline-start: 0;
+    width: 100vw;
+    height: calc(100vh - 4rem);
+    border-radius: 14px 14px 0 0;
+  }
+  .bubble {
+    bottom: 0.75rem;
+    inset-inline-end: 0.75rem;
+  }
+}
