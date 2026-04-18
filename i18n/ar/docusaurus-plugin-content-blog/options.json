@@ -1,14 +1,14 @@
 {
   "title": {
-    "message": "Blog",
+    "message": "قصص",
     "description": "The title for the blog used in SEO"
   },
   "description": {
-    "message": "Blog",
+    "message": "تجارب شخصية من طلاب مرّوا بعملية القبول الجامعي والمنح في لبنان.",
     "description": "The description for the blog used in SEO"
   },
   "sidebar.title": {
-    "message": "Recent posts",
+    "message": "أحدث القصص",
     "description": "The label for the left sidebar"
   }
 }

@@ -1,11 +1,11 @@
 # Contributing to Collegesaurus
 
-Anyone can help keep this site useful — you don't need to know how to code.
+Anyone can help keep this site useful. You don't need to know how to code.
 Pick whichever path matches what you want to share.
 
 ## I spotted something wrong
 
-A tuition number is out of date, a deadline shifted, a contact moved — you
+A tuition number is out of date, a deadline shifted, a contact moved? You
 don't need to fix it yourself.
 
 - [**Suggest a correction →**](https://github.com/hashemkhodor/collegesaurus/issues/new?template=inaccurate-info.yml)
@@ -21,9 +21,9 @@ published.
 
 ## I went through the application process myself
 
-Real first-hand experience — tuition you actually paid, interview
-questions you were asked, tips you wish you had — is the most useful thing
-you can share.
+Real first-hand experience is the most useful thing you can share. That
+includes the tuition you actually paid, the interview questions you were
+asked, and the tips you wish you had.
 
 - [**Share your experience →**](https://github.com/hashemkhodor/collegesaurus/issues/new?template=share-experience.yml)
 
@@ -31,15 +31,15 @@ you can share.
 
 Every page on the site has an **"Edit this page"** link at the bottom.
 Clicking it opens GitHub's browser editor for the MDX source. GitHub
-handles the fork + pull request automatically — no local git needed.
+handles the fork and pull request automatically. No local git needed.
 
 Formatting guide:
 
 - Keep the same section order and table layout as the other pages. Each
-  university page follows Overview → Rankings → Majors → Application →
-  Tuition & Scholarships → Contacts. Each scholarship page follows
-  Overview → Eligibility → Application window → Supported universities →
-  Benefits → Contacts.
+  university page follows Overview, Rankings, Majors, Application,
+  Tuition & Scholarships, Contacts. Each scholarship page follows
+  Overview, Eligibility, Application window, Supported universities,
+  Benefits, Contacts.
 - Every factual claim should include a link to an official source.
 - For new content, start from
   [`universities/_template.mdx`](./universities/_template.mdx) or

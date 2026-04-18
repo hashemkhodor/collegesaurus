@@ -15,8 +15,12 @@
     "message": "Scholarships",
     "description": "Navbar item with label Scholarships"
   },
-  "item.label.Blog": {
-    "message": "Blog",
-    "description": "Navbar item with label Blog"
+  "item.label.Contribute": {
+    "message": "ساهم",
+    "description": "Navbar item with label Contribute"
+  },
+  "item.label.Stories": {
+    "message": "قصص",
+    "description": "Navbar item with label Stories"
   }
 }

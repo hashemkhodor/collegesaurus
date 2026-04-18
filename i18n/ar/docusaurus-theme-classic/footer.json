@@ -15,12 +15,32 @@
     "message": "Scholarships",
     "description": "The label of footer link with label=Scholarships linking to /scholarships/intro"
   },
-  "link.item.label.Blog": {
-    "message": "Blog",
-    "description": "The label of footer link with label=Blog linking to /blog"
-  },
   "copyright": {
     "message": "Copyright © 2026 Collegesaurus. Built with Docusaurus.",
     "description": "The footer copyright"
+  },
+  "link.title.Contribute": {
+    "message": "ساهم",
+    "description": "The title of the footer links column with title=Contribute in the footer"
+  },
+  "link.item.label.Suggest a correction": {
+    "message": "اقترح تصحيحًا",
+    "description": "The label of footer link with label=Suggest a correction linking to https://github.com/hashemkhodor/collegesaurus/issues/new?template=inaccurate-info.yml"
+  },
+  "link.item.label.Suggest a scholarship": {
+    "message": "اقترح منحة",
+    "description": "The label of footer link with label=Suggest a scholarship linking to https://github.com/hashemkhodor/collegesaurus/issues/new?template=new-scholarship.yml"
+  },
+  "link.item.label.Share your experience": {
+    "message": "شارك تجربتك",
+    "description": "The label of footer link with label=Share your experience linking to https://github.com/hashemkhodor/collegesaurus/issues/new?template=share-experience.yml"
+  },
+  "link.item.label.How to contribute": {
+    "message": "كيف تساهم",
+    "description": "The label of footer link with label=How to contribute linking to /contribute"
+  },
+  "link.item.label.Stories": {
+    "message": "قصص",
+    "description": "The label of footer link with label=Stories linking to /stories"
   }
 }
