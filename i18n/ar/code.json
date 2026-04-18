@@ -325,5 +325,97 @@
   "theme.tags.tagsPageTitle": {
     "message": "الوسوم",
     "description": "The title of the tag list page"
+  },
+  "homepage.hero.title": {
+    "message": "دليلك إلى الجامعة في لبنان — بكل وضوح."
+  },
+  "homepage.hero.subtitle": {
+    "message": "دليل مجاني من إعداد طلاب لاستكشاف الجامعات والمنح — نفس القالب لكل جامعة، لتقارن ما يهمّ فعلاً."
+  },
+  "homepage.hero.ctaUniversities": {
+    "message": "استكشف الجامعات"
+  },
+  "homepage.hero.ctaScholarships": {
+    "message": "ابحث عن منحة"
+  },
+  "homepage.hero.searchLabel": {
+    "message": "ابحث في الجامعات والمنح"
+  },
+  "homepage.stats.ariaLabel": {
+    "message": "لمحة سريعة"
+  },
+  "homepage.features.heading": {
+    "message": "ماذا ستجد هنا"
+  },
+  "homepage.unilist.heading": {
+    "message": "انتقل مباشرةً إلى جامعة"
+  },
+  "homepage.unilist.subheading": {
+    "message": "تجاوز القائمة — اختر الجامعة وانتقل إلى صفحتها مباشرةً."
+  },
+  "theme.SearchBar.noResultsText": {
+    "message": "لا توجد نتائج"
+  },
+  "theme.SearchBar.seeAllOutsideContext": {
+    "message": "عرض النتائج خارج \"{context}\""
+  },
+  "theme.SearchBar.searchInContext": {
+    "message": "عرض النتائج ضمن \"{context}\""
+  },
+  "theme.SearchBar.seeAll": {
+    "message": "عرض كل النتائج"
+  },
+  "theme.SearchBar.label": {
+    "message": "بحث...",
+    "description": "The ARIA label and placeholder for search button"
+  },
+  "theme.SearchPage.existingResultsTitle": {
+    "message": "النتائج لـ \"{query}\"",
+    "description": "The search page title for non-empty query"
+  },
+  "theme.SearchPage.emptyResultsTitle": {
+    "message": "ابحث في المستندات",
+    "description": "The search page title for empty query"
+  },
+  "theme.SearchPage.searchContext.everywhere": {
+    "message": "كل الأماكن"
+  },
+  "theme.SearchPage.documentsFound.plurals": {
+    "message": "{count} نتيجة",
+    "description": "Pluralized label for \"{count} documents found\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.SearchPage.noResultsText": {
+    "message": "لا توجد نتائج",
+    "description": "The paragraph for empty search result"
+  },
+  "homepage.stats.universities": {
+    "message": "جامعة"
+  },
+  "homepage.stats.scholarships": {
+    "message": "منحة"
+  },
+  "homepage.stats.languages": {
+    "message": "لغتان"
+  },
+  "homepage.features.universities.title": {
+    "message": "الجامعات في لبنان"
+  },
+  "homepage.features.universities.description": {
+    "message": "التخصصات، ومتطلبات SAT والثانوية، ومواعيد التقديم، وأنواع الطلبات، والوثائق، وجهات الاتصال — لـ AUB و LAU والجامعة اللبنانية وغيرها."
+  },
+  "homepage.features.universities.cta": {
+    "message": "تصفّح الجامعات"
+  },
+  "homepage.features.scholarships.title": {
+    "message": "المنح الخارجية"
+  },
+  "homepage.features.scholarships.description": {
+    "message": "منح من منظمات غير حكومية ومؤسسات لبنانية وبرامج دولية — شروط الأهلية، ومواعيد التقديم، والوثائق، وآلية التقديم."
+  },
+  "homepage.features.scholarships.cta": {
+    "message": "تصفّح المنح"
+  },
+  "homepage.hero.searchPlaceholder": {
+    "message": "ابحث في الجامعات والمنح والتخصصات…"
   }
 }

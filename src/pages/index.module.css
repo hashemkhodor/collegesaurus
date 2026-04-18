@@ -1,23 +1,187 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
+/* =====================================================
+   Hero
+   ===================================================== */
 
 .heroBanner {
-  padding: 4rem 0;
+  background: linear-gradient(
+    135deg,
+    var(--ifm-color-primary) 0%,
+    var(--ifm-color-primary-darkest) 100%
+  );
+  color: #fff;
+  padding: clamp(3rem, 8vw, 6rem) clamp(1rem, 4vw, 2rem);
   text-align: center;
   position: relative;
   overflow: hidden;
 }
 
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
+.heroInner {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1rem, 2.5vw, 1.5rem);
+}
+
+.heroTitle {
+  font-size: clamp(2rem, 6.5vw, 3.5rem);
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin: 0;
+}
+
+.heroSubtitle {
+  font-size: clamp(1rem, 2.2vw, 1.25rem);
+  line-height: 1.5;
+  max-width: 640px;
+  margin: 0;
+  opacity: 0.92;
+}
+
+.heroButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.heroButtons > a {
+  flex: 1 1 auto;
+  min-width: 12rem;
+}
+
+.heroPrimaryButton {
+  background: #fff;
+  color: var(--ifm-color-primary-darkest);
+  border-color: #fff;
+}
+
+.heroPrimaryButton:hover {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--ifm-color-primary-darkest);
+}
+
+.heroSecondaryButton {
+  background: transparent;
+  color: #fff;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+}
+
+.heroSecondaryButton:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-color: #fff;
+}
+
+.heroSearch {
+  width: 100%;
+  max-width: 560px;
+  position: relative;
+  margin-top: 0.5rem;
+}
+
+.heroSearchIcon {
+  position: absolute;
+  inset-inline-start: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  display: flex;
+  pointer-events: none;
+}
+
+/*
+ * The input pill is always near-white regardless of theme, so the typed text
+ * color must be an explicit dark value — not `--ifm-color-emphasis-900`, which
+ * flips to near-white in dark mode and leaves text invisible on the pill.
+ */
+.heroSearchInput {
+  width: 100%;
+  height: 3rem;
+  background: rgba(255, 255, 255, 0.97);
+  color: #1c1e21;
+  border: none;
+  border-radius: 999px;
+  padding: 0 1.25rem 0 2.75rem;
+  font-size: 1rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  outline: none;
+  transition: box-shadow 160ms ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+[dir='rtl'] .heroSearchInput {
+  padding: 0 2.75rem 0 1.25rem;
+}
+
+.heroSearchInput::placeholder {
+  color: #6b7280;
+  opacity: 1;
+}
+
+.heroSearchInput:focus {
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.15),
+    0 0 0 3px rgba(255, 255, 255, 0.6);
+}
+
+/* Hide the default WebKit search input decorations so the pill stays clean. */
+.heroSearchInput::-webkit-search-decoration,
+.heroSearchInput::-webkit-search-cancel-button,
+.heroSearchInput::-webkit-search-results-button,
+.heroSearchInput::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+}
+
+@media (max-width: 480px) {
+  .heroButtons > a {
+    flex-basis: 100%;
+    min-width: 0;
   }
 }
 
-.buttons {
+/* =====================================================
+   Stats strip
+   ===================================================== */
+
+.stats {
+  padding: clamp(2rem, 5vw, 3rem) clamp(1rem, 4vw, 2rem);
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.statsInner {
+  max-width: 960px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.5rem, 2vw, 2rem);
+  text-align: center;
+}
+
+.stat {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  gap: 0.25rem;
+}
+
+.statValue {
+  font-size: clamp(1.75rem, 5vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ifm-color-primary);
+  letter-spacing: -0.02em;
+}
+
+.statLabel {
+  font-size: clamp(0.8rem, 1.6vw, 1rem);
+  color: var(--ifm-color-emphasis-700);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
 }
