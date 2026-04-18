@@ -89,10 +89,11 @@ const config: Config = {
 
   customFields: {
     // URL of the Collegesaurus AI Streamlit app that the floating chat
-    // bubble iframes in. Override via process.env.CHAT_URL in CI so the
-    // production build points at the Streamlit Cloud deployment instead of
-    // localhost.
-    chatUrl: process.env.CHAT_URL ?? 'http://localhost:8501',
+    // bubble iframes in. Defaults to the live Streamlit Cloud deployment so
+    // a plain `npm start` already embeds the real chatbot. Override with
+    // CHAT_URL=http://localhost:8501 when iterating on the chatbot locally.
+    chatUrl:
+      process.env.CHAT_URL ?? 'https://collegesaurus-ai.streamlit.app',
   },
 
   themeConfig: {
