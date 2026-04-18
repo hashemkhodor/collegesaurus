@@ -18,8 +18,8 @@ type CustomFields = {
 function Panel(): ReactNode {
   const {siteConfig} = useDocusaurusContext();
   const chatUrl =
-    (siteConfig.customFields as CustomFields)?.chatUrl ??
-    'http://localhost:8501';
+    (siteConfig.customFields as CustomFields)?.chatUrl ||
+    'https://collegesaurus-ai.streamlit.app';
   const [open, setOpen] = useState(false);
 
   // Close on Escape for keyboard users.

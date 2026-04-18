@@ -93,7 +93,7 @@ const config: Config = {
     // a plain `npm start` already embeds the real chatbot. Override with
     // CHAT_URL=http://localhost:8501 when iterating on the chatbot locally.
     chatUrl:
-      process.env.CHAT_URL ?? 'https://collegesaurus-ai.streamlit.app',
+      process.env.CHAT_URL || 'https://collegesaurus-ai.streamlit.app',
   },
 
   themeConfig: {
