@@ -62,7 +62,7 @@ export default function HomepageFeatures(): ReactNode {
             }
           />
           <Feature
-            icon="💰"
+            icon="📚"
             to="/scholarships/intro"
             title={
               <Translate id="homepage.features.scholarships.title">
