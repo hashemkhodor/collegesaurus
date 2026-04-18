@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Collegesaurus">
+  <title>Collegesaurus</title>
+  <!-- Back spikes -->
+  <path fill="#007439" d="M14 28 L17 22 L20 28 L23 22 L26 28 Z" />
+  <!-- Head (rounded) -->
+  <ellipse cx="30" cy="40" rx="18" ry="14" fill="#00A651" />
+  <!-- Snout bulge -->
+  <ellipse cx="46" cy="40" rx="12" ry="9" fill="#00A651" />
+  <!-- Eye white -->
+  <circle cx="42" cy="34" r="3.2" fill="#ffffff" />
+  <!-- Pupil -->
+  <circle cx="43" cy="34" r="1.7" fill="#0a0a0a" />
+  <!-- Nostril -->
+  <circle cx="55" cy="38" r="1.1" fill="#005a2d" />
+  <!-- Mouth -->
+  <path d="M44 44 Q50 46 55 44" stroke="#005a2d" stroke-width="1.5" fill="none" stroke-linecap="round" />
+  <!-- Mortarboard: top board (tilted parallelogram) -->
+  <path fill="#1c1e21" d="M16 20 L38 14 L56 18 L34 24 Z" />
+  <!-- Cap base hugging the head -->
+  <path fill="#1c1e21" d="M24 21 Q32 18 42 20 L42 26 L24 26 Z" />
+  <!-- Button on top of board -->
+  <circle cx="36" cy="19" r="1.6" fill="#F4B400" />
+  <!-- Tassel (curved line to pom) -->
+  <path d="M36 19 C50 22 54 24 52 30" stroke="#F4B400" stroke-width="2" fill="none" stroke-linecap="round" />
+  <!-- Tassel pom -->
+  <circle cx="52" cy="31" r="1.8" fill="#F4B400" />
+</svg>
