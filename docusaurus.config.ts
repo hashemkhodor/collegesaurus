@@ -37,6 +37,11 @@ const config: Config = {
         // Docs are provided by two named plugin instances below.
         docs: false,
         blog: {
+          path: 'stories',
+          routeBasePath: 'stories',
+          blogTitle: 'Stories',
+          blogDescription:
+            'First-hand experiences from students who navigated Lebanese higher education and external scholarships.',
           showReadingTime: true,
           feedOptions: {
             type: ['rss', 'atom'],
@@ -62,6 +67,8 @@ const config: Config = {
         language: ['en', 'ar'],
         docsRouteBasePath: ['universities', 'scholarships'],
         docsDir: ['universities', 'scholarships'],
+        blogRouteBasePath: 'stories',
+        blogDir: 'stories',
         docsPluginIdForPreferredVersion: 'universities',
       },
     ],
@@ -128,7 +135,8 @@ const config: Config = {
           position: 'left',
           label: 'Scholarships',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
+        {to: '/stories', label: 'Stories', position: 'left'},
+        {to: '/contribute', label: 'Contribute', position: 'left'},
         {type: 'localeDropdown', position: 'right'},
       ],
     },
@@ -145,7 +153,7 @@ const config: Config = {
         {
           title: 'More',
           items: [
-            {label: 'Blog', to: '/blog'},
+            {label: 'Stories', to: '/stories'},
           ],
         },
         {
@@ -165,7 +173,7 @@ const config: Config = {
             },
             {
               label: 'How to contribute',
-              href: 'https://github.com/hashemkhodor/collegesaurus/blob/main/CONTRIBUTING.md',
+              to: '/contribute',
             },
           ],
         },

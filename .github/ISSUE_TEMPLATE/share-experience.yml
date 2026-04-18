@@ -7,8 +7,8 @@ body:
     attributes:
       value: |
         Thanks for sharing! Real first-hand experiences are the hardest
-        thing for us to write ourselves. Fill in what you remember — blanks
-        are fine, partial info is still useful.
+        thing for us to write ourselves. Fill in what you remember.
+        Blanks are fine, partial info is still useful.
 
   - type: dropdown
     id: what-about
@@ -42,7 +42,7 @@ body:
     attributes:
       label: How did it go?
       description: |
-        Anything concrete is gold — real deadlines, real interview
+        Anything concrete is gold. Real deadlines, real interview
         questions, real costs you paid, tips you'd give your past self.
       placeholder: |
         The interview was in Beirut in late March. They asked about...
