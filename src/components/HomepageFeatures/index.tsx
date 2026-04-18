@@ -51,7 +51,7 @@ export default function HomepageFeatures(): ReactNode {
             description={
               <Translate id="homepage.features.universities.description">
                 Majors, SAT and high-school requirements, deadlines, application
-                types, documents, and contacts — for AUB, LAU, the Lebanese
+                types, documents, and contacts for AUB, LAU, the Lebanese
                 University, and more.
               </Translate>
             }
@@ -62,7 +62,7 @@ export default function HomepageFeatures(): ReactNode {
             }
           />
           <Feature
-            icon="💰"
+            icon="📚"
             to="/scholarships/intro"
             title={
               <Translate id="homepage.features.scholarships.title">
@@ -72,7 +72,8 @@ export default function HomepageFeatures(): ReactNode {
             description={
               <Translate id="homepage.features.scholarships.description">
                 Scholarships from NGOs, Lebanese foundations, and international
-                programs — eligibility, deadlines, documents, and how to apply.
+                programs, with eligibility, deadlines, documents, and how to
+                apply.
               </Translate>
             }
             cta={

@@ -53,13 +53,14 @@ function HomepageHero() {
       <div className={styles.heroInner}>
         <Heading as="h1" className={styles.heroTitle}>
           <Translate id="homepage.hero.title">
-            Your path to uni in Lebanon — sorted.
+            Your path to uni in Lebanon, sorted.
           </Translate>
         </Heading>
         <p className={styles.heroSubtitle}>
           <Translate id="homepage.hero.subtitle">
-            A free, student-built guide to universities and scholarships — same
-            template for every school, so you can compare what actually matters.
+            A free, student-built guide to universities and scholarships, with
+            the same template for every school so you can compare what actually
+            matters.
           </Translate>
         </p>
         <div className={styles.heroButtons}>

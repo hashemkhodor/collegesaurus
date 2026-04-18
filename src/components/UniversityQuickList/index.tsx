@@ -31,7 +31,7 @@ export default function UniversityQuickList(): ReactNode {
         </Heading>
         <p className={styles.subheading}>
           <Translate id="homepage.unilist.subheading">
-            Skip the menu — pick a school and go straight to its page.
+            Skip the menu. Pick a school and go straight to its page.
           </Translate>
         </p>
         <div className={styles.grid}>
