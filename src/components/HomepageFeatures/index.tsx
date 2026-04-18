@@ -1,82 +1,86 @@
 import type {ReactNode} from 'react';
-import clsx from 'clsx';
 import Link from '@docusaurus/Link';
+import Translate from '@docusaurus/Translate';
 import Heading from '@theme/Heading';
 import styles from './styles.module.css';
 
-type FeatureItem = {
-  title: string;
-  Svg: React.ComponentType<React.ComponentProps<'svg'>>;
-  description: ReactNode;
+type FeatureProps = {
+  icon: string;
   to: string;
-  cta: string;
+  title: ReactNode;
+  description: ReactNode;
+  cta: ReactNode;
 };
 
-const FeatureList: FeatureItem[] = [
-  {
-    title: 'Universities in Lebanon',
-    Svg: require('@site/static/img/icon-graduation.svg').default,
-    description: (
-      <>
-        Majors, SAT and high-school requirements, deadlines, application types,
-        documents, and contacts — for AUB, LAU, the Lebanese University, and
-        more.
-      </>
-    ),
-    to: '/universities/intro',
-    cta: 'Browse universities',
-  },
-  {
-    title: 'External Scholarships',
-    Svg: require('@site/static/img/icon-scholarship.svg').default,
-    description: (
-      <>
-        Scholarships from NGOs, Lebanese foundations, and international
-        programs — eligibility, deadlines, documents, and how to apply.
-      </>
-    ),
-    to: '/scholarships/intro',
-    cta: 'Browse scholarships',
-  },
-  {
-    title: 'Compare Side-by-Side',
-    Svg: require('@site/static/img/icon-compare.svg').default,
-    description: (
-      <>
-        Every university and scholarship page follows the same template, so
-        you can quickly compare requirements, deadlines, and benefits.
-      </>
-    ),
-    to: '/universities/intro',
-    cta: 'See the overview',
-  },
-];
-
-function Feature({title, Svg, description, to, cta}: FeatureItem) {
+function Feature({icon, to, title, description, cta}: FeatureProps) {
   return (
-    <div className={clsx('col col--4')}>
-      <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
+    <Link to={to} className={styles.featureCard}>
+      <div className={styles.featureIcon} aria-hidden="true">
+        {icon}
       </div>
-      <div className="text--center padding-horiz--md">
-        <Heading as="h3">{title}</Heading>
-        <p>{description}</p>
-        <Link className="button button--primary" to={to}>
-          {cta}
-        </Link>
-      </div>
-    </div>
+      <Heading as="h3" className={styles.featureTitle}>
+        {title}
+      </Heading>
+      <p className={styles.featureDescription}>{description}</p>
+      <span className={styles.featureCta}>
+        {cta}
+        <span aria-hidden="true" className={styles.featureCtaArrow}>
+          →
+        </span>
+      </span>
+    </Link>
   );
 }
 
 export default function HomepageFeatures(): ReactNode {
   return (
     <section className={styles.features}>
-      <div className="container">
-        <div className="row">
-          {FeatureList.map((props, idx) => (
-            <Feature key={idx} {...props} />
-          ))}
+      <div className={styles.featuresInner}>
+        <Heading as="h2" className={styles.featuresHeading}>
+          <Translate id="homepage.features.heading">What you'll find</Translate>
+        </Heading>
+        <div className={styles.featureGrid}>
+          <Feature
+            icon="🎓"
+            to="/universities/intro"
+            title={
+              <Translate id="homepage.features.universities.title">
+                Universities in Lebanon
+              </Translate>
+            }
+            description={
+              <Translate id="homepage.features.universities.description">
+                Majors, SAT and high-school requirements, deadlines, application
+                types, documents, and contacts — for AUB, LAU, the Lebanese
+                University, and more.
+              </Translate>
+            }
+            cta={
+              <Translate id="homepage.features.universities.cta">
+                Browse universities
+              </Translate>
+            }
+          />
+          <Feature
+            icon="💰"
+            to="/scholarships/intro"
+            title={
+              <Translate id="homepage.features.scholarships.title">
+                External scholarships
+              </Translate>
+            }
+            description={
+              <Translate id="homepage.features.scholarships.description">
+                Scholarships from NGOs, Lebanese foundations, and international
+                programs — eligibility, deadlines, documents, and how to apply.
+              </Translate>
+            }
+            cta={
+              <Translate id="homepage.features.scholarships.cta">
+                Browse scholarships
+              </Translate>
+            }
+          />
         </div>
       </div>
     </section>
