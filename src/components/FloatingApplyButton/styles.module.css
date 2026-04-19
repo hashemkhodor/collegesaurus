@@ -1,11 +1,9 @@
 .button {
   position: fixed;
   bottom: 1.25rem;
-  /* Shift past the doc sidebar so the button doesn't overlap it.
-     Docusaurus exposes the sidebar width as --doc-sidebar-width; falls back
-     to 0 if the page has no sidebar. The mobile media query below drops
-     back to a flush 1.25rem once Docusaurus hides the sidebar. */
-  inset-inline-start: calc(var(--doc-sidebar-width, 0px) + 1.25rem);
+  /* inset-inline-start is set inline by the component so it tracks the
+     doc sidebar's real width (via ResizeObserver). The sidebar animates
+     between full and collapsed widths, and we want the button to follow. */
   z-index: 1000;
   display: inline-flex;
   align-items: center;
@@ -65,18 +63,12 @@
   transform: scaleX(-1) translateX(3px);
 }
 
-/* On screens narrower than 997px Docusaurus hides the doc sidebar behind a
-   hamburger, so the offset above becomes wasted space. Pin flush-left. */
-@media (max-width: 996px) {
-  .button {
-    inset-inline-start: 1.25rem;
-  }
-}
-
+/* On mobile the sidebar container is display:none so its measured width is
+   0 and the inline inset-inline-start naturally evaluates to 1.25rem. We
+   only need to trim the padding a bit. */
 @media (max-width: 640px) {
   .button {
     bottom: 0.75rem;
-    inset-inline-start: 0.75rem;
     height: 2.75rem;
     padding: 0 1rem;
     font-size: 0.9rem;

@@ -7,7 +7,7 @@
  * via useDoc() and mounts <FloatingApplyButton href={apply_url} /> when
  * present. Pages without `apply_url` render nothing.
  */
-import type {ReactNode} from 'react';
+import {useEffect, useState, type ReactNode} from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './styles.module.css';
@@ -22,16 +22,40 @@ const LABELS: Record<string, string> = {
   ar: 'قدّم الآن',
 };
 
+/**
+ * Docusaurus toggles the sidebar between ~300px and ~30px by animating the
+ * container element's width directly; the `--doc-sidebar-width` CSS var stays
+ * put. Track the real width with ResizeObserver so this button follows the
+ * sidebar in/out without overlapping or leaving empty space.
+ */
+function useSidebarOffset(): number {
+  const [offset, setOffset] = useState(0);
+  useEffect(() => {
+    const sidebar = document.querySelector<HTMLElement>(
+      '.theme-doc-sidebar-container',
+    );
+    if (!sidebar) return;
+    const measure = () => setOffset(sidebar.getBoundingClientRect().width);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(sidebar);
+    return () => ro.disconnect();
+  }, []);
+  return offset;
+}
+
 function Button({href, label}: Props): ReactNode {
   const {i18n} = useDocusaurusContext();
   const text = label ?? LABELS[i18n.currentLocale] ?? LABELS.en;
+  const sidebarWidth = useSidebarOffset();
   return (
     <a
       className={styles.button}
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label={text}>
+      aria-label={text}
+      style={{insetInlineStart: `calc(${sidebarWidth}px + 1.25rem)`}}>
       <span className={styles.icon} aria-hidden="true">
         🎓
       </span>
