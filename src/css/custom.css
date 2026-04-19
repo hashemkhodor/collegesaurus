@@ -50,3 +50,78 @@
   background-color: rgba(52, 152, 219, 0.1);
   border-radius: 4px;
 }
+
+/* =====================================================
+   Mobile-friendly markdown tables
+   On screens <= 640px, every plain markdown <table> inside a docs page
+   stacks each row into a labelled card. `.markdown > table` targets
+   direct children only, so React-rendered tables (e.g., MajorsTable
+   wrapped in a <div>) are NOT affected.
+   ===================================================== */
+@media (max-width: 640px) {
+  .markdown > table,
+  .markdown > table thead,
+  .markdown > table tbody,
+  .markdown > table tr {
+    display: block;
+    width: 100%;
+  }
+
+  /* Hide the shared header row — each cell now carries its label via
+     the data-label attribute set by the rehype plugin. Keep it in the
+     DOM for screen readers. */
+  .markdown > table thead {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .markdown > table tr {
+    margin-bottom: 0.6rem;
+    border: 1px solid var(--ifm-table-border-color);
+    border-radius: 10px;
+    padding: 0.55rem 0.85rem;
+    background: var(--ifm-background-surface-color);
+  }
+
+  .markdown > table td {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.3rem 0;
+    border: none;
+    font-size: 0.9rem;
+    text-align: start;
+  }
+
+  .markdown > table td::before {
+    content: attr(data-label);
+    color: var(--ifm-color-emphasis-600);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    flex: 0 0 auto;
+    padding-top: 0.15rem;
+  }
+
+  /* Promote the first cell (usually the row's identifier — university
+     name, scholarship name, term, faculty) to a card headline. */
+  .markdown > table td:first-child {
+    flex-direction: column;
+    gap: 0.15rem;
+    padding-top: 0.2rem;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.2rem;
+    border-bottom: 1px solid var(--ifm-color-emphasis-200);
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .markdown > table td:first-child::before {
+    order: -1;
+  }
+}
