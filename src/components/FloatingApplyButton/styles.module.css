@@ -1,0 +1,84 @@
+.button {
+  position: fixed;
+  bottom: 1.25rem;
+  /* Shift past the doc sidebar so the button doesn't overlap it.
+     Docusaurus exposes the sidebar width as --doc-sidebar-width; falls back
+     to 0 if the page has no sidebar. The mobile media query below drops
+     back to a flush 1.25rem once Docusaurus hides the sidebar. */
+  inset-inline-start: calc(var(--doc-sidebar-width, 0px) + 1.25rem);
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  height: 3rem;
+  padding: 0 1.25rem;
+  border-radius: 999px;
+  background: var(--ifm-color-primary);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+  transition: transform 140ms ease, box-shadow 140ms ease,
+    background 140ms ease, inset-inline-start 220ms ease;
+}
+
+.button:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.26);
+  background: var(--ifm-color-primary-dark);
+  color: #fff;
+  text-decoration: none;
+}
+
+.button:focus-visible {
+  outline: 3px solid var(--ifm-color-primary-lightest);
+  outline-offset: 2px;
+}
+
+.icon {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.label {
+  white-space: nowrap;
+}
+
+.arrow {
+  transition: transform 140ms ease;
+  display: inline-block;
+}
+
+.button:hover .arrow {
+  transform: translateX(3px);
+}
+
+/* In RTL the visual direction of reading flips, so the arrow points the
+   opposite way and its hover nudge follows. */
+[dir='rtl'] .arrow {
+  transform: scaleX(-1);
+}
+
+[dir='rtl'] .button:hover .arrow {
+  transform: scaleX(-1) translateX(3px);
+}
+
+/* On screens narrower than 997px Docusaurus hides the doc sidebar behind a
+   hamburger, so the offset above becomes wasted space. Pin flush-left. */
+@media (max-width: 996px) {
+  .button {
+    inset-inline-start: 1.25rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .button {
+    bottom: 0.75rem;
+    inset-inline-start: 0.75rem;
+    height: 2.75rem;
+    padding: 0 1rem;
+    font-size: 0.9rem;
+  }
+}
