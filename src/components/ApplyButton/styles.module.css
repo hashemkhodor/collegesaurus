@@ -1,0 +1,39 @@
+.applyButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 1rem 0 1.5rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.applyButton:hover {
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+}
+
+.applyArrow {
+  transition: transform 140ms ease;
+  display: inline-block;
+}
+
+.applyButton:hover .applyArrow {
+  transform: translateX(3px);
+}
+
+/* Flip the arrow in RTL so it points toward the direction of reading. */
+[dir='rtl'] .applyArrow {
+  transform: scaleX(-1);
+}
+
+[dir='rtl'] .applyButton:hover .applyArrow {
+  transform: scaleX(-1) translateX(3px);
+}
+
+@media (max-width: 480px) {
+  .applyButton {
+    width: 100%;
+    justify-content: center;
+  }
+}
