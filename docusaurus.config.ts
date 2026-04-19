@@ -1,6 +1,8 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+// @ts-expect-error — local ESM plugin without types
+import rehypeTableDataLabels from './src/remark/rehypeTableDataLabels.mjs';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -50,6 +52,10 @@ const config: Config = {
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
           onUntruncatedBlogPosts: 'warn',
+          rehypePlugins: [rehypeTableDataLabels],
+        },
+        pages: {
+          rehypePlugins: [rehypeTableDataLabels],
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -83,6 +89,7 @@ const config: Config = {
         editUrl:
           'https://github.com/hashemkhodor/collegesaurus/edit/main/',
         editLocalizedFiles: true,
+        rehypePlugins: [rehypeTableDataLabels],
       },
     ],
     [
@@ -96,6 +103,7 @@ const config: Config = {
         editUrl:
           'https://github.com/hashemkhodor/collegesaurus/edit/main/',
         editLocalizedFiles: true,
+        rehypePlugins: [rehypeTableDataLabels],
       },
     ],
   ],
