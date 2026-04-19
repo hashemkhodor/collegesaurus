@@ -160,8 +160,8 @@ const config: Config = {
         {
           title: 'Guide',
           items: [
-            {label: 'Universities', to: '/universities/intro'},
-            {label: 'Scholarships', to: '/scholarships/intro'},
+            {label: 'Universities', to: '/universities/aub'},
+            {label: 'Scholarships', to: '/scholarships/life'},
           ],
         },
         {

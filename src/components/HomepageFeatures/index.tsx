@@ -42,7 +42,7 @@ export default function HomepageFeatures(): ReactNode {
         <div className={styles.featureGrid}>
           <Feature
             icon="🎓"
-            to="/universities/intro"
+            to="/universities/aub"
             title={
               <Translate id="homepage.features.universities.title">
                 Universities in Lebanon
@@ -63,7 +63,7 @@ export default function HomepageFeatures(): ReactNode {
           />
           <Feature
             icon="📚"
-            to="/scholarships/intro"
+            to="/scholarships/life"
             title={
               <Translate id="homepage.features.scholarships.title">
                 External scholarships

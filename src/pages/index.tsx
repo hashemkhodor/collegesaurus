@@ -66,14 +66,14 @@ function HomepageHero() {
         <div className={styles.heroButtons}>
           <Link
             className={clsx('button button--lg', styles.heroPrimaryButton)}
-            to="/universities/intro">
+            to="/universities/aub">
             <Translate id="homepage.hero.ctaUniversities">
               Explore universities
             </Translate>
           </Link>
           <Link
             className={clsx('button button--lg', styles.heroSecondaryButton)}
-            to="/scholarships/intro">
+            to="/scholarships/life">
             <Translate id="homepage.hero.ctaScholarships">
               Find scholarships
             </Translate>
