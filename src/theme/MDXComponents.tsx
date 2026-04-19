@@ -5,8 +5,10 @@
  */
 import MDXComponents from '@theme-original/MDXComponents';
 import ApplyButton from '@site/src/components/ApplyButton';
+import MajorsTable from '@site/src/components/MajorsTable';
 
 export default {
   ...MDXComponents,
   ApplyButton,
+  MajorsTable,
 };
