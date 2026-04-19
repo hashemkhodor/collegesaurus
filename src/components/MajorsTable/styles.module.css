@@ -1,83 +1,52 @@
 .wrapper {
+  width: 100%;
   margin: 1rem 0 2rem;
 }
 
-.toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  align-items: center;
-  margin-bottom: 0.75rem;
-}
-
-.search {
-  flex: 1 1 14rem;
-  min-width: 0;
-  height: 2.25rem;
-  padding: 0 0.85rem;
-  font-size: 0.95rem;
-  border-radius: 8px;
-  border: 1px solid var(--ifm-color-emphasis-300);
-  background: var(--ifm-background-surface-color);
-  color: var(--ifm-font-color-base);
-  transition: border-color 120ms ease, box-shadow 120ms ease;
-}
-
-.search:focus {
-  outline: none;
-  border-color: var(--ifm-color-primary);
-  box-shadow: 0 0 0 3px
-    color-mix(in srgb, var(--ifm-color-primary) 20%, transparent);
-}
-
-.count {
-  font-size: 0.85rem;
-  color: var(--ifm-color-emphasis-700);
-  white-space: nowrap;
-}
-
-.empty {
-  font-size: 0.95rem;
-  color: var(--ifm-color-emphasis-700);
-  padding: 1rem;
-  border: 1px dashed var(--ifm-color-emphasis-300);
-  border-radius: 8px;
-  text-align: center;
-}
-
 .scroller {
+  width: 100%;
   overflow-x: auto;
   border: 1px solid var(--ifm-color-emphasis-200);
   border-radius: 10px;
 }
 
-.table {
+/* Infima's `.markdown table { display: block; width: auto }` rule would
+   otherwise shrink the table to its intrinsic content width, leaving empty
+   space on the right. Scoping under .scroller bumps specificity above
+   Infima's `.markdown table` selector; explicitly re-setting display: table
+   restores full-width column layout. table-layout: auto lets the browser
+   size each column to its content while stretching to fill the container. */
+.scroller .table {
+  display: table;
   width: 100%;
+  table-layout: auto;
   border-collapse: collapse;
   font-size: 0.92rem;
   margin: 0;
 }
 
-.table thead th {
+.scroller .table thead th {
   text-align: start;
-  padding: 0.65rem 0.85rem;
+  padding: 0.6rem 0.85rem;
   background: var(--ifm-color-emphasis-100);
   border-bottom: 1px solid var(--ifm-color-emphasis-200);
   font-weight: 700;
   white-space: nowrap;
 }
 
-.table tbody td {
+.scroller .table tbody td {
   padding: 0.55rem 0.85rem;
   border-bottom: 1px solid var(--ifm-color-emphasis-100);
   vertical-align: top;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
-.table tbody tr:last-child td {
+.scroller .table tbody tr:last-child td {
   border-bottom: none;
 }
 
-.table tbody tr:hover {
+.scroller .table tbody tr:hover {
   background: var(--ifm-color-emphasis-100);
 }
 
@@ -104,4 +73,80 @@
 
 .thButton:hover .sortIndicator {
   opacity: 1;
+}
+
+/* =====================================================
+   Mobile: transform each row into a stacked "card" with
+   labels on the left and values on the right. Hides the
+   shared table header (not useful once each row ships its
+   own labels) and drops the scroller's own border since the
+   cards carry their own.
+   ===================================================== */
+@media (max-width: 640px) {
+  .scroller {
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  .scroller .table,
+  .scroller .table tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .scroller .table thead {
+    display: none;
+  }
+
+  .scroller .table tr {
+    display: block;
+    background: var(--ifm-background-surface-color);
+    border: 1px solid var(--ifm-color-emphasis-200);
+    border-radius: 10px;
+    margin-bottom: 0.6rem;
+    padding: 0.6rem 0.85rem;
+  }
+
+  .scroller .table tbody tr:hover {
+    background: var(--ifm-background-surface-color);
+  }
+
+  .scroller .table tbody td {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.3rem 0;
+    border: none;
+    font-size: 0.9rem;
+  }
+
+  .scroller .table tbody td::before {
+    content: attr(data-label);
+    color: var(--ifm-color-emphasis-600);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    flex: 0 0 auto;
+    padding-top: 0.1rem;
+  }
+
+  /* The Program value is the row's headline; give it its own line and a
+     bigger weight so the card has a clear focal point. */
+  .scroller .table tbody td:first-child {
+    flex-direction: column;
+    gap: 0.15rem;
+    padding-top: 0.2rem;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.2rem;
+    border-bottom: 1px solid var(--ifm-color-emphasis-200);
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .scroller .table tbody td:first-child::before {
+    order: -1;
+  }
 }
