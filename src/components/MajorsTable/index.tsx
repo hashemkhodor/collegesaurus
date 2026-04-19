@@ -28,8 +28,9 @@ export type MajorRow = {
 
 type Props = {
   rows: MajorRow[];
-  /** Used in the downloaded CSV filename and the search placeholder. */
-  faculty: string;
+  /** Optional, currently unused. Kept so existing MDX call sites don't need
+   * editing if we later reintroduce per-faculty features. */
+  faculty?: string;
 };
 
 type SortKey = keyof MajorRow | null;
@@ -54,62 +55,20 @@ const COL_HEADERS_BY_LOCALE: Record<string, Record<keyof MajorRow, string>> = {
   },
 };
 
-const UI_LABELS: Record<string, {search: string; download: string; noResults: string; of: string}> = {
+const UI_LABELS: Record<string, {search: string; noResults: string; of: string}> = {
   en: {
     search: 'Filter…',
-    download: 'Download CSV',
     noResults: 'No programs match your filter.',
     of: 'of',
   },
   ar: {
     search: 'بحث…',
-    download: 'تنزيل CSV',
     noResults: 'لا توجد برامج مطابقة للبحث.',
     of: 'من',
   },
 };
 
-function slugify(s: string): string {
-  return s
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .trim()
-    .replace(/\s+/g, '-');
-}
-
-function toCsv(rows: MajorRow[], headers: Record<keyof MajorRow, string>): string {
-  const cols: (keyof MajorRow)[] = [
-    'program',
-    'degree',
-    'department',
-    'credits',
-    'years',
-    'source',
-  ];
-  const escape = (v: unknown) => {
-    const s = v == null ? '' : String(v);
-    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-  };
-  const head = cols.map((c) => escape(headers[c])).join(',');
-  const body = rows
-    .map((r) => cols.map((c) => escape(r[c])).join(','))
-    .join('\n');
-  return `${head}\n${body}`;
-}
-
-function downloadCsv(filename: string, content: string): void {
-  const blob = new Blob([content], {type: 'text/csv;charset=utf-8;'});
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-}
-
-export default function MajorsTable({rows, faculty}: Props): ReactNode {
+export default function MajorsTable({rows}: Props): ReactNode {
   const {i18n} = useDocusaurusContext();
   const locale = i18n.currentLocale in COL_HEADERS_BY_LOCALE ? i18n.currentLocale : 'en';
   const headers = COL_HEADERS_BY_LOCALE[locale];
@@ -157,11 +116,6 @@ export default function MajorsTable({rows, faculty}: Props): ReactNode {
     }
   };
 
-  const handleDownload = () => {
-    const filename = `${slugify(faculty)}-majors.csv`;
-    downloadCsv(filename, toCsv(sorted, headers));
-  };
-
   const sortableCols: (keyof MajorRow)[] = ['program', 'degree', 'department', 'credits', 'years'];
 
   return (
@@ -178,12 +132,6 @@ export default function MajorsTable({rows, faculty}: Props): ReactNode {
         <span className={styles.count}>
           {sorted.length} {ui.of} {rows.length}
         </span>
-        <button
-          type="button"
-          className={styles.downloadBtn}
-          onClick={handleDownload}>
-          <span aria-hidden="true">⬇</span> {ui.download}
-        </button>
       </div>
 
       {sorted.length === 0 ? (
