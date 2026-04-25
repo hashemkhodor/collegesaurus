@@ -5,114 +5,192 @@
   2. Fill in every section below — replace all TODO items with real data
   3. Every fact must link to an official source (admissions page, PDF, etc.)
   4. If you can't find something, leave the TODO rather than guessing
-  5. When done, remove this comment block
+  5. Use the <MajorsTable> component for majors — not markdown tables
+  6. The floating "Apply Now" button is driven by the apply_url frontmatter
+     field; do NOT add an <ApplyButton> component in the body
+  7. When done, remove this comment block
 */}
 
 ---
 sidebar_position: TODO
 title: TODO — Full University Name
 sidebar_label: TODO
+apply_url: https://...
 ---
 
 # Full University Name (ABBREVIATION)
 
-## Overview
+## Faculty
 
-- **Founded:** TODO
-- **Type:** Private / Public
-- **Education Type:** American model / French model / Other
-- **Campus(es):** TODO
-- **Language of instruction:** TODO
-- **Websites:**
-  - Main: [TODO](https://...)
-  - Admissions: [TODO](https://...)
-  - Financial Aid: [TODO](https://...)
-  - Apply online: [TODO](https://...)
+ABBREVIATION offers TODO undergraduate programs across TODO faculties.
+Each table lists the program, degree type, home department, credits,
+and duration (years).
 
-TODO — A short paragraph about the university: history, size, accreditation, what it's known for.
+### Faculty Name ([ABBR](https://...))
 
-## Rankings
+<MajorsTable
+  faculty="ABBR FACULTY_ABBR"
+  rows={[
+    {program: 'TODO', degree: 'TODO', department: 'TODO', credits: 0, years: 0, source: 'https://...'},
+  ]}
+/>
 
-| Ranking | Year | Position | Reference |
-| ------- | ---- | -------- | --------- |
-| QS World University Rankings | TODO | TODO | [Source](https://...) |
-| QS Arab Region | TODO | TODO | [Source](https://...) |
-| Times Higher Education (THE) | TODO | TODO | [Source](https://...) |
+{/* Repeat the ### heading + <MajorsTable/> block for every faculty. */}
 
-## Majors
+Reference: [Undergraduate Catalogue](https://...)
 
-> Majors data will be provided via CSV and added here.
+{/*
+  Asterisk + TODO footnote — include only if some program: fields are
+  starred because they share a URL with another program or point at a
+  department-level catalogue page:
 
-{/* When filling this in, group by faculty and use this table format:
-
-### Faculty Name ([Link](https://...))
-
-| Program | Degree | Department | Years | Credits |
-| ------- | ------ | ---------- | ----- | ------- |
-| TODO    | TODO   | TODO       | TODO  | TODO    |
-
+  > \* TODO: add program-specific source URLs for the starred majors.
+  > They currently share a URL with another program in the same department,
+  > or point at a department-level catalogue page because ABBR hasn't
+  > published a dedicated program page.
 */}
 
 ## Application
 
-### Deadlines
+### Application Types + Windows
+
+TODO — one or two sentences explaining the tracks the school offers
+(Early Merit / Regular / Spring / Transfer, etc.) and how they differ.
 
 | Term | Opens | Closes | Decisions | Latest SAT | Reference |
 | ---- | ----- | ------ | --------- | ---------- | --------- |
-| Fall | TODO  | TODO   | TODO      | TODO       | [Source](https://...) |
-| Spring | TODO | TODO  | TODO      | TODO       | [Source](https://...) |
+| TODO | TODO  | TODO   | TODO      | TODO       | [Deadlines](https://...) |
 
-### Application fees
+**Difference between tracks:**
 
-- **Application fee:** TODO
-- **Confirmation deposit:** TODO
+- **Track name** — TODO.
+- **Track name** — TODO.
 
-### Requirements
+Reference: [Catalogue — Admissions](https://...)
 
-**SAT:**
+### Application Price
 
-| Faculty / Program | Minimum Score | Reference |
-| ----------------- | ------------- | --------- |
-| General admission | TODO          | [Source](https://...) |
+| Fee | Amount (USD) | Notes | Reference |
+| --- | ------------ | ----- | --------- |
+| Application fee | TODO | TODO | [Catalogue — Admissions](https://...) |
+| Confirmation deposit | TODO | TODO | [Catalogue — Admissions](https://...) |
 
-**High-school grades:**
-- TODO — transcript requirements, minimum averages, equivalences
+TODO — mention Common App if accepted. The **Apply Now** button at the bottom-left of this page opens ABBR's online application portal.
 
-**English proficiency:**
+## Scholarships
 
-| Test | Minimum Score | Validity | Reference |
-| ---- | ------------- | -------- | --------- |
-| TOEFL iBT | TODO     | TODO     | [Source](https://...) |
-| IELTS Academic | TODO | TODO    | [Source](https://...) |
+### Tuition (AY YYYY-YYYY)
 
-## Tuition & Scholarships
+All figures are in **USD per credit**. TODO — note any billing rules
+(max credits charged per semester, minimum course load, flat-fee programs).
 
-### Tuition
+| Faculty / School | USD per credit |
+| ---------------- | -------------- |
+| TODO | $0 |
 
-| Faculty / School | Per-credit fee (USD) | Reference |
-| ---------------- | -------------------- | --------- |
-| TODO             | TODO                 | [Source](https://...) |
+**Other mandatory fees per year:**
 
-**Other fees:** TODO — registration, technology, health insurance, etc.
+| Fee | Amount (USD) |
+| --- | ------------ |
+| TODO | TODO |
 
-### Scholarships
+Reference: [Tuition and Fees (PDF)](https://...) |
+[Tuition Calculator](https://...)
 
-**Merit-based:**
+### University-offered scholarships
+
+TODO — one sentence on what fraction of students receive aid.
+
+#### Merit scholarships
 
 | Scholarship | Coverage | Eligibility | Conditions | Reference |
 | ----------- | -------- | ----------- | ---------- | --------- |
-| TODO        | TODO     | TODO        | TODO       | [Source](https://...) |
+| **TODO** | TODO | TODO | TODO | [Source](https://...) |
 
-**Need-based:**
+#### Need-based aid
 
-| Aid type | Coverage | Eligibility | Reference |
-| -------- | -------- | ----------- | --------- |
-| TODO     | TODO     | TODO        | [Source](https://...) |
+| Program | Coverage | Details | Reference |
+| ------- | -------- | ------- | --------- |
+| **TODO** | TODO | TODO | [Source](https://...) |
+
+{/*
+  OPTIONAL — include only if the school publishes these:
+
+  #### Faculty and department-specific scholarships
+
+  **Faculty Name**
+
+  | Scholarship | Coverage | Eligibility | Conditions | Reference |
+  | ----------- | -------- | ----------- | ---------- | --------- |
+  | **TODO** | TODO | TODO | TODO | [Source](https://...) |
+
+  #### Other aid (US and Canadian students)
+
+  - **US Federal Direct Stafford and PLUS Loans** — TODO
+  - **Canadian Grants and Loans (OSAP)** — TODO
+*/}
+
+**How to apply for financial aid:** TODO.
+
+Reference: [Office of Financial Aid](https://...)
+
+## Requirements
+
+### SAT
+
+TODO — is the SAT required? Does the school use SuperScore? What
+College Board code should applicants enter?
+
+**General minimums:**
+
+| Track | Minimum SAT SuperScore | Reference |
+| ----- | ---------------------- | --------- |
+| TODO  | TODO                   | [Catalogue — Admissions](https://...) |
+
+{/*
+  OPTIONAL — direct-to-major table if the school publishes per-program thresholds:
+
+  **Early Merit / direct-to-major SAT minimums:**
+
+  | Program | Minimum SAT SuperScore | Reference |
+  | ------- | ---------------------- | --------- |
+  | TODO    | TODO                   | [Catalogue — Admissions](https://...) |
+*/}
+
+**SAT waiver:** TODO — transcript averages, junior-transfer exemptions, etc.
+
+### High-school grades
+
+- TODO — transcript requirements (Grades 10, 11, 12).
+- TODO — minimum averages or class-rank thresholds.
+- TODO — recognized secondary-school certificates.
+- TODO — Lebanese Ministry of Education equivalence requirement for non-Lebanese curricula.
+- TODO — hard-copy transcript submission deadline.
+
+Reference: [Catalogue — Admissions](https://...)
+
+### English proficiency
+
+All teaching at ABBR is conducted in TODO. Students must demonstrate
+proficiency via one of the following (undergraduate thresholds):
+
+| Test | Minimum Score | Validity | Reference |
+| ---- | ------------- | -------- | --------- |
+| TOEFL iBT | TODO | TODO | [English Requirements](https://...) |
+| IELTS Academic | TODO | TODO | [English Requirements](https://...) |
+
+TODO — submission deadline.
 
 ## Contacts
 
 | Department | Phone | Email | Notes |
 | ---------- | ----- | ----- | ----- |
-| Admissions | TODO  | TODO  | TODO  |
-| Financial Aid | TODO | TODO | TODO |
-| Registrar | TODO  | TODO  | TODO  |
+| Office of Admissions | TODO | TODO | TODO |
+| Office of Financial Aid | TODO | TODO | TODO |
+| Office of the Registrar | TODO | TODO | TODO |
+| Office of the Comptroller | TODO | TODO | TODO |
+| Main Switchboard | TODO | — | — |
+
+**Mailing address:** TODO.
+
+Reference: [Contact Us](https://...)
