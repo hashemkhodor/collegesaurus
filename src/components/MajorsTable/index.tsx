@@ -8,8 +8,12 @@
  *     department?: string,
  *     credits?: number | string,
  *     years?: number | string,
+ *     language?: string,   // e.g. 'EN', 'FR', 'AR', 'FR/EN'
  *     source?: string      // URL
  *   }
+ *
+ * The Language column only appears when at least one row in the table
+ * sets `language` — keeps tables for English-medium universities clean.
  */
 import {useMemo, useState, type ReactNode} from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
@@ -21,6 +25,7 @@ export type MajorRow = {
   department?: string;
   credits?: number | string;
   years?: number | string;
+  language?: string;
   source?: string;
 };
 
@@ -34,7 +39,7 @@ type Props = {
 type SortableKey = Exclude<keyof MajorRow, 'source'>;
 type SortDir = 'asc' | 'desc';
 
-const SORTABLE_COLS: SortableKey[] = [
+const SORTABLE_COLS_BASE: SortableKey[] = [
   'program',
   'degree',
   'department',
@@ -49,6 +54,7 @@ const COL_HEADERS_BY_LOCALE: Record<string, Record<keyof MajorRow, string>> = {
     department: 'Department',
     credits: 'Credits',
     years: 'Duration (years)',
+    language: 'Language',
     source: 'Source',
   },
   ar: {
@@ -57,6 +63,7 @@ const COL_HEADERS_BY_LOCALE: Record<string, Record<keyof MajorRow, string>> = {
     department: 'القسم',
     credits: 'الساعات',
     years: 'المدة (سنوات)',
+    language: 'لغة التدريس',
     source: 'المصدر',
   },
 };
@@ -79,6 +86,14 @@ export default function MajorsTable({rows}: Props): ReactNode {
     i18n.currentLocale in COL_HEADERS_BY_LOCALE ? i18n.currentLocale : 'en';
   const headers = COL_HEADERS_BY_LOCALE[locale];
   const linkLabel = LINK_LABEL[locale] ?? LINK_LABEL.en;
+
+  const showLanguage = useMemo(
+    () => rows.some((r) => r.language != null && r.language !== ''),
+    [rows],
+  );
+  const sortableCols: SortableKey[] = showLanguage
+    ? [...SORTABLE_COLS_BASE, 'language']
+    : SORTABLE_COLS_BASE;
 
   const [sortKey, setSortKey] = useState<SortableKey | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>('asc');
@@ -111,7 +126,7 @@ export default function MajorsTable({rows}: Props): ReactNode {
         <table className={styles.table}>
           <thead>
             <tr>
-              {SORTABLE_COLS.map((col) => (
+              {sortableCols.map((col) => (
                 <th key={col}>
                   <button
                     type="button"
@@ -142,6 +157,9 @@ export default function MajorsTable({rows}: Props): ReactNode {
                 <td data-label={headers.department}>{r.department ?? ''}</td>
                 <td data-label={headers.credits}>{r.credits ?? ''}</td>
                 <td data-label={headers.years}>{r.years ?? ''}</td>
+                {showLanguage && (
+                  <td data-label={headers.language}>{r.language ?? ''}</td>
+                )}
                 <td data-label={headers.source}>
                   {r.source ? (
                     <a
