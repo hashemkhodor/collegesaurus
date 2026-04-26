@@ -1,14 +1,12 @@
 /*
  * Deadlines Calendar — homepage section.
  *
- * Powered by Toast-UI Calendar (`@toast-ui/react-calendar`):
- *  - Built-in month grid renders Google-Calendar-style colored event bars.
- *  - We add a custom toolbar (prev/today/next + month label + Download CTA)
- *    because TUI doesn't ship one by default.
- *  - A companion "Coming up" agenda below the grid lists the next deadlines
- *    as scannable cards with per-event Google-Calendar deep links.
+ * Custom card-based agenda (no calendar library). Events are grouped by
+ * month with a sticky-feeling month header and rendered as polished
+ * cards with a colored date pill, kind icon, source chip, title, and a
+ * per-event "+ Google" deep link to add to Google Calendar.
  *
- * Light + dark mode via CSS vars; RTL-aware where needed.
+ * Theme via CSS vars; supports light + dark and RTL.
  */
 
 .section {
@@ -21,7 +19,7 @@
 }
 
 .inner {
-  max-width: 1100px;
+  max-width: 920px;
   margin: 0 auto;
 }
 
@@ -49,7 +47,7 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.5rem 1rem;
-  margin: 0 0 1.25rem;
+  margin: 0 0 1.5rem;
   padding: 0;
   list-style: none;
   font-size: 0.82rem;
@@ -72,119 +70,47 @@
 
 [dir='rtl'] .legend { direction: rtl; }
 
-/* === Frame around the calendar + agenda ================================ */
+/* === Top toolbar (export CTAs) ========================================= */
 
-.calendarFrame {
-  background: var(--ifm-background-surface-color);
-  border: 1px solid var(--ifm-color-emphasis-200);
-  border-radius: 16px;
-  padding: clamp(0.75rem, 2vw, 1.5rem);
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.04),
-    0 8px 24px -12px rgba(0, 0, 0, 0.12);
-}
-
-.fallback {
-  padding: 4rem 1rem;
-  text-align: center;
-  color: var(--ifm-color-emphasis-600);
-  font-size: 0.95rem;
-}
-
-/* === Custom toolbar above the calendar ================================= */
-
-.calendarToolbar {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
-}
-
-.navGroup {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.navBtn {
-  padding: 0.45rem 0.9rem;
-  background: var(--ifm-background-surface-color);
-  border: 1px solid var(--ifm-color-emphasis-300);
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: var(--ifm-color-emphasis-900);
-  cursor: pointer;
-  transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
-}
-.navBtn:hover {
-  border-color: var(--ifm-color-primary);
-  color: var(--ifm-color-primary);
-}
-
-.navIconBtn {
-  width: 36px;
-  height: 36px;
-  display: inline-flex;
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  background: var(--ifm-background-surface-color);
-  border: 1px solid var(--ifm-color-emphasis-300);
-  border-radius: 50%;
-  color: var(--ifm-color-emphasis-900);
-  cursor: pointer;
-  transition: border-color 140ms ease, color 140ms ease;
-}
-.navIconBtn:hover {
-  border-color: var(--ifm-color-primary);
-  color: var(--ifm-color-primary);
+  gap: 0.75rem 1rem;
+  margin-bottom: 1.75rem;
 }
 
-.monthLabel {
-  text-align: center;
-  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--ifm-color-emphasis-900);
-}
-
-.exportGroup {
+.gcalCta {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-.gcalSubscribe {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 1rem;
+  gap: 0.55rem;
+  padding: 0.65rem 1.15rem;
   background: linear-gradient(135deg, #1a73e8 0%, #4285f4 100%);
   color: #fff !important;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   border: 0;
   border-radius: 999px;
   cursor: pointer;
   text-decoration: none;
-  box-shadow: 0 1px 2px rgba(26, 115, 232, 0.25),
-    0 4px 12px rgba(26, 115, 232, 0.2);
+  box-shadow:
+    0 1px 2px rgba(26, 115, 232, 0.25),
+    0 6px 16px rgba(26, 115, 232, 0.22);
   transition: transform 140ms ease, box-shadow 140ms ease;
 }
-.gcalSubscribe:hover {
-  text-decoration: none;
+.gcalCta:hover {
   transform: translateY(-1px);
-  box-shadow: 0 1px 2px rgba(26, 115, 232, 0.3),
-    0 8px 18px rgba(26, 115, 232, 0.3);
+  box-shadow:
+    0 1px 2px rgba(26, 115, 232, 0.3),
+    0 10px 22px rgba(26, 115, 232, 0.3);
+  text-decoration: none;
 }
 
 .gcalIcon { color: #fff; flex-shrink: 0; }
 
 .icsHelp {
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   font-weight: 600;
   color: var(--ifm-color-emphasis-700) !important;
   text-decoration: none;
@@ -192,118 +118,89 @@
   padding-bottom: 1px;
 }
 .icsHelp:hover {
-  text-decoration: none;
   color: var(--ifm-color-primary) !important;
   border-bottom-color: var(--ifm-color-primary);
+  text-decoration: none;
 }
 
-/* === Toast-UI Calendar mount =========================================== */
+/* === Agenda body ======================================================= */
 
-.calendarMount {
-  border: 1px solid var(--ifm-color-emphasis-200);
-  border-radius: 12px;
-  overflow: hidden;
-  background: var(--ifm-background-surface-color);
+.agenda {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-/* TUI exposes most of its DOM through CSS classes prefixed with
- * `toastui-calendar-`. We override the bits that clash with Docusaurus's
- * theme tokens. Selectors are :global() so they pierce the CSS-module scope. */
-
-.calendarMount :global(.toastui-calendar-layout) {
-  background: transparent;
-  font-family: var(--ifm-font-family-base);
+.monthGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.calendarMount :global(.toastui-calendar-month-day-name-item) {
+.monthHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin: 0 0 0.25rem;
   font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ifm-color-emphasis-700);
 }
 
-.calendarMount :global(.toastui-calendar-grid-cell) {
-  background: var(--ifm-background-surface-color);
+.monthHeaderText { white-space: nowrap; }
+
+.monthHeaderRule {
+  flex: 1;
+  height: 1px;
+  background: var(--ifm-color-emphasis-200);
 }
 
-.calendarMount :global(.toastui-calendar-grid-cell.toastui-calendar-today) {
-  background: color-mix(in srgb, var(--ifm-color-primary) 8%, transparent);
-}
-
-.calendarMount :global(.toastui-calendar-grid-cell-date),
-.calendarMount :global(.toastui-calendar-grid-cell-more-events) {
-  color: var(--ifm-color-emphasis-800);
-}
-
-.calendarMount :global(.toastui-calendar-grid-cell-date.toastui-calendar-today) {
-  color: var(--ifm-color-primary);
-  font-weight: 700;
-}
-
-/* Event chips inside the month grid. */
-.calendarMount :global(.toastui-calendar-weekday-event) {
-  border-radius: 6px;
-  font-size: 0.78rem;
+.monthHeaderCount {
+  font-size: 0.72rem;
   font-weight: 600;
-  cursor: pointer;
-  padding: 1px 6px;
-  margin: 1px 2px;
-}
-.calendarMount :global(.toastui-calendar-weekday-event:hover) {
-  filter: brightness(1.08);
+  letter-spacing: 0.04em;
+  color: var(--ifm-color-emphasis-600);
+  white-space: nowrap;
 }
 
-/* === "Coming up" agenda below the calendar ============================= */
-
-.agenda {
-  margin-top: 1.5rem;
-}
-
-.agendaHeading {
-  margin: 0 0 0.85rem;
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--ifm-color-emphasis-900);
-}
-
-.agendaList {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.45rem;
+.monthItems {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.agendaItem {
+.itemRow {
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
   background: var(--ifm-background-surface-color);
   border: 1px solid var(--ifm-color-emphasis-200);
-  border-radius: 10px;
-  padding: 0.4rem 0.75rem 0.4rem 0.4rem;
+  border-radius: 14px;
+  padding: 0.55rem 0.75rem 0.55rem 0.55rem;
   transition: border-color 140ms ease, box-shadow 140ms ease,
     transform 140ms ease;
 }
-.agendaItem:hover {
+.itemRow:hover {
   border-color: var(--ifm-color-primary);
-  box-shadow: 0 4px 12px -6px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.15);
   transform: translateY(-1px);
 }
 
-.agendaCard {
+.itemCard {
   display: grid;
   grid-template-columns: auto auto auto 1fr;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.4rem 0.4rem;
+  gap: 0.7rem;
   background: transparent;
   border: 0;
   cursor: pointer;
+  padding: 0.35rem;
   text-align: start;
   font: inherit;
   color: inherit;
@@ -311,28 +208,60 @@
   min-width: 0;
 }
 
-.agendaDateBadge {
+/* === Colored date pill ================================================= */
+
+.datePill {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: 0.3rem 0.65rem;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: 0.78rem;
+  gap: 0.35rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 12px;
   color: #fff;
+  font-weight: 700;
   white-space: nowrap;
   letter-spacing: 0.01em;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
-.agendaIcon {
-  font-size: 1rem;
+.datePillDay {
+  font-size: 1.05rem;
   line-height: 1;
 }
 
-.agendaShortName {
+.datePillMonth {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.95;
+}
+
+.datePillEnd {
   display: inline-flex;
   align-items: center;
-  padding: 0.15rem 0.55rem;
+  gap: 0.25rem;
+  font-size: 0.72rem;
+  opacity: 0.85;
+}
+.datePillEndDay { font-size: 0.85rem; font-weight: 700; }
+.datePillEndMonth {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* === Card content ====================================================== */
+
+.kindIcon {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.sourceChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
   background: var(--ifm-color-emphasis-100);
   color: var(--ifm-color-emphasis-900);
   border-radius: 6px;
@@ -342,38 +271,54 @@
   white-space: nowrap;
 }
 
-.agendaTitle {
-  font-size: 0.92rem;
+.itemTitle {
+  font-size: 0.95rem;
   font-weight: 500;
   color: var(--ifm-color-emphasis-900);
-  line-height: 1.3;
+  line-height: 1.35;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   min-width: 0;
 }
 
-.agendaApprox {
+.approxBadge {
   display: inline-block;
-  margin-left: 0.35rem;
-  padding: 0 0.4rem;
-  font-size: 0.7rem;
+  margin-left: 0.4rem;
+  padding: 0 0.45rem;
+  font-size: 0.68rem;
   font-weight: 700;
   color: var(--ifm-color-warning-darker, #b45309);
   background: color-mix(in srgb, var(--ifm-color-warning, #f59e0b) 18%, transparent);
   border-radius: 4px;
   vertical-align: middle;
+  letter-spacing: 0.02em;
 }
+
+.ayBadge {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.42rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-700);
+  background: var(--ifm-color-emphasis-200);
+  border-radius: 4px;
+  vertical-align: middle;
+  letter-spacing: 0.01em;
+}
+
+/* === Per-event "+ Google" chip ========================================= */
 
 .gcalChip {
   display: inline-flex;
   align-items: center;
-  padding: 0.3rem 0.7rem;
+  padding: 0.32rem 0.7rem;
   background: rgba(26, 115, 232, 0.1);
   color: #1a73e8 !important;
   border: 1px solid rgba(26, 115, 232, 0.25);
   border-radius: 999px;
-  font-size: 0.75rem;
+  font-size: 0.76rem;
   font-weight: 700;
   text-decoration: none;
   white-space: nowrap;
@@ -396,40 +341,67 @@
   border-color: rgba(138, 180, 248, 0.6);
 }
 
-/* === Mobile tightening ================================================= */
+/* === "Show all" toggle ================================================ */
 
-@media (max-width: 720px) {
-  .calendarToolbar {
+.showMoreWrap {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.showMore {
+  padding: 0.6rem 1.4rem;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--ifm-color-emphasis-900);
+  cursor: pointer;
+  transition: border-color 140ms ease, color 140ms ease;
+}
+.showMore:hover {
+  border-color: var(--ifm-color-primary);
+  color: var(--ifm-color-primary);
+}
+
+/* === Loading / empty fallback ========================================= */
+
+.fallback {
+  padding: 3.5rem 1rem;
+  text-align: center;
+  color: var(--ifm-color-emphasis-600);
+  font-size: 0.95rem;
+}
+
+/* === Mobile tightening ================================================ */
+
+@media (max-width: 640px) {
+  .itemRow {
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
-    gap: 0.6rem;
-    text-align: center;
+    padding: 0.6rem;
   }
-  .navGroup, .exportGroup { justify-content: center; }
-  .agendaItem {
-    grid-template-columns: 1fr;
-  }
-  .agendaCard {
+  .itemCard {
     grid-template-columns: auto 1fr;
     grid-template-rows: auto auto;
-    gap: 0.4rem 0.6rem;
+    gap: 0.45rem 0.6rem;
   }
-  .agendaDateBadge { grid-row: span 2; }
-  .agendaTitle { white-space: normal; }
+  .datePill { grid-row: span 2; }
+  .kindIcon { display: none; }
+  .itemTitle { white-space: normal; }
   .gcalChip {
     justify-self: end;
-    margin-top: 0.4rem;
+    margin-top: 0.35rem;
   }
+  .toolbar { flex-direction: column; }
+  .gcalCta { width: 100%; justify-content: center; }
 }
 
-/* === Dark mode tweaks ================================================== */
+/* === Dark mode ======================================================== */
 
-[data-theme='dark'] .calendarFrame {
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.5),
-    0 8px 24px -12px rgba(0, 0, 0, 0.65);
+[data-theme='dark'] .itemRow {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }
-
-[data-theme='dark'] .calendarMount :global(.toastui-calendar-grid-cell) {
-  background: var(--ifm-background-surface-color);
+[data-theme='dark'] .itemRow:hover {
+  box-shadow: 0 6px 18px -6px rgba(0, 0, 0, 0.55);
 }

@@ -512,63 +512,27 @@ function resolveAnnual(iso: string, now: Date): string {
 }
 
 /**
- * Color groups Toast-UI Calendar uses to tint events. One per deadline
- * kind so visually similar items cluster on the month grid.
+ * A `Deadline` after recurring entries have been resolved to their next
+ * future occurrence and past absolute ones dropped. Same shape as
+ * `Deadline` so consumers can reuse all its fields directly.
  */
-export const TUI_CALENDARS = (Object.keys(KIND_COLOR) as DeadlineKind[]).map(
-  (kind) => ({
-    id: kind,
-    name: kind,
-    color: '#ffffff',
-    backgroundColor: KIND_COLOR[kind],
-    borderColor: KIND_COLOR[kind],
-    dragBackgroundColor: KIND_COLOR[kind],
-  }),
-);
-
-export interface CalendarEvent {
-  id: string;
-  calendarId: DeadlineKind;
-  title: string;
-  /** ISO 'YYYY-MM-DD' (TUI accepts a string for all-day events). */
-  start: string;
-  /** ISO 'YYYY-MM-DD' inclusive — TUI's all-day end is INCLUSIVE. */
-  end: string;
-  isAllday: true;
-  category: 'allday';
-  backgroundColor: string;
-  borderColor: string;
-  color: string;
-  /** Custom payload attached for click navigation + the agenda card. */
-  raw: {
-    source: SourceKind;
-    slug: string;
-    kind: DeadlineKind;
-    reference: string;
-    approximate: boolean;
-    ay: string;
-    shortName: string;
-  };
-}
+export type ResolvedDeadline = Deadline;
 
 /**
- * Convert deadlines to Toast-UI Calendar events, dropping past absolute
- * entries and resolving recurring ones to the next future occurrence.
- *
- * `locale` selects which `title` translation to render.
+ * Convert the raw `deadlines` array into the upcoming list:
+ *   - Resolves recurring 'annual' entries to the next occurrence ≥ now.
+ *   - Drops absolute entries whose last day is already in the past.
+ *   - Sorts ascending by start date.
  */
-export function upcomingDeadlines(
-  now: Date,
-  locale: 'en' | 'ar' = 'en',
-): CalendarEvent[] {
+export function upcomingDeadlines(now: Date): ResolvedDeadline[] {
   return deadlines
-    .map((d): CalendarEvent | null => {
+    .map((d): ResolvedDeadline | null => {
       let start = d.date;
       let end = d.endDate ?? d.date;
       if (d.recurring === 'annual') {
         const resolved = resolveAnnual(d.date, now);
-        const drift = (new Date(`${resolved}T00:00:00Z`).getTime() -
-                       new Date(`${d.date}T00:00:00Z`).getTime());
+        const drift = new Date(`${resolved}T00:00:00Z`).getTime() -
+                      new Date(`${d.date}T00:00:00Z`).getTime();
         start = resolved;
         if (d.endDate) {
           end = new Date(new Date(`${d.endDate}T00:00:00Z`).getTime() + drift)
@@ -577,34 +541,12 @@ export function upcomingDeadlines(
           end = resolved;
         }
       }
-      // TUI's all-day end is inclusive — drop the entry only if the very
-      // last day is already in the past.
+      // The end day is INCLUSIVE — drop entries only when the last day
+      // has already wrapped past midnight.
       const lastDay = new Date(`${addOneDay(end)}T00:00:00Z`).getTime();
       if (lastDay < now.getTime()) return null;
-      const baseTitle = d.title[locale];
-      const title = `${KIND_ICON[d.kind]} ${d.shortName} — ${baseTitle}${d.approximate ? ' ~' : ''}`;
-      return {
-        id: d.id,
-        calendarId: d.kind,
-        title,
-        start,
-        end,
-        isAllday: true,
-        category: 'allday',
-        backgroundColor: KIND_COLOR[d.kind],
-        borderColor: KIND_COLOR[d.kind],
-        color: '#ffffff',
-        raw: {
-          source: d.source,
-          slug: d.slug,
-          kind: d.kind,
-          reference: d.reference,
-          approximate: !!d.approximate,
-          shortName: d.shortName,
-          ay: d.ay,
-        },
-      };
+      return {...d, date: start, endDate: end === start ? undefined : end};
     })
-    .filter((e): e is CalendarEvent => e !== null)
-    .sort((a, b) => a.start.localeCompare(b.start));
+    .filter((d): d is ResolvedDeadline => d !== null)
+    .sort((a, b) => a.date.localeCompare(b.date));
 }
