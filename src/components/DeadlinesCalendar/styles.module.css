@@ -1,14 +1,14 @@
 /*
  * Deadlines Calendar — homepage section.
  *
- * Visual goals:
- *  - Feel modern and Google-Calendar-adjacent: large date pills, soft cards,
- *    color-coded category dots, generous spacing, clear hover affordance.
- *  - Two CTAs above the calendar: "Subscribe in Google Calendar" (primary)
- *    and "Download .ics" (secondary).
- *  - Custom event rendering for the list view replaces FullCalendar's
- *    default plain rows with structured cards.
- *  - Light + dark mode via CSS vars; RTL-aware where needed.
+ * Powered by Toast-UI Calendar (`@toast-ui/react-calendar`):
+ *  - Built-in month grid renders Google-Calendar-style colored event bars.
+ *  - We add a custom toolbar (prev/today/next + month label + Download CTA)
+ *    because TUI doesn't ship one by default.
+ *  - A companion "Coming up" agenda below the grid lists the next deadlines
+ *    as scannable cards with per-event Google-Calendar deep links.
+ *
+ * Light + dark mode via CSS vars; RTL-aware where needed.
  */
 
 .section {
@@ -34,70 +34,13 @@
 }
 
 .subheading {
-  margin: 0 auto clamp(1.5rem, 3vw, 2rem);
+  margin: 0 auto clamp(1.25rem, 2.5vw, 1.5rem);
   color: var(--ifm-color-emphasis-700);
   max-width: 640px;
   font-size: 0.95rem;
   text-align: center;
   line-height: 1.55;
 }
-
-/* === Top toolbar with the two export CTAs ============================== */
-
-.toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.625rem;
-  margin: 0 auto 1rem;
-}
-
-.gcalSubscribe {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 1rem;
-  background: linear-gradient(135deg, #1a73e8 0%, #4285f4 100%);
-  color: #fff !important;
-  font-weight: 600;
-  font-size: 0.9rem;
-  border-radius: 999px;
-  text-decoration: none;
-  box-shadow: 0 1px 2px rgba(26, 115, 232, 0.25),
-    0 4px 12px rgba(26, 115, 232, 0.2);
-  transition: transform 140ms ease, box-shadow 140ms ease;
-}
-.gcalSubscribe:hover {
-  text-decoration: none;
-  transform: translateY(-1px);
-  box-shadow: 0 1px 2px rgba(26, 115, 232, 0.3),
-    0 8px 18px rgba(26, 115, 232, 0.3);
-}
-.gcalSubscribe:active { transform: translateY(0); }
-
-.gcalIcon { color: #fff; flex-shrink: 0; }
-
-.icsDownload {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.6rem 1rem;
-  background: var(--ifm-background-surface-color);
-  color: var(--ifm-color-emphasis-900);
-  font-weight: 600;
-  font-size: 0.9rem;
-  border-radius: 999px;
-  border: 1px solid var(--ifm-color-emphasis-300);
-  cursor: pointer;
-  transition: border-color 140ms ease, background 140ms ease,
-    transform 140ms ease;
-}
-.icsDownload:hover {
-  border-color: var(--ifm-color-primary);
-  color: var(--ifm-color-primary);
-  transform: translateY(-1px);
-}
-.icsDownload:active { transform: translateY(0); }
 
 /* === Legend strip ====================================================== */
 
@@ -129,7 +72,7 @@
 
 [dir='rtl'] .legend { direction: rtl; }
 
-/* === Calendar frame (the card wrapping FullCalendar) =================== */
+/* === Frame around the calendar + agenda ================================ */
 
 .calendarFrame {
   background: var(--ifm-background-surface-color);
@@ -148,131 +91,245 @@
   font-size: 0.95rem;
 }
 
-/* === FullCalendar overrides ============================================ */
+/* === Custom toolbar above the calendar ================================= */
 
-.calendarFrame :global(.fc) {
-  --fc-border-color: var(--ifm-color-emphasis-200);
-  --fc-page-bg-color: var(--ifm-background-surface-color);
-  --fc-neutral-bg-color: transparent;
-  --fc-list-event-hover-bg-color: var(--ifm-color-emphasis-100);
-  --fc-today-bg-color: color-mix(in srgb, var(--ifm-color-primary) 10%, transparent);
-  --fc-button-text-color: var(--ifm-color-emphasis-900);
-  --fc-button-bg-color: var(--ifm-background-surface-color);
-  --fc-button-border-color: var(--ifm-color-emphasis-300);
-  --fc-button-hover-bg-color: var(--ifm-color-emphasis-100);
-  --fc-button-hover-border-color: var(--ifm-color-primary);
-  --fc-button-active-bg-color: var(--ifm-color-primary);
-  --fc-button-active-border-color: var(--ifm-color-primary);
-  --fc-list-event-dot-width: 0; /* using our own dot in the row */
-  font-family: var(--ifm-font-family-base);
-}
-
-.calendarFrame :global(.fc .fc-toolbar.fc-header-toolbar) {
+.calendarToolbar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
   margin-bottom: 1.25rem;
-  flex-wrap: wrap;
-  gap: 0.5rem;
 }
 
-.calendarFrame :global(.fc .fc-toolbar-title) {
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+.navGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
-.calendarFrame :global(.fc .fc-button) {
-  padding: 0.45rem 0.85rem;
-  font-size: 0.82rem;
-  font-weight: 600;
-  border-radius: 8px;
-  text-transform: capitalize;
-  box-shadow: none;
-  transition: all 140ms ease;
-}
-.calendarFrame :global(.fc .fc-button:focus),
-.calendarFrame :global(.fc .fc-button:focus-visible) {
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ifm-color-primary) 35%, transparent);
-  outline: none;
-}
-
-/* === List view: card-style rows ======================================== */
-
-.calendarFrame :global(.fc-list) {
-  border: none;
-  background: transparent;
-}
-
-.calendarFrame :global(.fc-list-day-cushion) {
-  background: var(--ifm-color-emphasis-100) !important;
-  font-weight: 700;
-  font-size: 0.78rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--ifm-color-emphasis-700);
-  padding: 0.6rem 0.85rem !important;
-  border-radius: 8px;
-}
-
-.calendarFrame :global(.fc-list-table) { border-collapse: separate; border-spacing: 0 0.4rem; }
-.calendarFrame :global(.fc-list-table td) {
-  border: none !important;
-}
-
-.calendarFrame :global(.fc-list-event) {
+.navBtn {
+  padding: 0.45rem 0.9rem;
   background: var(--ifm-background-surface-color);
-  border: 1px solid var(--ifm-color-emphasis-200);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: border-color 140ms ease, transform 140ms ease,
-    box-shadow 140ms ease;
-}
-.calendarFrame :global(.fc-list-event:hover td) {
-  background: transparent !important;
-}
-.calendarFrame :global(.fc-list-event:hover) {
-  border-color: var(--ifm-color-primary);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px -6px rgba(0, 0, 0, 0.18);
-}
-
-.calendarFrame :global(.fc-list-event-time) {
-  width: 110px;
-  font-weight: 700;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 999px;
+  font-weight: 600;
   font-size: 0.85rem;
   color: var(--ifm-color-emphasis-900);
-  padding: 0.85rem 1rem !important;
-  vertical-align: middle;
-  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
+}
+.navBtn:hover {
+  border-color: var(--ifm-color-primary);
+  color: var(--ifm-color-primary);
 }
 
-.calendarFrame :global(.fc-list-event-graphic) { display: none; }
-
-.calendarFrame :global(.fc-list-event-title) {
-  padding: 0.6rem 1rem !important;
-  vertical-align: middle;
+.navIconBtn {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 50%;
+  color: var(--ifm-color-emphasis-900);
+  cursor: pointer;
+  transition: border-color 140ms ease, color 140ms ease;
+}
+.navIconBtn:hover {
+  border-color: var(--ifm-color-primary);
+  color: var(--ifm-color-primary);
 }
 
-/* === Custom event content (eventContent renderer) ====================== */
+.monthLabel {
+  text-align: center;
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ifm-color-emphasis-900);
+}
 
-.eventCard {
-  display: flex;
+.exportGroup {
+  display: inline-flex;
   align-items: center;
   gap: 0.6rem;
   flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
-.kindDot {
-  width: 0.55rem;
-  height: 0.55rem;
-  border-radius: 50%;
-  flex-shrink: 0;
+.gcalSubscribe {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: linear-gradient(135deg, #1a73e8 0%, #4285f4 100%);
+  color: #fff !important;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgba(26, 115, 232, 0.25),
+    0 4px 12px rgba(26, 115, 232, 0.2);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+.gcalSubscribe:hover {
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 1px 2px rgba(26, 115, 232, 0.3),
+    0 8px 18px rgba(26, 115, 232, 0.3);
 }
 
-.kindIcon {
+.gcalIcon { color: #fff; flex-shrink: 0; }
+
+.icsHelp {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-700) !important;
+  text-decoration: none;
+  border-bottom: 1px dashed var(--ifm-color-emphasis-400);
+  padding-bottom: 1px;
+}
+.icsHelp:hover {
+  text-decoration: none;
+  color: var(--ifm-color-primary) !important;
+  border-bottom-color: var(--ifm-color-primary);
+}
+
+/* === Toast-UI Calendar mount =========================================== */
+
+.calendarMount {
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--ifm-background-surface-color);
+}
+
+/* TUI exposes most of its DOM through CSS classes prefixed with
+ * `toastui-calendar-`. We override the bits that clash with Docusaurus's
+ * theme tokens. Selectors are :global() so they pierce the CSS-module scope. */
+
+.calendarMount :global(.toastui-calendar-layout) {
+  background: transparent;
+  font-family: var(--ifm-font-family-base);
+}
+
+.calendarMount :global(.toastui-calendar-month-day-name-item) {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.calendarMount :global(.toastui-calendar-grid-cell) {
+  background: var(--ifm-background-surface-color);
+}
+
+.calendarMount :global(.toastui-calendar-grid-cell.toastui-calendar-today) {
+  background: color-mix(in srgb, var(--ifm-color-primary) 8%, transparent);
+}
+
+.calendarMount :global(.toastui-calendar-grid-cell-date),
+.calendarMount :global(.toastui-calendar-grid-cell-more-events) {
+  color: var(--ifm-color-emphasis-800);
+}
+
+.calendarMount :global(.toastui-calendar-grid-cell-date.toastui-calendar-today) {
+  color: var(--ifm-color-primary);
+  font-weight: 700;
+}
+
+/* Event chips inside the month grid. */
+.calendarMount :global(.toastui-calendar-weekday-event) {
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 1px 6px;
+  margin: 1px 2px;
+}
+.calendarMount :global(.toastui-calendar-weekday-event:hover) {
+  filter: brightness(1.08);
+}
+
+/* === "Coming up" agenda below the calendar ============================= */
+
+.agenda {
+  margin-top: 1.5rem;
+}
+
+.agendaHeading {
+  margin: 0 0 0.85rem;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ifm-color-emphasis-900);
+}
+
+.agendaList {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.45rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.agendaItem {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 10px;
+  padding: 0.4rem 0.75rem 0.4rem 0.4rem;
+  transition: border-color 140ms ease, box-shadow 140ms ease,
+    transform 140ms ease;
+}
+.agendaItem:hover {
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 4px 12px -6px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+.agendaCard {
+  display: grid;
+  grid-template-columns: auto auto auto 1fr;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.4rem;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  text-align: start;
+  font: inherit;
+  color: inherit;
+  width: 100%;
+  min-width: 0;
+}
+
+.agendaDateBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.65rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: #fff;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+.agendaIcon {
   font-size: 1rem;
   line-height: 1;
 }
 
-.sourceChip {
+.agendaShortName {
   display: inline-flex;
   align-items: center;
   padding: 0.15rem 0.55rem;
@@ -285,16 +342,18 @@
   white-space: nowrap;
 }
 
-.eventTitle {
-  flex: 1 1 200px;
-  min-width: 0;
+.agendaTitle {
   font-size: 0.92rem;
   font-weight: 500;
   color: var(--ifm-color-emphasis-900);
   line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
-.approxBadge {
+.agendaApprox {
   display: inline-block;
   margin-left: 0.35rem;
   padding: 0 0.4rem;
@@ -306,22 +365,10 @@
   vertical-align: middle;
 }
 
-.ayBadge {
-  display: inline-block;
-  margin-left: 0.4rem;
-  padding: 0.05rem 0.4rem;
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: var(--ifm-color-emphasis-700);
-  background: var(--ifm-color-emphasis-200);
-  border-radius: 4px;
-  vertical-align: middle;
-}
-
 .gcalChip {
   display: inline-flex;
   align-items: center;
-  padding: 0.25rem 0.6rem;
+  padding: 0.3rem 0.7rem;
   background: rgba(26, 115, 232, 0.1);
   color: #1a73e8 !important;
   border: 1px solid rgba(26, 115, 232, 0.25);
@@ -349,50 +396,30 @@
   border-color: rgba(138, 180, 248, 0.6);
 }
 
-/* === Month view: compact event chip ==================================== */
-
-.gridEvent {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 1px 2px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  line-height: 1.25;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.gridEventTitle {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 /* === Mobile tightening ================================================= */
 
-@media (max-width: 600px) {
-  .toolbar { flex-direction: column; align-items: stretch; }
-  .gcalSubscribe, .icsDownload { justify-content: center; }
-
-  .calendarFrame :global(.fc .fc-toolbar.fc-header-toolbar) {
-    flex-direction: column;
-    align-items: stretch;
+@media (max-width: 720px) {
+  .calendarToolbar {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 0.6rem;
+    text-align: center;
   }
-  .calendarFrame :global(.fc .fc-toolbar-chunk) {
-    display: flex;
-    justify-content: center;
+  .navGroup, .exportGroup { justify-content: center; }
+  .agendaItem {
+    grid-template-columns: 1fr;
   }
-
-  .calendarFrame :global(.fc-list-event-time) {
-    width: auto;
-    padding: 0.6rem 0.8rem 0.1rem !important;
+  .agendaCard {
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    gap: 0.4rem 0.6rem;
   }
-  .calendarFrame :global(.fc-list-event-title) {
-    padding: 0.1rem 0.8rem 0.6rem !important;
+  .agendaDateBadge { grid-row: span 2; }
+  .agendaTitle { white-space: normal; }
+  .gcalChip {
+    justify-self: end;
+    margin-top: 0.4rem;
   }
-  .eventCard { gap: 0.45rem; }
-  .gcalChip { padding: 0.2rem 0.5rem; font-size: 0.72rem; }
 }
 
 /* === Dark mode tweaks ================================================== */
@@ -403,6 +430,6 @@
     0 8px 24px -12px rgba(0, 0, 0, 0.65);
 }
 
-[data-theme='dark'] .calendarFrame :global(.fc-list-event:hover) {
-  box-shadow: 0 4px 12px -6px rgba(0, 0, 0, 0.6);
+[data-theme='dark'] .calendarMount :global(.toastui-calendar-grid-cell) {
+  background: var(--ifm-background-surface-color);
 }

@@ -388,29 +388,6 @@ export const deadlines: Deadline[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-export interface CalendarEvent {
-  id: string;
-  title: string;
-  start: string;
-  end?: string;
-  url?: string;
-  backgroundColor: string;
-  borderColor: string;
-  textColor: string;
-  extendedProps: {
-    source: SourceKind;
-    slug: string;
-    kind: DeadlineKind;
-    reference: string;
-    approximate: boolean;
-    ay: string;
-  };
-}
-
-// ---------------------------------------------------------------------------
 // Google Calendar / .ics export helpers
 // ---------------------------------------------------------------------------
 
@@ -518,7 +495,7 @@ export function buildICS(items: Deadline[], now: Date = new Date()): string {
   return lines.join('\r\n');
 }
 
-/** Add one day to an ISO 'YYYY-MM-DD' (FullCalendar end is exclusive). */
+/** Add one day to an ISO 'YYYY-MM-DD'. */
 function addOneDay(iso: string): string {
   const d = new Date(`${iso}T00:00:00Z`);
   d.setUTCDate(d.getUTCDate() + 1);
@@ -535,8 +512,48 @@ function resolveAnnual(iso: string, now: Date): string {
 }
 
 /**
- * Convert deadlines to FullCalendar events, dropping past absolute entries
- * and resolving recurring ones to the next future occurrence.
+ * Color groups Toast-UI Calendar uses to tint events. One per deadline
+ * kind so visually similar items cluster on the month grid.
+ */
+export const TUI_CALENDARS = (Object.keys(KIND_COLOR) as DeadlineKind[]).map(
+  (kind) => ({
+    id: kind,
+    name: kind,
+    color: '#ffffff',
+    backgroundColor: KIND_COLOR[kind],
+    borderColor: KIND_COLOR[kind],
+    dragBackgroundColor: KIND_COLOR[kind],
+  }),
+);
+
+export interface CalendarEvent {
+  id: string;
+  calendarId: DeadlineKind;
+  title: string;
+  /** ISO 'YYYY-MM-DD' (TUI accepts a string for all-day events). */
+  start: string;
+  /** ISO 'YYYY-MM-DD' inclusive — TUI's all-day end is INCLUSIVE. */
+  end: string;
+  isAllday: true;
+  category: 'allday';
+  backgroundColor: string;
+  borderColor: string;
+  color: string;
+  /** Custom payload attached for click navigation + the agenda card. */
+  raw: {
+    source: SourceKind;
+    slug: string;
+    kind: DeadlineKind;
+    reference: string;
+    approximate: boolean;
+    ay: string;
+    shortName: string;
+  };
+}
+
+/**
+ * Convert deadlines to Toast-UI Calendar events, dropping past absolute
+ * entries and resolving recurring ones to the next future occurrence.
  *
  * `locale` selects which `title` translation to render.
  */
@@ -547,36 +564,43 @@ export function upcomingDeadlines(
   return deadlines
     .map((d): CalendarEvent | null => {
       let start = d.date;
-      let end = d.endDate ? addOneDay(d.endDate) : addOneDay(d.date);
+      let end = d.endDate ?? d.date;
       if (d.recurring === 'annual') {
         const resolved = resolveAnnual(d.date, now);
         const drift = (new Date(`${resolved}T00:00:00Z`).getTime() -
                        new Date(`${d.date}T00:00:00Z`).getTime());
         start = resolved;
         if (d.endDate) {
-          end = addOneDay(new Date(new Date(`${d.endDate}T00:00:00Z`).getTime() + drift)
-            .toISOString().slice(0, 10));
+          end = new Date(new Date(`${d.endDate}T00:00:00Z`).getTime() + drift)
+            .toISOString().slice(0, 10);
         } else {
-          end = addOneDay(resolved);
+          end = resolved;
         }
       }
-      if (new Date(`${end}T00:00:00Z`).getTime() < now.getTime()) return null;
+      // TUI's all-day end is inclusive — drop the entry only if the very
+      // last day is already in the past.
+      const lastDay = new Date(`${addOneDay(end)}T00:00:00Z`).getTime();
+      if (lastDay < now.getTime()) return null;
       const baseTitle = d.title[locale];
       const title = `${KIND_ICON[d.kind]} ${d.shortName} — ${baseTitle}${d.approximate ? ' ~' : ''}`;
       return {
         id: d.id,
+        calendarId: d.kind,
         title,
         start,
         end,
+        isAllday: true,
+        category: 'allday',
         backgroundColor: KIND_COLOR[d.kind],
         borderColor: KIND_COLOR[d.kind],
-        textColor: '#ffffff',
-        extendedProps: {
+        color: '#ffffff',
+        raw: {
           source: d.source,
           slug: d.slug,
           kind: d.kind,
           reference: d.reference,
           approximate: !!d.approximate,
+          shortName: d.shortName,
           ay: d.ay,
         },
       };
