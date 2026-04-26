@@ -36,6 +36,10 @@ import {
 } from '@site/src/data/deadlines';
 import styles from './styles.module.css';
 
+// Top-level CSS import — Webpack collects this at build time. No SSR issue
+// because CSS imports don't execute any JS at runtime.
+import '@toast-ui/calendar/dist/toastui-calendar.min.css';
+
 const LEGEND: Array<{kind: DeadlineKind; en: string; ar: string}> = [
   {kind: 'application',   en: 'Application',     ar: 'تقديم'},
   {kind: 'exam',          en: 'Entrance exam',   ar: 'امتحان قبول'},
@@ -72,28 +76,48 @@ function downloadICS(items: Deadline[]): void {
 }
 
 function CalendarInner(): ReactNode {
-  const {i18n} = useDocusaurusContext();
+  const {i18n, siteConfig} = useDocusaurusContext();
   const isAr = i18n.currentLocale === 'ar';
   const history = useHistory();
+  // Docusaurus's react-router history doesn't prepend baseUrl on push().
+  // Build absolute paths ourselves with the configured baseUrl
+  // (e.g. '/collegesaurus/'). Trim trailing slash so we don't double up.
+  const baseUrl = siteConfig.baseUrl.replace(/\/$/, '');
+  const navigateToDeadline = (
+    source: 'university' | 'scholarship',
+    slug: string,
+  ) => {
+    const seg = source === 'university' ? 'universities' : 'scholarships';
+    history.push(`${baseUrl}/${seg}/${slug}`);
+  };
 
   // Toast-UI Calendar references `window` at module load, so we can't
   // import it statically (would crash during Docusaurus SSR). Defer the
-  // import to client-side via dynamic import in useEffect — the well-
-  // tested pattern for window-touching ESM libraries inside Docusaurus.
+  // JS import to client-side via dynamic import in useEffect — the
+  // well-tested pattern for window-touching ESM libraries inside
+  // Docusaurus. (CSS is imported statically at the top of this file —
+  // Webpack handles that at build time without touching window.)
   const [Calendar, setCalendar] = useState<any>(null);
   useEffect(() => {
     let mounted = true;
-    Promise.all([
-      // @ts-ignore — TUI's package.json `exports` hides its bundled types
-      import('@toast-ui/react-calendar'),
-      // The CSS import has no default export; we just need its side effects.
-      // @ts-ignore — CSS module declarations not provided by TUI
-      import('@toast-ui/calendar/dist/toastui-calendar.min.css'),
-    ]).then(([mod]) => {
-      if (!mounted) return;
-      const Cmp = (mod as any).default ?? mod;
-      setCalendar(() => Cmp);
-    });
+    // @ts-ignore — TUI's package.json `exports` hides its bundled types
+    import('@toast-ui/react-calendar')
+      .then((mod) => {
+        if (!mounted) return;
+        // ESM default export, with double-wrap fallback for some bundlers.
+        const m = mod as any;
+        const Cmp = m?.default?.default ?? m?.default ?? m;
+        if (typeof Cmp === 'function' || typeof Cmp === 'object') {
+          setCalendar(() => Cmp);
+        } else {
+          // eslint-disable-next-line no-console
+          console.warn('Toast-UI Calendar load: unexpected module shape', mod);
+        }
+      })
+      .catch((err) => {
+        // eslint-disable-next-line no-console
+        console.error('Toast-UI Calendar dynamic import failed:', err);
+      });
     return () => {
       mounted = false;
     };
@@ -249,9 +273,7 @@ function CalendarInner(): ReactNode {
           onClickEvent={({event}: any) => {
             const raw = event.raw as CalendarEvent['raw'] | undefined;
             if (!raw) return;
-            history.push(
-              `/${raw.source === 'university' ? 'universities' : 'scholarships'}/${raw.slug}`,
-            );
+            navigateToDeadline(raw.source, raw.slug);
           }}
         />
         ) : (
@@ -285,11 +307,7 @@ function CalendarInner(): ReactNode {
                 <button
                   type="button"
                   className={styles.agendaCard}
-                  onClick={() =>
-                    history.push(
-                      `/${dl.source === 'university' ? 'universities' : 'scholarships'}/${dl.slug}`,
-                    )
-                  }>
+                  onClick={() => navigateToDeadline(dl.source, dl.slug)}>
                   <span
                     className={styles.agendaDateBadge}
                     style={{backgroundColor: KIND_COLOR[dl.kind]}}>
