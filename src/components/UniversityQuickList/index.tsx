@@ -4,20 +4,22 @@ import Translate from '@docusaurus/Translate';
 import Heading from '@theme/Heading';
 import styles from './styles.module.css';
 
+// Ordered alphabetically by short name to match the sidebar (Docusaurus
+// renders sidebar_position 1..13, also alphabetical).
 const UNIVERSITIES: {slug: string; short: string}[] = [
   {slug: 'aub',       short: 'AUB'},
-  {slug: 'lau',       short: 'LAU'},
-  {slug: 'lu',        short: 'LU'},
-  {slug: 'usj',       short: 'USJ'},
-  {slug: 'ndu',       short: 'NDU'},
-  {slug: 'bau',       short: 'BAU'},
-  {slug: 'liu',       short: 'LIU'},
-  {slug: 'usek',      short: 'USEK'},
-  {slug: 'uob',       short: 'UOB'},
-  {slug: 'rhu',       short: 'RHU'},
-  {slug: 'haigazian', short: 'Haigazian'},
   {slug: 'aust',      short: 'AUST'},
+  {slug: 'bau',       short: 'BAU'},
+  {slug: 'haigazian', short: 'Haigazian'},
+  {slug: 'lau',       short: 'LAU'},
+  {slug: 'liu',       short: 'LIU'},
+  {slug: 'lu',        short: 'LU'},
+  {slug: 'ndu',       short: 'NDU'},
+  {slug: 'rhu',       short: 'RHU'},
   {slug: 'antonine',  short: 'UA'},
+  {slug: 'uob',       short: 'UOB'},
+  {slug: 'usek',      short: 'USEK'},
+  {slug: 'usj',       short: 'USJ'},
 ];
 
 export default function UniversityQuickList(): ReactNode {
