@@ -23,7 +23,11 @@ is 5 years; Medicine is 7 years; Pharmacy 5-6 years; Dental Surgery
 Faculty of Engineering holds **EUR-ACE accreditation** from CTI; FP,
 FEBA, FI, FPed, and FTHM are **HCÉRES-accredited**. Each table lists
 the program, degree type, home department, credits, duration
-(years), and language of instruction.
+(years), and language of instruction. Per-program URLs are available
+for 10 of the 17 academic units; rows in the remaining 7 tables
+(FS, FPH, FLHS, FPed, FTHM, ISS, HIAES) link to the faculty landing
+page because LU does not expose individual program pages for those
+units.
 
 ### Faculty of Engineering ([FE](https://ul.edu.lb/en/colleges-faculties-details/343/Faculty-of-Engineering))
 
@@ -297,13 +301,15 @@ typically run 3 years / 180 ECTS.
 Reference: [LU Faculties Index](https://ul.edu.lb/en/colleges-faculties-homepage) |
 [LU Majors](https://ul.edu.lb/en/majors)
 
-> \* TODO: programs marked with an asterisk fall back to their
-> faculty-level page because LU's `colleges-faculties-majors`
-> endpoint does not list per-major URLs for these faculties (FLHS,
-> FPed, FTHM, FPH, FS, ISS, HIAES). Per-program majors-details URLs
-> exist in LU's database but aren't exposed on the standard faculty
-> majors index. Future work: contact each faculty directly or browse
-> the LU Majors search page to retrieve specific URLs.
+> \* Programs marked with an asterisk link to their faculty landing
+> page because LU's CMS does not publish individual `majors-details`
+> pages for these 7 faculties (FS, FPH, FLHS, FPed, FTHM, ISS, HIAES).
+> We confirmed this by probing the standard
+> `colleges-faculties-majors/<id>` endpoint (returns "no results"),
+> ID-enumerating `majors-details/<id>/<fid>` across 4500–6000, the
+> `/fr/` and `/ar/` URL variants, and faculty-specific subdomains —
+> none expose per-program URLs for these 7. The faculty landing page
+> is the canonical link until LU adds per-program content nodes.
 
 ## Application
 
@@ -323,7 +329,7 @@ universities:
 
 | Step | Window (AY 2025-26) | Reference |
 | ---- | ------------------- | --------- |
-| General registration period (new & continuing students) | Sep 3 – Oct 31, 2025 | [Administrative Memo No. 4](https://professors.ul.edu.lb/en/circulars/administrative-memo-no-4-regarding-registration-dates-lebanese-university-academic-year) |
+| General registration period (new & continuing students) | Sep 3 – Oct 31, 2025 | [Administrative Memo No. 4](https://ul.edu.lb/en/node/5134) |
 | Faculty of Engineering — CEE applications | Jun 2 – Jul 11, 2025 | [FE CEE 2025-26](https://www.ul.edu.lb/en/dates-2025-2026-first-year-cee-faculty-engineering) |
 | Faculty of Engineering — CEE exam | Jul 17, 2025 | [FE CEE 2025-26](https://www.ul.edu.lb/en/dates-2025-2026-first-year-cee-faculty-engineering) |
 | Faculty of Public Health — CEE applications | Jun 2 – Jul 21, 2025 | [FPH CEE 2025-26](https://ul.edu.lb/en/date-cee-fph-academic-year-2025-2026) |
