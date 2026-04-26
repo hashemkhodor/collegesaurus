@@ -1,0 +1,408 @@
+/*
+ * Deadlines Calendar — homepage section.
+ *
+ * Visual goals:
+ *  - Feel modern and Google-Calendar-adjacent: large date pills, soft cards,
+ *    color-coded category dots, generous spacing, clear hover affordance.
+ *  - Two CTAs above the calendar: "Subscribe in Google Calendar" (primary)
+ *    and "Download .ics" (secondary).
+ *  - Custom event rendering for the list view replaces FullCalendar's
+ *    default plain rows with structured cards.
+ *  - Light + dark mode via CSS vars; RTL-aware where needed.
+ */
+
+.section {
+  padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1rem, 4vw, 2rem);
+  background:
+    radial-gradient(1200px 400px at 50% -100px,
+      color-mix(in srgb, var(--ifm-color-primary) 12%, transparent),
+      transparent 70%),
+    var(--ifm-background-color);
+}
+
+.inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.heading {
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+.subheading {
+  margin: 0 auto clamp(1.5rem, 3vw, 2rem);
+  color: var(--ifm-color-emphasis-700);
+  max-width: 640px;
+  font-size: 0.95rem;
+  text-align: center;
+  line-height: 1.55;
+}
+
+/* === Top toolbar with the two export CTAs ============================== */
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.625rem;
+  margin: 0 auto 1rem;
+}
+
+.gcalSubscribe {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: linear-gradient(135deg, #1a73e8 0%, #4285f4 100%);
+  color: #fff !important;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 999px;
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgba(26, 115, 232, 0.25),
+    0 4px 12px rgba(26, 115, 232, 0.2);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+.gcalSubscribe:hover {
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 1px 2px rgba(26, 115, 232, 0.3),
+    0 8px 18px rgba(26, 115, 232, 0.3);
+}
+.gcalSubscribe:active { transform: translateY(0); }
+
+.gcalIcon { color: #fff; flex-shrink: 0; }
+
+.icsDownload {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1rem;
+  background: var(--ifm-background-surface-color);
+  color: var(--ifm-color-emphasis-900);
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease,
+    transform 140ms ease;
+}
+.icsDownload:hover {
+  border-color: var(--ifm-color-primary);
+  color: var(--ifm-color-primary);
+  transform: translateY(-1px);
+}
+.icsDownload:active { transform: translateY(0); }
+
+/* === Legend strip ====================================================== */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 1rem;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  list-style: none;
+  font-size: 0.82rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legendSwatch {
+  display: inline-block;
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+[dir='rtl'] .legend { direction: rtl; }
+
+/* === Calendar frame (the card wrapping FullCalendar) =================== */
+
+.calendarFrame {
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 16px;
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 8px 24px -12px rgba(0, 0, 0, 0.12);
+}
+
+.fallback {
+  padding: 4rem 1rem;
+  text-align: center;
+  color: var(--ifm-color-emphasis-600);
+  font-size: 0.95rem;
+}
+
+/* === FullCalendar overrides ============================================ */
+
+.calendarFrame :global(.fc) {
+  --fc-border-color: var(--ifm-color-emphasis-200);
+  --fc-page-bg-color: var(--ifm-background-surface-color);
+  --fc-neutral-bg-color: transparent;
+  --fc-list-event-hover-bg-color: var(--ifm-color-emphasis-100);
+  --fc-today-bg-color: color-mix(in srgb, var(--ifm-color-primary) 10%, transparent);
+  --fc-button-text-color: var(--ifm-color-emphasis-900);
+  --fc-button-bg-color: var(--ifm-background-surface-color);
+  --fc-button-border-color: var(--ifm-color-emphasis-300);
+  --fc-button-hover-bg-color: var(--ifm-color-emphasis-100);
+  --fc-button-hover-border-color: var(--ifm-color-primary);
+  --fc-button-active-bg-color: var(--ifm-color-primary);
+  --fc-button-active-border-color: var(--ifm-color-primary);
+  --fc-list-event-dot-width: 0; /* using our own dot in the row */
+  font-family: var(--ifm-font-family-base);
+}
+
+.calendarFrame :global(.fc .fc-toolbar.fc-header-toolbar) {
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.calendarFrame :global(.fc .fc-toolbar-title) {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.calendarFrame :global(.fc .fc-button) {
+  padding: 0.45rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: 8px;
+  text-transform: capitalize;
+  box-shadow: none;
+  transition: all 140ms ease;
+}
+.calendarFrame :global(.fc .fc-button:focus),
+.calendarFrame :global(.fc .fc-button:focus-visible) {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ifm-color-primary) 35%, transparent);
+  outline: none;
+}
+
+/* === List view: card-style rows ======================================== */
+
+.calendarFrame :global(.fc-list) {
+  border: none;
+  background: transparent;
+}
+
+.calendarFrame :global(.fc-list-day-cushion) {
+  background: var(--ifm-color-emphasis-100) !important;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-700);
+  padding: 0.6rem 0.85rem !important;
+  border-radius: 8px;
+}
+
+.calendarFrame :global(.fc-list-table) { border-collapse: separate; border-spacing: 0 0.4rem; }
+.calendarFrame :global(.fc-list-table td) {
+  border: none !important;
+}
+
+.calendarFrame :global(.fc-list-event) {
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 140ms ease, transform 140ms ease,
+    box-shadow 140ms ease;
+}
+.calendarFrame :global(.fc-list-event:hover td) {
+  background: transparent !important;
+}
+.calendarFrame :global(.fc-list-event:hover) {
+  border-color: var(--ifm-color-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px -6px rgba(0, 0, 0, 0.18);
+}
+
+.calendarFrame :global(.fc-list-event-time) {
+  width: 110px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-900);
+  padding: 0.85rem 1rem !important;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.calendarFrame :global(.fc-list-event-graphic) { display: none; }
+
+.calendarFrame :global(.fc-list-event-title) {
+  padding: 0.6rem 1rem !important;
+  vertical-align: middle;
+}
+
+/* === Custom event content (eventContent renderer) ====================== */
+
+.eventCard {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.kindDot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.kindIcon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.sourceChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.55rem;
+  background: var(--ifm-color-emphasis-100);
+  color: var(--ifm-color-emphasis-900);
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.eventTitle {
+  flex: 1 1 200px;
+  min-width: 0;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--ifm-color-emphasis-900);
+  line-height: 1.3;
+}
+
+.approxBadge {
+  display: inline-block;
+  margin-left: 0.35rem;
+  padding: 0 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--ifm-color-warning-darker, #b45309);
+  background: color-mix(in srgb, var(--ifm-color-warning, #f59e0b) 18%, transparent);
+  border-radius: 4px;
+  vertical-align: middle;
+}
+
+.ayBadge {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-700);
+  background: var(--ifm-color-emphasis-200);
+  border-radius: 4px;
+  vertical-align: middle;
+}
+
+.gcalChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.6rem;
+  background: rgba(26, 115, 232, 0.1);
+  color: #1a73e8 !important;
+  border: 1px solid rgba(26, 115, 232, 0.25);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 140ms ease, border-color 140ms ease;
+  flex-shrink: 0;
+}
+.gcalChip:hover {
+  background: rgba(26, 115, 232, 0.18);
+  border-color: rgba(26, 115, 232, 0.5);
+  text-decoration: none;
+}
+
+[data-theme='dark'] .gcalChip {
+  background: rgba(138, 180, 248, 0.16);
+  color: #8ab4f8 !important;
+  border-color: rgba(138, 180, 248, 0.35);
+}
+[data-theme='dark'] .gcalChip:hover {
+  background: rgba(138, 180, 248, 0.26);
+  border-color: rgba(138, 180, 248, 0.6);
+}
+
+/* === Month view: compact event chip ==================================== */
+
+.gridEvent {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 1px 2px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gridEventTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* === Mobile tightening ================================================= */
+
+@media (max-width: 600px) {
+  .toolbar { flex-direction: column; align-items: stretch; }
+  .gcalSubscribe, .icsDownload { justify-content: center; }
+
+  .calendarFrame :global(.fc .fc-toolbar.fc-header-toolbar) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .calendarFrame :global(.fc .fc-toolbar-chunk) {
+    display: flex;
+    justify-content: center;
+  }
+
+  .calendarFrame :global(.fc-list-event-time) {
+    width: auto;
+    padding: 0.6rem 0.8rem 0.1rem !important;
+  }
+  .calendarFrame :global(.fc-list-event-title) {
+    padding: 0.1rem 0.8rem 0.6rem !important;
+  }
+  .eventCard { gap: 0.45rem; }
+  .gcalChip { padding: 0.2rem 0.5rem; font-size: 0.72rem; }
+}
+
+/* === Dark mode tweaks ================================================== */
+
+[data-theme='dark'] .calendarFrame {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 8px 24px -12px rgba(0, 0, 0, 0.65);
+}
+
+[data-theme='dark'] .calendarFrame :global(.fc-list-event:hover) {
+  box-shadow: 0 4px 12px -6px rgba(0, 0, 0, 0.6);
+}

@@ -8,6 +8,7 @@ import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import UniversityQuickList from '@site/src/components/UniversityQuickList';
+import DeadlinesCalendar from '@site/src/components/DeadlinesCalendar';
 
 import styles from './index.module.css';
 
@@ -99,7 +100,7 @@ function HomepageStats() {
           </div>
         </div>
         <div className={styles.stat}>
-          <div className={styles.statValue}>8</div>
+          <div className={styles.statValue}>9</div>
           <div className={styles.statLabel}>
             <Translate id="homepage.stats.scholarships">Scholarships</Translate>
           </div>
@@ -125,6 +126,7 @@ export default function Home(): ReactNode {
       <main>
         <HomepageStats />
         <HomepageFeatures />
+        <DeadlinesCalendar />
         <UniversityQuickList />
       </main>
     </Layout>

@@ -1,7 +1,7 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
-// @ts-expect-error — local ESM plugin without types
+// @ts-ignore — local ESM plugin without types
 import rehypeTableDataLabels from './src/remark/rehypeTableDataLabels.mjs';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
