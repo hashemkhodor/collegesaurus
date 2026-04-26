@@ -64,7 +64,7 @@ Examples: `feature/add-university-ndu`, `feature/update-scholarship-fulbright`
 
 Universities go in `universities/` and scholarships go in `scholarships/`. Each is a single `.mdx` file.
 
-**University template** (5 sections + `<MajorsTable>` for programs):
+**University template** (6 sections + `<MajorsTable>` for programs):
 
 ```mdx
 ---
@@ -94,8 +94,10 @@ apply_url: [direct link to the university's online application portal]
 ### Application Windows  [table of term -> deadline -> reference]
 ### Application Price    [table of fee -> amount -> reference]
 
+## Tuition (AY 2025-26)
+[per-credit / per-year rate table with references; mandatory annual fees]
+
 ## Scholarships
-### Tuition (AY 2025-26)  [per-credit / per-year rate table with references]
 ### University-offered scholarships  [name -> coverage -> eligibility -> reference]
 
 ## Requirements
