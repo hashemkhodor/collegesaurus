@@ -14,6 +14,20 @@ jobs:
         with:
           node-version: 20
           cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Sync content from Drive
+        # Mirrors the deploy workflow — PRs preview the *current* Drive
+        # content, not the committed legacy MDX. If GDRIVE_* secrets aren't
+        # set on a fork PR this step will fail; that's intentional for now
+        # since this is a single-author repo.
+        run: PYTHONPATH=scripts python -m drive_sync
+        env:
+          GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
+          GDRIVE_CONTENT_ROOT_ID: ${{ secrets.GDRIVE_CONTENT_ROOT_ID }}
       - run: npm ci
       - run: npm run build
 
