@@ -145,3 +145,14 @@ vite.config.ts.timestamp-*
 # Claude Code
 .claude/
 CLAUDE.md
+spec/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.drive-cache/
+
+# drive_sync runtime artifacts
+parse-report.json

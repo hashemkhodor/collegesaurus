@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "drive_sync"
+version = "0.1.0"
+description = "Build-time pipeline that pulls .docx/.xlsx from Google Drive and emits MDX for the Collegesaurus Docusaurus site."
+requires-python = ">=3.11"
+readme = "README.md"
+dependencies = [
+    "google-api-python-client>=2.150.0",
+    "google-auth>=2.35.0",
+    "python-docx>=1.1.2",
+    "openpyxl>=3.1.5",
+    "pydantic>=2.9.0",
+    "loguru>=0.7.2",
+    "markdown-it-py>=3.0.0",
+    "mdit-py-plugins>=0.4.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3.0"]
+
+[tool.setuptools.packages.find]
+where = ["scripts"]
+include = ["drive_sync*"]
+
+[tool.pytest.ini_options]
+testpaths = ["scripts/drive_sync/tests"]
+pythonpath = ["scripts"]

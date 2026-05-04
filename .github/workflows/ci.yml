@@ -16,3 +16,19 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+
+  python-tests:
+    # Pytest gate for the drive-sync pipeline (parser/emitter against
+    # committed fixtures). Runs in parallel with the docusaurus build job so
+    # PR authors see a single CI status. No Drive credentials needed —
+    # everything runs against scripts/drive_sync/tests/fixtures/.
+    name: Python tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: pytest
