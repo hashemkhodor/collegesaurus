@@ -4,6 +4,12 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    # Nightly resync from Drive — picks up edits made by admissions/volunteer
+    # editors without anyone needing to push or click "Run workflow". GitHub
+    # cron is UTC; 04:00 UTC ≈ 07:00 Beirut (EEST) / 06:00 (EET), pre-business
+    # hours so the latest content is live by the time anyone visits the site.
+    - cron: '0 4 * * *'
 
 permissions:
   contents: read
