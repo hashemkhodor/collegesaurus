@@ -267,18 +267,89 @@ def validate_metadata(
 # ---------------------------------------------------------------------------
 
 
+# OOXML "transparent wrapper" elements that semantically contribute no block
+# of their own — their <w:p>/<w:tbl> children should bubble up as if they were
+# direct body children. Without descent we silently drop content:
+#   * <w:sdt>/<w:sdtContent>: structured document tag (Google Docs export
+#     wraps tables in these for some content controls)
+#   * <w:ins>, <w:moveTo>: tracked-change *additions* / move destinations —
+#     "accept changes" semantics: keep the new content
+#   * <mc:AlternateContent>/<mc:Choice>: Office compatibility wrapper — modern
+#     branch
+# And containers we skip entirely (their content is conceptually deleted):
+#   * <w:del>, <w:moveFrom>: tracked-change *deletions* / move origins
+#   * <mc:Fallback>: legacy fallback branch (only used if the Choice branch
+#     is unrenderable, which never applies for our reader)
+
+_MC_NS = "http://schemas.openxmlformats.org/markup-compatibility/2006"
+_BLOCK_DESCEND = frozenset(
+    [
+        qn("w:sdt"),
+        qn("w:sdtContent"),
+        qn("w:ins"),
+        qn("w:moveTo"),
+        f"{{{_MC_NS}}}AlternateContent",
+        f"{{{_MC_NS}}}Choice",
+    ]
+)
+_BLOCK_SKIP = frozenset(
+    [
+        qn("w:del"),
+        qn("w:moveFrom"),
+        f"{{{_MC_NS}}}Fallback",
+    ]
+)
+# Inline equivalents (for descent inside <w:p>, alongside <w:r>/<w:hyperlink>).
+_INLINE_DESCEND = frozenset(
+    [
+        qn("w:sdt"),
+        qn("w:sdtContent"),
+        qn("w:ins"),
+        qn("w:moveTo"),
+        qn("w:smartTag"),
+        qn("w:customXml"),
+        qn("w:fldSimple"),
+        f"{{{_MC_NS}}}AlternateContent",
+        f"{{{_MC_NS}}}Choice",
+    ]
+)
+_INLINE_SKIP = frozenset(
+    [
+        qn("w:del"),
+        qn("w:moveFrom"),
+        f"{{{_MC_NS}}}Fallback",
+    ]
+)
+
+
 def _iter_block_items(doc: Document) -> Iterator[DocxParagraph | DocxTable]:
     """Yield paragraphs and tables in document order.
 
     python-docx exposes `doc.paragraphs` and `doc.tables` as flat lists each,
-    losing the interleaving. We walk the body XML directly.
+    losing the interleaving. We walk the body XML directly and descend through
+    OOXML transparent wrappers (SDTs, tracked-change inserts, MC compat) so
+    their inner <w:p>/<w:tbl> children surface to the caller.
     """
-    body = doc.element.body
-    for child in body.iterchildren():
-        if child.tag == qn("w:p"):
+    yield from _iter_blocks(doc.element.body, doc)
+
+
+def _iter_blocks(parent, doc: Document) -> Iterator[DocxParagraph | DocxTable]:
+    """Recursive worker for `_iter_block_items`.
+
+    Yields the leaf <w:p>/<w:tbl> blocks; descends into transparent wrappers;
+    skips tracked-deletion wrappers (whose content is conceptually removed)
+    and MC fallback branches.
+    """
+    for child in parent.iterchildren():
+        tag = child.tag
+        if tag == qn("w:p"):
             yield DocxParagraph(child, doc)
-        elif child.tag == qn("w:tbl"):
+        elif tag == qn("w:tbl"):
             yield DocxTable(child, doc)
+        elif tag in _BLOCK_DESCEND:
+            yield from _iter_blocks(child, doc)
+        # Anything else (sectPr, bookmarkStart/End, proofErr, _BLOCK_SKIP, …)
+        # is correctly silent: it carries no publishable block content.
 
 
 def _heading_depth(p: DocxParagraph) -> int:
@@ -301,46 +372,58 @@ def _paragraph_text(p: DocxParagraph) -> str:
 def _paragraph_runs(p: DocxParagraph) -> list[Run]:
     """Convert a paragraph's runs and hyperlinks to model Run objects, in order.
 
-    Strategy: walk the `<w:p>` element's children in order. `<w:r>` is a plain
-    run; `<w:hyperlink>` wraps runs that form a clickable link.
+    Walks the `<w:p>` element's children in order, descending through inline
+    transparent wrappers (SDT, ins, smartTag, customXml, fldSimple, MC compat)
+    so runs/hyperlinks nested inside them surface as if they were direct
+    children. `<w:del>` and `<w:moveFrom>` subtrees are skipped (deleted
+    content).
     """
-    out: list[Run] = []
     rels = p.part.rels  # WordRelationships dict for resolving hyperlink targets
-    for child in p._p.iterchildren():
+    out = list(_iter_inline_runs(p._p, rels))
+    return _coalesce_runs(out)
+
+
+def _iter_inline_runs(elem, rels) -> Iterator[Run]:
+    """Yield Run objects from a paragraph (or transparent inline wrapper)."""
+    for child in elem.iterchildren():
         tag = child.tag
         if tag == qn("w:r"):
             text = _run_text(child)
             if not text:
                 continue
             bold, italic = _run_styles(child)
-            out.append(TextRun(text=text, bold=bold, italic=italic))
+            yield TextRun(text=text, bold=bold, italic=italic)
         elif tag == qn("w:hyperlink"):
             url = _hyperlink_url(child, rels)
-            text = "".join(_run_text(r) for r in child.iterchildren() if r.tag == qn("w:r"))
+            # Hyperlinks may contain transparent wrappers too — iter() reaches
+            # all <w:r> descendants regardless of wrapping.
+            text = "".join(_run_text(r) for r in child.iter(qn("w:r")))
             if not text:
                 continue
-            # Inherit bold/italic from the first run inside the hyperlink, if any.
             bold = italic = False
-            first_r = next(
-                (r for r in child.iterchildren() if r.tag == qn("w:r")),
-                None,
-            )
+            first_r = next(child.iter(qn("w:r")), None)
             if first_r is not None:
                 bold, italic = _run_styles(first_r)
-            out.append(LinkRun(text=text, url=url, bold=bold, italic=italic))
-    return _coalesce_runs(out)
+            yield LinkRun(text=text, url=url, bold=bold, italic=italic)
+        elif tag in _INLINE_DESCEND:
+            yield from _iter_inline_runs(child, rels)
+        # _INLINE_SKIP and unrecognized inline siblings (bookmarkStart/End,
+        # proofErr, permStart/End, …) carry no run-level text.
 
 
 def _run_text(r) -> str:
     """Extract text from a `<w:r>` element (concatenating all `<w:t>` children)."""
     parts: list[str] = []
     for t in r.iterchildren():
-        if t.tag == qn("w:t"):
+        tag = t.tag
+        if tag == qn("w:t"):
             parts.append(t.text or "")
-        elif t.tag == qn("w:tab"):
+        elif tag == qn("w:tab"):
             parts.append("\t")
-        elif t.tag == qn("w:br"):
+        elif tag in (qn("w:br"), qn("w:cr")):
             parts.append("\n")
+        elif tag == qn("w:noBreakHyphen"):
+            parts.append("‑")  # U+2011, semantically a non-breaking hyphen
     return "".join(parts)
 
 
