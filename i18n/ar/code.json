@@ -417,5 +417,17 @@
   },
   "homepage.hero.searchPlaceholder": {
     "message": "ابحث في الجامعات والمنح والتخصصات…"
+  },
+  "homepage.deadlines.noEvents": {
+    "message": "لا مواعيد قادمة في هذه النافذة."
+  },
+  "homepage.deadlines.heading": {
+    "message": "مواعيد التقديم القادمة"
+  },
+  "homepage.deadlines.subheading": {
+    "message": "لجميع الجامعات والمنح على هذا الموقع. اضغط على أيّ بند للانتقال إلى صفحته."
+  },
+  "homepage.deadlines.loading": {
+    "message": "جارٍ تحميل التقويم…"
   }
 }
