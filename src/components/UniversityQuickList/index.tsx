@@ -2,27 +2,40 @@ import type {ReactNode} from 'react';
 import Link from '@docusaurus/Link';
 import Translate from '@docusaurus/Translate';
 import Heading from '@theme/Heading';
+import {useAllDocsData} from '@docusaurus/plugin-content-docs/client';
 import styles from './styles.module.css';
 
-// Ordered alphabetically by short name to match the sidebar (Docusaurus
-// renders sidebar_position 1..13, also alphabetical).
-const UNIVERSITIES: {slug: string; short: string}[] = [
-  {slug: 'aub',       short: 'AUB'},
-  {slug: 'aust',      short: 'AUST'},
-  {slug: 'bau',       short: 'BAU'},
-  {slug: 'haigazian', short: 'Haigazian'},
-  {slug: 'lau',       short: 'LAU'},
-  {slug: 'liu',       short: 'LIU'},
-  {slug: 'lu',        short: 'LU'},
-  {slug: 'ndu',       short: 'NDU'},
-  {slug: 'rhu',       short: 'RHU'},
-  {slug: 'antonine',  short: 'UA'},
-  {slug: 'uob',       short: 'UOB'},
-  {slug: 'usek',      short: 'USEK'},
-  {slug: 'usj',       short: 'USJ'},
-];
+// Display name overrides for slugs whose chip label isn't just the
+// uppercased slug (e.g. "antonine" → "UA"). Slugs not listed here fall back
+// to slug.toUpperCase() so adding a new university auto-shows in the grid
+// even before a nicer label is chosen.
+const SHORT_LABELS: Record<string, string> = {
+  aub: 'AUB',
+  aust: 'AUST',
+  bau: 'BAU',
+  haigazian: 'Haigazian',
+  lau: 'LAU',
+  liu: 'LIU',
+  lu: 'LU',
+  ndu: 'NDU',
+  rhu: 'RHU',
+  antonine: 'UA',
+  uob: 'UOB',
+  usek: 'USEK',
+  usj: 'USJ',
+  elte: 'ELTE',
+};
+
+function shortFor(slug: string): string {
+  return SHORT_LABELS[slug] ?? slug.toUpperCase();
+}
 
 export default function UniversityQuickList(): ReactNode {
+  const docs = useAllDocsData().universities?.versions[0]?.docs ?? [];
+  const chips = docs
+    .map((d) => ({slug: d.id, short: shortFor(d.id), path: d.path}))
+    .sort((a, b) => a.short.localeCompare(b.short, undefined, {sensitivity: 'base'}));
+
   return (
     <section className={styles.section}>
       <div className={styles.inner}>
@@ -37,10 +50,10 @@ export default function UniversityQuickList(): ReactNode {
           </Translate>
         </p>
         <div className={styles.grid}>
-          {UNIVERSITIES.map(({slug, short}) => (
+          {chips.map(({slug, short, path}) => (
             <Link
               key={slug}
-              to={`/universities/${slug}`}
+              to={path}
               className={styles.chip}>
               {short}
             </Link>

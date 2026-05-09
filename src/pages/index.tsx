@@ -4,12 +4,25 @@ import Link from '@docusaurus/Link';
 import Translate, {translate} from '@docusaurus/Translate';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import {useAllDocsData} from '@docusaurus/plugin-content-docs/client';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import UniversityQuickList from '@site/src/components/UniversityQuickList';
 
 import styles from './index.module.css';
+
+function useDocsPluginEntry(pluginId: string, fallbackPath: string): string {
+  const plugin = useAllDocsData()[pluginId];
+  const version = plugin?.versions[0];
+  const main = version?.docs.find((d) => d.id === version.mainDocId);
+  return main?.path ?? version?.path ?? fallbackPath;
+}
+
+function useDocsPluginCount(pluginId: string): number {
+  const plugin = useAllDocsData()[pluginId];
+  return plugin?.versions[0]?.docs.length ?? 0;
+}
 
 function HeroSearchForm() {
   const searchAction = useBaseUrl('/search');
@@ -48,6 +61,8 @@ function HeroSearchForm() {
 }
 
 function HomepageHero() {
+  const universitiesEntry = useDocsPluginEntry('universities', '/universities');
+  const scholarshipsEntry = useDocsPluginEntry('scholarships', '/scholarships');
   return (
     <header className={styles.heroBanner}>
       <div className={styles.heroInner}>
@@ -66,14 +81,14 @@ function HomepageHero() {
         <div className={styles.heroButtons}>
           <Link
             className={clsx('button button--lg', styles.heroPrimaryButton)}
-            to="/universities/aub">
+            to={universitiesEntry}>
             <Translate id="homepage.hero.ctaUniversities">
               Explore universities
             </Translate>
           </Link>
           <Link
             className={clsx('button button--lg', styles.heroSecondaryButton)}
-            to="/scholarships/life">
+            to={scholarshipsEntry}>
             <Translate id="homepage.hero.ctaScholarships">
               Find scholarships
             </Translate>
@@ -86,6 +101,10 @@ function HomepageHero() {
 }
 
 function HomepageStats() {
+  const {siteConfig} = useDocusaurusContext();
+  const universitiesCount = useDocsPluginCount('universities');
+  const scholarshipsCount = useDocsPluginCount('scholarships');
+  const languagesCount = siteConfig.i18n?.locales?.length ?? 1;
   return (
     <section className={styles.stats} aria-label={translate({
       id: 'homepage.stats.ariaLabel',
@@ -93,19 +112,19 @@ function HomepageStats() {
     })}>
       <div className={styles.statsInner}>
         <div className={styles.stat}>
-          <div className={styles.statValue}>13</div>
+          <div className={styles.statValue}>{universitiesCount}</div>
           <div className={styles.statLabel}>
             <Translate id="homepage.stats.universities">Universities</Translate>
           </div>
         </div>
         <div className={styles.stat}>
-          <div className={styles.statValue}>8</div>
+          <div className={styles.statValue}>{scholarshipsCount}</div>
           <div className={styles.statLabel}>
             <Translate id="homepage.stats.scholarships">Scholarships</Translate>
           </div>
         </div>
         <div className={styles.stat}>
-          <div className={styles.statValue}>2</div>
+          <div className={styles.statValue}>{languagesCount}</div>
           <div className={styles.statLabel}>
             <Translate id="homepage.stats.languages">Languages</Translate>
           </div>
