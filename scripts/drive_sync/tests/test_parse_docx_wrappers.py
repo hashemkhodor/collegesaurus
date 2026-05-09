@@ -121,6 +121,79 @@ def test_sdt_wrapped_table_is_visible(tmp_path: Path) -> None:
     assert header == ["SDT-A", "SDT-B"]
 
 
+def test_sdt_wrapped_rows_and_cells_surface(tmp_path: Path) -> None:
+    """`<w:sdt>` wrapping each `<w:tr>` AND each `<w:tc>` (Google Docs
+    structured-document export pattern). python-docx's `t.rows`/`row.cells`
+    only walk direct children, so without descent the table comes back as
+    0 rows × 0 cols. The parser must descend at row and cell level."""
+    _, path = _build_base_doc(tmp_path)
+    _inject_into_body(
+        path,
+        """
+        <w:tbl>
+          <w:tblPr/>
+          <w:tblGrid><w:gridCol/><w:gridCol/></w:tblGrid>
+          <w:sdt><w:sdtContent>
+            <w:tr>
+              <w:sdt><w:sdtContent>
+                <w:tc><w:p><w:r><w:t>H1</w:t></w:r></w:p></w:tc>
+              </w:sdtContent></w:sdt>
+              <w:sdt><w:sdtContent>
+                <w:tc><w:p><w:r><w:t>H2</w:t></w:r></w:p></w:tc>
+              </w:sdtContent></w:sdt>
+            </w:tr>
+          </w:sdtContent></w:sdt>
+          <w:sdt><w:sdtContent>
+            <w:tr>
+              <w:sdt><w:sdtContent>
+                <w:tc><w:p><w:r><w:t>r1c1</w:t></w:r></w:p></w:tc>
+              </w:sdtContent></w:sdt>
+              <w:sdt><w:sdtContent>
+                <w:tc><w:p><w:r><w:t>r1c2</w:t></w:r></w:p></w:tc>
+              </w:sdtContent></w:sdt>
+            </w:tr>
+          </w:sdtContent></w:sdt>
+        </w:tbl>
+        """,
+    )
+    parsed, _ = _parse(path)
+    tables = [b for b in parsed.sections["Introduction"] if isinstance(b, Table)]
+    assert len(tables) == 1
+    rows = tables[0].rows
+    assert len(rows) == 2
+    assert [c.runs[0].text for c in rows[0].cells] == ["H1", "H2"]
+    assert [c.runs[0].text for c in rows[1].cells] == ["r1c1", "r1c2"]
+
+
+def test_sdt_wrapped_paragraph_inside_cell_surfaces(tmp_path: Path) -> None:
+    """A `<w:p>` wrapped in a block-level `<w:sdt>` inside `<w:tc>`: cell
+    iteration must descend to find it (mirrors body-level descent)."""
+    _, path = _build_base_doc(tmp_path)
+    _inject_into_body(
+        path,
+        """
+        <w:tbl>
+          <w:tblPr/>
+          <w:tblGrid><w:gridCol/></w:tblGrid>
+          <w:tr>
+            <w:tc>
+              <w:sdt><w:sdtContent>
+                <w:p><w:r><w:t>wrapped-cell-content</w:t></w:r></w:p>
+              </w:sdtContent></w:sdt>
+            </w:tc>
+          </w:tr>
+        </w:tbl>
+        """,
+    )
+    parsed, _ = _parse(path)
+    tables = [b for b in parsed.sections["Introduction"] if isinstance(b, Table)]
+    assert len(tables) == 1
+    cells = tables[0].rows[0].cells
+    assert len(cells) == 1
+    flat = "".join(r.text for r in cells[0].runs if isinstance(r, TextRun))
+    assert flat == "wrapped-cell-content"
+
+
 def test_alternate_content_choice_branch_is_used(tmp_path: Path) -> None:
     """<mc:AlternateContent>: the modern <mc:Choice> branch surfaces; the
     legacy <mc:Fallback> branch is ignored."""
@@ -260,6 +333,51 @@ def test_inline_del_is_dropped(tmp_path: Path) -> None:
 # ---------------------------------------------------------------------------
 # Run-level additions
 # ---------------------------------------------------------------------------
+
+
+def test_explicit_off_b_and_i_are_not_bold_italic(tmp_path: Path) -> None:
+    """OOXML on/off: `<w:b w:val="0"/>` means bold OFF, not ON. Google Docs
+    export emits explicit negations on every run to cancel style-inherited
+    formatting; reading them as ON falsely emphasizes plain prose."""
+    _, path = _build_base_doc(tmp_path)
+    _inject_into_body(
+        path,
+        """
+        <w:p>
+          <w:r>
+            <w:rPr><w:b w:val="0"/><w:i w:val="0"/></w:rPr>
+            <w:t>plain1</w:t>
+          </w:r>
+          <w:r>
+            <w:rPr><w:b w:val="false"/><w:i w:val="off"/></w:rPr>
+            <w:t xml:space="preserve"> plain2</w:t>
+          </w:r>
+          <w:r>
+            <w:rPr><w:b/><w:i/></w:rPr>
+            <w:t xml:space="preserve"> bi1</w:t>
+          </w:r>
+          <w:r>
+            <w:rPr><w:b w:val="1"/><w:i w:val="true"/></w:rPr>
+            <w:t xml:space="preserve"> bi2</w:t>
+          </w:r>
+        </w:p>
+        """,
+    )
+    parsed, _ = _parse(path)
+    runs = [
+        r
+        for b in parsed.sections["Introduction"]
+        if isinstance(b, Paragraph)
+        for r in b.runs
+        if isinstance(r, TextRun) and ("plain" in r.text or "bi" in r.text)
+    ]
+    # _coalesce_runs merges adjacent runs sharing flags: 2 groups expected.
+    assert len(runs) == 2, [(r.text, r.bold, r.italic) for r in runs]
+    plain, bi = runs
+    assert (plain.bold, plain.italic) == (False, False), plain
+    assert (bi.bold, bi.italic) == (True, True), bi
+    assert plain.text == "plain1 plain2"
+    assert bi.text == " bi1 bi2"
 
 
 def test_run_text_recognizes_cr_and_nbhyphen(tmp_path: Path) -> None:

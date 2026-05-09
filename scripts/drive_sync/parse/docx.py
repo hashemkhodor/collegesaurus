@@ -428,13 +428,30 @@ def _run_text(r) -> str:
 
 
 def _run_styles(r) -> tuple[bool, bool]:
-    """Return (bold, italic) flags from a `<w:r>` element's `<w:rPr>`."""
+    """Return (bold, italic) flags from a `<w:r>` element's `<w:rPr>`.
+
+    OOXML on/off semantics (ECMA-376 §17.17.4): element absent → False;
+    element present without `w:val` → True; `w:val` in {0, false, off} →
+    False; otherwise True. Google Docs export emits explicit
+    `<w:b w:val="0"/>` / `<w:i w:val="0"/>` to *cancel* style-inherited
+    formatting; without honoring the val we spuriously emphasize plain prose
+    (currently 42 runs across AUB's info.docx).
+    """
     rpr = r.find(qn("w:rPr"))
     if rpr is None:
         return False, False
-    bold = rpr.find(qn("w:b")) is not None
-    italic = rpr.find(qn("w:i")) is not None
-    return bold, italic
+    return _on_off(rpr.find(qn("w:b"))), _on_off(rpr.find(qn("w:i")))
+
+
+def _on_off(el) -> bool:
+    """Resolve an OOXML on/off element. Absent → False; present w/o val →
+    True; val in {0, false, off} → False; otherwise True."""
+    if el is None:
+        return False
+    val = el.get(qn("w:val"))
+    if val is None:
+        return True
+    return val.lower() not in ("0", "false", "off")
 
 
 def _hyperlink_url(hyperlink, rels) -> str:
@@ -567,19 +584,63 @@ def _is_ordered_list(p: DocxParagraph) -> bool:
 
 
 def _docx_table_to_block(t: DocxTable) -> Table:
+    """Convert `<w:tbl>` → Table, descending transparent OOXML wrappers at the
+    row, cell, and cell-paragraph levels.
+
+    python-docx's `t.rows` / `row.cells` only return direct `<w:tr>`/`<w:tc>`
+    children. Google Docs exports sometimes wrap each row and each cell in
+    `<w:sdt>` (structured document tag) — `t.rows` then yields zero rows and
+    the table parses as empty. We mirror the body-level descent done in
+    `_iter_blocks` so wrapped rows/cells surface. `_BLOCK_SKIP` wrappers
+    (tracked-deletion etc.) are honored transitively by not descending.
+    """
     rows: list[TableRow] = []
-    for row in t.rows:
+    for tr_elem in _iter_table_rows(t._tbl):
         cells: list[TableCell] = []
-        for cell in row.cells:
-            # A docx table cell can contain multiple paragraphs; we flatten them.
+        for tc_elem in _iter_row_cells(tr_elem):
             runs: list[Run] = []
-            for para in cell.paragraphs:
-                if runs:
+            first = True
+            for p_elem in _iter_cell_paragraphs(tc_elem):
+                para = DocxParagraph(p_elem, t)
+                if not first:
                     runs.append(TextRun(text=" "))  # space-separate paragraphs in a cell
                 runs.extend(_paragraph_runs(para))
+                first = False
             cells.append(TableCell(runs=runs))
         rows.append(TableRow(cells=cells))
     return Table(rows=rows)
+
+
+def _iter_table_rows(tbl) -> Iterator:
+    """Yield `<w:tr>` descendants of `<w:tbl>`, descending through transparent
+    wrappers (`_BLOCK_DESCEND`). `<w:tblPr>`/`<w:tblGrid>` and skip-wrappers
+    are silently ignored."""
+    for child in tbl.iterchildren():
+        if child.tag == qn("w:tr"):
+            yield child
+        elif child.tag in _BLOCK_DESCEND:
+            yield from _iter_table_rows(child)
+
+
+def _iter_row_cells(tr) -> Iterator:
+    """Yield `<w:tc>` descendants of `<w:tr>`, descending through transparent
+    wrappers. `<w:trPr>` and skip-wrappers are silently ignored."""
+    for child in tr.iterchildren():
+        if child.tag == qn("w:tc"):
+            yield child
+        elif child.tag in _BLOCK_DESCEND:
+            yield from _iter_row_cells(child)
+
+
+def _iter_cell_paragraphs(tc) -> Iterator:
+    """Yield `<w:p>` descendants of `<w:tc>`, descending through transparent
+    wrappers. `<w:tcPr>` and skip-wrappers are silently ignored. Nested
+    `<w:tbl>` inside a cell is not represented (TableCell.runs is flat)."""
+    for child in tc.iterchildren():
+        if child.tag == qn("w:p"):
+            yield child
+        elif child.tag in _BLOCK_DESCEND:
+            yield from _iter_cell_paragraphs(child)
 
 
 def _extract_metadata_table(blocks: list[Block]) -> dict[str, str]:
