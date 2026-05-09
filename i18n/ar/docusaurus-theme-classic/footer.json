@@ -25,15 +25,15 @@
   },
   "link.item.label.Suggest a correction": {
     "message": "اقترح تصحيحًا",
-    "description": "The label of footer link with label=Suggest a correction linking to https://github.com/hashemkhodor/collegesaurus/issues/new?template=inaccurate-info.yml"
+    "description": "The label of footer link with label=Suggest a correction linking to https://docs.google.com/forms/d/e/1FAIpQLScUnf_qsTZXRX5CKP1KkK_Yy5VuhkUBjo988FNbqSzzYz301w/viewform?usp=dialog"
   },
   "link.item.label.Suggest a scholarship": {
     "message": "اقترح منحة",
-    "description": "The label of footer link with label=Suggest a scholarship linking to https://github.com/hashemkhodor/collegesaurus/issues/new?template=new-scholarship.yml"
+    "description": "The label of footer link with label=Suggest a scholarship linking to https://docs.google.com/forms/d/e/1FAIpQLScUnf_qsTZXRX5CKP1KkK_Yy5VuhkUBjo988FNbqSzzYz301w/viewform?usp=dialog"
   },
   "link.item.label.Share your experience": {
     "message": "شارك تجربتك",
-    "description": "The label of footer link with label=Share your experience linking to https://github.com/hashemkhodor/collegesaurus/issues/new?template=share-experience.yml"
+    "description": "The label of footer link with label=Share your experience linking to https://docs.google.com/forms/d/e/1FAIpQLScUnf_qsTZXRX5CKP1KkK_Yy5VuhkUBjo988FNbqSzzYz301w/viewform?usp=dialog"
   },
   "link.item.label.How to contribute": {
     "message": "كيف تساهم",

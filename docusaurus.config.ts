@@ -175,15 +175,15 @@ const config: Config = {
           items: [
             {
               label: 'Suggest a correction',
-              href: 'https://github.com/hashemkhodor/collegesaurus/issues/new?template=inaccurate-info.yml',
+              href: 'https://docs.google.com/forms/d/e/1FAIpQLScUnf_qsTZXRX5CKP1KkK_Yy5VuhkUBjo988FNbqSzzYz301w/viewform?usp=dialog',
             },
             {
               label: 'Suggest a scholarship',
-              href: 'https://github.com/hashemkhodor/collegesaurus/issues/new?template=new-scholarship.yml',
+              href: 'https://docs.google.com/forms/d/e/1FAIpQLScUnf_qsTZXRX5CKP1KkK_Yy5VuhkUBjo988FNbqSzzYz301w/viewform?usp=dialog',
             },
             {
               label: 'Share your experience',
-              href: 'https://github.com/hashemkhodor/collegesaurus/issues/new?template=share-experience.yml',
+              href: 'https://docs.google.com/forms/d/e/1FAIpQLScUnf_qsTZXRX5CKP1KkK_Yy5VuhkUBjo988FNbqSzzYz301w/viewform?usp=dialog',
             },
             {
               label: 'How to contribute',
