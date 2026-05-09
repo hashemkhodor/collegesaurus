@@ -1,72 +1,74 @@
 ---
 title: Contribute
-description: How to help keep Collegesaurus accurate and useful without needing to code.
+description: How to help keep Collegesaurus accurate — browse the data, flag something wrong, or join as an editor.
 ---
 
 # Contribute
 
-Collegesaurus is maintained by volunteers. Anyone can help keep it
-accurate. You don't need to know how to code, and most paths take less
-than five minutes.
+Collegesaurus is run by volunteers, and anyone can help keep it
+accurate. You don't need to know how to code, and most of the
+options below take less than five minutes.
 
-Pick whichever matches what you want to share:
+## Read the source
 
-## Something on a page is wrong
+Every page on this site is generated from a folder on Google Drive,
+and we rebuild the site from it every night around 7 AM Beirut time.
+You can browse that folder yourself — every university and
+scholarship lives there as a plain `.docx` or `.xlsx` file.
 
-Numbers go out of date, deadlines shift, contacts move. You don't have to
-fix it yourself. Just tell us what's wrong and where you saw the correct
-info.
+[**Open the Drive folder →**](https://drive.google.com/drive/folders/1ZMZAqv4R2OzMk2MaxuB7cMjejBzwcla4)
 
-[**Suggest a correction →**](https://github.com/hashemkhodor/collegesaurus/issues/new?template=inaccurate-info.yml)
+It's open for reading without signing in. To make changes, see
+*Become a regular contributor* below.
 
-## A scholarship or university we're missing
+## Spotted something wrong?
 
-If you know of a scholarship available to Lebanese students, or a
-university that should be on the site:
+If a tuition figure looks off, a deadline has shifted, a contact has
+moved, or anything else doesn't add up — tell us. You don't have to
+fix it yourself; just point at what's wrong and where you saw better
+information.
 
-- [**Suggest a new scholarship →**](https://github.com/hashemkhodor/collegesaurus/issues/new?template=new-scholarship.yml)
-- [**Suggest a new university →**](https://github.com/hashemkhodor/collegesaurus/issues/new?template=new-university.yml)
+[**Flag a correction →**](https://docs.google.com/forms/d/e/1FAIpQLScUnf_qsTZXRX5CKP1KkK_Yy5VuhkUBjo988FNbqSzzYz301w/viewform?usp=dialog)
 
-The more links to official pages you can include (tuition rates,
-application form, FAQ), the faster we can publish it.
+## Missing a scholarship or university?
 
-## Write a story
+If you know of a scholarship Lebanese students can apply to, or a
+school that should be on the site, you can add it directly. You'll
+download a small template, fill it in, and upload it through the
+form.
 
-The [Stories section](/stories) is where students publish their own
-first-hand experiences as full posts: how the application really went,
-what they paid, what the interview asked, what they wish they'd known.
+- A new **scholarship** needs two files — `info.docx` (English) and
+  `info.ar.docx` (Arabic).
+  Templates: [scholarship templates folder](https://drive.google.com/drive/folders/1hGsGdrWj-LZht2INGb-77JBWE3bHap1b).
+- A new **university** needs four files — `info.docx`,
+  `info.ar.docx`, `majors.xlsx`, and `majors.ar.xlsx`.
+  Templates: [university templates folder](https://drive.google.com/drive/folders/16z_utAOa9MFFfdaeX_eaivw8Ga6OryK0).
 
-There are two ways to get yours up there:
+> Uploading files requires you to sign in with Google.
 
-1. **Fill in [Share your experience](https://github.com/hashemkhodor/collegesaurus/issues/new?template=share-experience.yml)**
-   and we'll turn your answers into a proper story with your name (or
-   anonymous, your call).
-2. **Write it yourself**: copy
-   [`stories/_template.md`](https://github.com/hashemkhodor/collegesaurus/blob/main/stories/_template.md),
-   rename it to `YYYY-MM-DD-your-slug.md`, add yourself to
-   [`stories/authors.yml`](https://github.com/hashemkhodor/collegesaurus/blob/main/stories/authors.yml),
-   and open a PR. Every existing story uses the same shape so you can
-   crib from any of them.
+[**Submit a new scholarship or university →**](https://docs.google.com/forms/d/e/1FAIpQLScUnf_qsTZXRX5CKP1KkK_Yy5VuhkUBjo988FNbqSzzYz301w/viewform?usp=dialog)
 
-## You can write the fix yourself
+## Become a regular contributor
 
-Every university and scholarship page has an **"Edit this page"** link at
-the very bottom. Clicking it opens GitHub's in-browser editor for the
-exact source file. GitHub handles the fork and pull request for you. No
-local setup, no command line.
+If you'd like ongoing edit access — for example, you're an
+admissions officer or a volunteer who wants to keep a specific page
+current — email
+**[hashemkhoder1@gmail.com](mailto:hashemkhoder1@gmail.com?subject=Collegesaurus%20contribution)**
+with subject `Collegesaurus contribution`. Tell us:
 
-## No GitHub account?
+- Who you are and what organisation (if any) you represent.
+- Which page or folder you'd like to edit.
+- A line on why.
 
-Email **hashemkhoder1@gmail.com** with the subject line
-`Collegesaurus contribution` and the same info you'd have filled into the
-form. We'll file the issue for you.
+We'll add you as an Editor on the right Drive folder, and your edits
+will flow into the live site at the next nightly resync.
 
 ## What happens next
 
-- The maintainer reviews the issue within a few days.
-- If the info is verifiable, the page gets updated and the site
-  redeploys within about an hour of the merge.
-- You're credited in the commit message unless you ask otherwise.
+- The maintainer reviews submissions every few days.
+- Verifiable updates go live within an hour or two of approval.
+- You're credited the way you picked in the form — by name,
+  anonymously, or not at all.
 
-Thank you. Every correction, however small, helps a student make a
+Thank you. Every fix, however small, helps a student make a
 better-informed decision.
