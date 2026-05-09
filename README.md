@@ -2,7 +2,7 @@
 
 **Your guide to universities and scholarships in Lebanon.**
 
-[Live Site](https://hashemkhodor.github.io/collegesaurus/)
+[Live Site](https://hashemkhodor.github.io/collegesaurus/) · [Browse the source on Drive](https://drive.google.com/drive/folders/1ZMZAqv4R2OzMk2MaxuB7cMjejBzwcla4) · [Submit a correction or new entry](https://docs.google.com/forms/d/e/1FAIpQLScUnf_qsTZXRX5CKP1KkK_Yy5VuhkUBjo988FNbqSzzYz301w/viewform?usp=dialog)
 
 Spot something wrong? [Report it](https://github.com/hashemkhodor/collegesaurus/issues/new?template=inaccurate-info.yml) | Know a university or scholarship we're missing? [Tell us](https://github.com/hashemkhodor/collegesaurus/issues/new?template=new-university.yml) | [General feedback](https://github.com/hashemkhodor/collegesaurus/issues/new?template=general-feedback.yml)
 
@@ -25,7 +25,15 @@ All the Lebanese university and scholarship info you'd normally have to dig thro
 
 ## Contributing
 
-There are two ways to contribute, depending on your comfort level with GitHub.
+There are a few ways to contribute, depending on your comfort level with GitHub.
+
+### Edit content via Google Drive + Form (no GitHub needed)
+
+Every page on the site is generated nightly from a folder on Google Drive. You can:
+
+- **Browse the source** — every university and scholarship is a `.docx` / `.xlsx` in [the Drive folder](https://drive.google.com/drive/folders/1ZMZAqv4R2OzMk2MaxuB7cMjejBzwcla4). Open for reading without signing in.
+- **Flag a correction or submit a new university / scholarship** through [the Google Form](https://docs.google.com/forms/d/e/1FAIpQLScUnf_qsTZXRX5CKP1KkK_Yy5VuhkUBjo988FNbqSzzYz301w/viewform?usp=dialog). New entries use a small `.docx`/`.xlsx` template — see the [Contribute page](https://hashemkhodor.github.io/collegesaurus/contribute) for details.
+- **Become a regular editor** — email [hashemkhoder1@gmail.com](mailto:hashemkhoder1@gmail.com?subject=Collegesaurus%20contribution) to get write access on a specific Drive folder. Edits flow into the live site at the next nightly resync.
 
 ### I just want to report something (no technical skills needed)
 
