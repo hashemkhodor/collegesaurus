@@ -86,9 +86,6 @@ const config: Config = {
         routeBasePath: 'universities',
         sidebarPath: './sidebars/universities.ts',
         admonitions: {},
-        editUrl:
-          'https://github.com/hashemkhodor/collegesaurus/edit/main/',
-        editLocalizedFiles: true,
         rehypePlugins: [rehypeTableDataLabels],
       },
     ],
@@ -100,9 +97,6 @@ const config: Config = {
         routeBasePath: 'scholarships',
         sidebarPath: './sidebars/scholarships.ts',
         admonitions: {},
-        editUrl:
-          'https://github.com/hashemkhodor/collegesaurus/edit/main/',
-        editLocalizedFiles: true,
         rehypePlugins: [rehypeTableDataLabels],
       },
     ],
