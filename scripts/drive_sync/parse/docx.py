@@ -404,7 +404,10 @@ def _iter_inline_runs(elem, rels) -> Iterator[Run]:
             first_r = next(child.iter(qn("w:r")), None)
             if first_r is not None:
                 bold, italic = _run_styles(first_r)
-            yield LinkRun(text=text, url=url, bold=bold, italic=italic)
+            if url:
+                yield LinkRun(text=text, url=url, bold=bold, italic=italic)
+            else:
+                yield TextRun(text=text, bold=bold, italic=italic)
         elif tag in _INLINE_DESCEND:
             yield from _iter_inline_runs(child, rels)
         # _INLINE_SKIP and unrecognized inline siblings (bookmarkStart/End,
@@ -455,13 +458,15 @@ def _on_off(el) -> bool:
 
 
 def _hyperlink_url(hyperlink, rels) -> str:
-    """Resolve a `<w:hyperlink>` element's target URL via the part's relationships."""
+    """Returns "" for dead targets. `bookmark=id.*` anchors are Google Docs
+    export leftovers — the matching `<w:bookmarkStart>` is stripped on export."""
     rid = hyperlink.get(qn("r:id"))
     if rid and rid in rels:
         return rels[rid].target_ref
-    # Fallback: anchor (in-document link)
     anchor = hyperlink.get(qn("w:anchor"))
-    return f"#{anchor}" if anchor else ""
+    if anchor and not anchor.startswith("bookmark=id."):
+        return f"#{anchor}"
+    return ""
 
 
 def _coalesce_runs(runs: list[Run]) -> list[Run]:

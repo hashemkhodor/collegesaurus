@@ -307,6 +307,31 @@ def test_hyperlink_inside_inline_ins_surfaces(tmp_path: Path) -> None:
     )
 
 
+def test_dead_google_bookmark_anchor_drops_link_wrapper(tmp_path: Path) -> None:
+    """`bookmark=id.*` anchors have no matching <w:bookmarkStart> after
+    Google Docs export — must unwrap to TextRun, not LinkRun."""
+    _, path = _build_base_doc(tmp_path)
+    _inject_into_body(
+        path,
+        """
+        <w:p>
+          <w:hyperlink w:anchor="bookmark=id.deadref">
+            <w:r><w:t>YES Program</w:t></w:r>
+          </w:hyperlink>
+        </w:p>
+        """,
+    )
+    parsed, _ = _parse(path)
+    paragraphs = [b for b in parsed.sections["Introduction"] if isinstance(b, Paragraph)]
+    runs = [r for p in paragraphs for r in p.runs]
+    assert not any(isinstance(r, LinkRun) for r in runs), (
+        f"dead bookmark anchor leaked as LinkRun: "
+        f"{[(type(r).__name__, getattr(r, 'url', None), r.text) for r in runs]}"
+    )
+    flat = "".join(r.text for r in runs if isinstance(r, TextRun))
+    assert "YES Program" in flat
+
+
 def test_inline_del_is_dropped(tmp_path: Path) -> None:
     """<w:del> inside a paragraph: its runs do NOT reach IR."""
     _, path = _build_base_doc(tmp_path)
