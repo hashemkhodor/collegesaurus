@@ -156,3 +156,13 @@ __pycache__/
 
 # drive_sync runtime artifacts
 parse-report.json
+
+# drive_sync emitted content (regenerated from .drive-cache/*/info.docx)
+universities/*.mdx
+!universities/intro.mdx
+!universities/_template.mdx
+scholarships/*.mdx
+!scholarships/intro.mdx
+!scholarships/_template.mdx
+i18n/ar/docusaurus-plugin-content-docs-universities/current/*.mdx
+i18n/ar/docusaurus-plugin-content-docs-scholarships/current/*.mdx
