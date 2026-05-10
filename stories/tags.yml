@@ -2,3 +2,60 @@ collegesaurus:
   label: Collegesaurus
   permalink: /collegesaurus
   description: Updates about the Collegesaurus project
+
+# Theme tags — what the post is about
+applications:
+  label: Applications
+  permalink: /applications
+  description: University and program application advice
+
+scholarships:
+  label: Scholarships
+  permalink: /scholarships
+  description: Scholarship stories, applications, and advice
+
+internships:
+  label: Internships
+  permalink: /internships
+  description: Internship experiences, search, and applications
+
+gradschool:
+  label: Grad school
+  permalink: /gradschool
+  description: Master's, PhD, and other graduate program journeys
+
+undergrad:
+  label: Undergrad
+  permalink: /undergrad
+  description: Undergraduate application stories and advice
+
+life-advice:
+  label: Life advice
+  permalink: /life-advice
+  description: General lessons, mindset, and "what I wish I knew"
+
+# University tags — add more as posts mention them
+aub:
+  label: AUB
+  permalink: /aub
+  description: Stories involving the American University of Beirut
+
+lau:
+  label: LAU
+  permalink: /lau
+  description: Stories involving the Lebanese American University
+
+lu:
+  label: LU
+  permalink: /lu
+  description: Stories involving the Lebanese University
+
+oxford:
+  label: Oxford
+  permalink: /oxford
+  description: Stories involving the University of Oxford
+
+epfl:
+  label: EPFL
+  permalink: /epfl
+  description: Stories involving EPFL

@@ -8,3 +8,14 @@ hashem:
     email: hashemkhoder1@gmail.com
     linkedin: hashem-khodor-1793a2221
     instagram: hashem_khoder
+
+dana:
+  name: Dana Kossaybati
+  title: Contributor, Collegesaurus
+  image_url: /img/dana.jpg
+  page: true
+  email: danakossaybati@gmail.com
+  socials:
+    email: danakossaybati@gmail.com
+    linkedin: dana-kossaybati-8b495523b
+    instagram: dana.kossaybati
