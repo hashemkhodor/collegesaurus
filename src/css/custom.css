@@ -125,3 +125,32 @@
     order: -1;
   }
 }
+
+/* Blog sidebar (Recent posts) and main /stories list: give the year header
+   a distinct look so groupings are visible. Docusaurus's default styles only
+   set margins on .yearGroupHeading, which makes it visually blend with the
+   item titles below it. Target via stable selectors (the nav's aria-label and
+   the [role="group"] wrapper) rather than the hashed CSS-module class. */
+nav[aria-label="Blog recent posts navigation"] [role="group"] > h3,
+.blog-list-page section > h2 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary);
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+  padding-bottom: 0.35rem;
+  margin-bottom: 0.6rem;
+}
+
+/* The main listing's group heading sits above larger post cards, so give it
+   slightly more breathing room than the sidebar variant. */
+.blog-list-page section > h2 {
+  font-size: 1rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.blog-list-page section:first-of-type > h2 {
+  margin-top: 0;
+}
