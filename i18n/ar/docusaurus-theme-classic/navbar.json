@@ -8,11 +8,11 @@
     "description": "The alt text of navbar logo"
   },
   "item.label.Universities": {
-    "message": "Universities",
+    "message": "الجامعات",
     "description": "Navbar item with label Universities"
   },
   "item.label.Scholarships": {
-    "message": "Scholarships",
+    "message": "المنح الدراسية",
     "description": "Navbar item with label Scholarships"
   },
   "item.label.Contribute": {
