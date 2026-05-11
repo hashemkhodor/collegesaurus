@@ -15,8 +15,8 @@ const config: Config = {
     v4: true,
   },
 
-  url: 'https://hashemkhodor.github.io',
-  baseUrl: '/collegesaurus/',
+  url: 'https://collegesaurus.org',
+  baseUrl: '/',
 
   organizationName: 'hashemkhodor',
   projectName: 'collegesaurus',
