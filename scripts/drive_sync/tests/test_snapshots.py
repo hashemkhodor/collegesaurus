@@ -148,6 +148,30 @@ def test_fulbright_arabic_matches_snapshot(fulbright_paths, expected_dir: Path) 
     assert mdx == expected, _diff(mdx, expected, "fulbright.ar.mdx")
 
 
+def test_qatar_scholarship_english_matches_snapshot(qatar_paths, expected_dir: Path) -> None:
+    mdx, report = _build_scholarship_mdx(
+        qatar_paths["info_en"],
+        slug="qatar-scholarship-aub",
+        locale="en",
+        file_label="scholarships/qatar-scholarship-aub/info.docx",
+    )
+    assert not report.has_errors(), [e.message for e in report.entries]
+    expected = (expected_dir / "qatar-scholarship-aub.mdx").read_text(encoding="utf-8")
+    assert mdx == expected, _diff(mdx, expected, "qatar-scholarship-aub.mdx")
+
+
+def test_qatar_scholarship_arabic_matches_snapshot(qatar_paths, expected_dir: Path) -> None:
+    mdx, report = _build_scholarship_mdx(
+        qatar_paths["info_ar"],
+        slug="qatar-scholarship-aub",
+        locale="ar",
+        file_label="scholarships/qatar-scholarship-aub/info.ar.docx",
+    )
+    assert not report.has_errors(), [e.message for e in report.entries]
+    expected = (expected_dir / "qatar-scholarship-aub.ar.mdx").read_text(encoding="utf-8")
+    assert mdx == expected, _diff(mdx, expected, "qatar-scholarship-aub.ar.mdx")
+
+
 # ---------------------------------------------------------------------------
 # T-4.3 — parser IR shape (smoke check on AUB)
 # ---------------------------------------------------------------------------
