@@ -9,9 +9,14 @@
 #
 # Run from the repo root. Restore the repo afterwards with `scripts/sync-clean.sh`.
 #
-# Env vars (auto-loaded from ~/.gcloud-keys/collegesaurus-drive-sync.json if unset):
-#   GDRIVE_SERVICE_ACCOUNT_JSON   service-account JSON key contents
-#   GDRIVE_CONTENT_ROOT_ID        Drive folder id (or full URL — pipeline strips it)
+# Env vars, in order of precedence: already exported > ./.env > built-in default.
+#   GDRIVE_CONTENT_ROOT_ID           Drive folder id (or full URL — pipeline strips it)
+#   GDRIVE_SERVICE_ACCOUNT_JSON      service-account JSON key contents
+#   GDRIVE_SERVICE_ACCOUNT_JSON_FILE path to the key file; read into the above.
+#                                    Defaults to ~/.gcloud-keys/collegesaurus-drive-sync.json
+#
+# Copy .env.example to .env to set these once. `.env` is symlinked into each
+# argus task worktree (worktree.config), so one copy serves every worktree.
 
 set -euo pipefail
 
@@ -33,11 +38,13 @@ while [ $# -gt 0 ]; do
     case "$1" in
         --serve) serve=true; shift ;;
         --dry-run|--only|--cache-dir|--out-prefix|-v|--verbose)
-            sync_args+=("$1"); shift
+            # Hold the flag in a scalar: macOS ships bash 3.2, which has no
+            # negative array subscripts (${arr[-1]} is a "bad array subscript").
+            flag="$1"; sync_args+=("$flag"); shift
             # If the flag takes a value, also forward it.
-            case "${sync_args[-1]}" in
+            case "$flag" in
                 --only|--cache-dir|--out-prefix)
-                    [ $# -gt 0 ] || fail "${sync_args[-1]} expects a value"
+                    [ $# -gt 0 ] || fail "$flag expects a value"
                     sync_args+=("$1"); shift ;;
             esac
             ;;
@@ -54,17 +61,43 @@ done
 # Sanity: venv + python.
 [ -x .venv/bin/python ] || fail "no .venv/ — run: python3.11 -m venv .venv && .venv/bin/pip install -r requirements.txt"
 
-# Auto-load credentials if env vars aren't already set.
+# Load ./.env, then credentials. Precedence: exported > .env > default path.
+#
+# `set -a` exports everything .env defines, but sourcing also overwrites vars
+# already in the environment — so stash what was set beforehand and restore it
+# after, keeping one-off overrides authoritative:
+#   GDRIVE_CONTENT_ROOT_ID=<other> ./scripts/sync-test.sh --dry-run
+pre_root_id="${GDRIVE_CONTENT_ROOT_ID:-}"
+pre_sa_json="${GDRIVE_SERVICE_ACCOUNT_JSON:-}"
+pre_sa_file="${GDRIVE_SERVICE_ACCOUNT_JSON_FILE:-}"
+
+if [ -r .env ]; then
+    set -a
+    # shellcheck source=/dev/null
+    . ./.env
+    set +a
+    say "loaded .env"
+fi
+
+if [ -n "$pre_root_id" ]; then GDRIVE_CONTENT_ROOT_ID="$pre_root_id"; fi
+if [ -n "$pre_sa_json" ]; then GDRIVE_SERVICE_ACCOUNT_JSON="$pre_sa_json"; fi
+if [ -n "$pre_sa_file" ]; then GDRIVE_SERVICE_ACCOUNT_JSON_FILE="$pre_sa_file"; fi
+
+# Resolve the key: explicit JSON wins, else read the file the pointer names.
 if [ -z "${GDRIVE_SERVICE_ACCOUNT_JSON:-}" ]; then
-    key_file="$HOME/.gcloud-keys/collegesaurus-drive-sync.json"
-    [ -r "$key_file" ] || fail "GDRIVE_SERVICE_ACCOUNT_JSON not set, and no key at $key_file"
+    key_file="${GDRIVE_SERVICE_ACCOUNT_JSON_FILE:-$HOME/.gcloud-keys/collegesaurus-drive-sync.json}"
+    # A quoted "~/..." in .env arrives literally; expand it ourselves.
+    case "$key_file" in "~/"*) key_file="$HOME/${key_file#\~/}" ;; esac
+    [ -r "$key_file" ] || fail "no service-account key: set GDRIVE_SERVICE_ACCOUNT_JSON, or point GDRIVE_SERVICE_ACCOUNT_JSON_FILE at a readable key (tried $key_file)"
     GDRIVE_SERVICE_ACCOUNT_JSON="$(cat "$key_file")"
-    export GDRIVE_SERVICE_ACCOUNT_JSON
     say "loaded service-account key from $key_file"
 fi
+export GDRIVE_SERVICE_ACCOUNT_JSON
+
 if [ -z "${GDRIVE_CONTENT_ROOT_ID:-}" ]; then
-    fail "GDRIVE_CONTENT_ROOT_ID is not set; export it (folder id or URL) and re-run"
+    fail "GDRIVE_CONTENT_ROOT_ID is not set; put it in .env (see .env.example) or export it"
 fi
+export GDRIVE_CONTENT_ROOT_ID
 
 # Run pipeline.
 # Expand the array safely under `set -u`: ${arr[@]+"${arr[@]}"} expands to
