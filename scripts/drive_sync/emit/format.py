@@ -39,18 +39,28 @@ from drive_sync.models import (
 
 
 # ---------------------------------------------------------------------------
-# Frontmatter
 # ---------------------------------------------------------------------------
 
 
-_FRONTMATTER_ORDER = ("sidebar_position", "title", "sidebar_label", "apply_url")
+_FRONTMATTER_ORDER = (
+    "sidebar_position",
+    "title",
+    "sidebar_label",
+    "apply_url",
+    "content_year",
+)
 """`page_h1` is intentionally NOT in the frontmatter — it's metadata-only,
-consumed by the page H1 emitter (emit_university / emit_scholarship)."""
+consumed by the page H1 emitter (emit_university / emit_scholarship).
+
+`content_year` is not on the Metadata model: it comes from the content path,
+and the swizzled DocVersionBadge reads it so a carried-forward page shows the
+year its content is from rather than the version it was published into."""
 
 
-def emit_frontmatter(meta: Metadata) -> str:
+def emit_frontmatter(meta: Metadata, extra: dict[str, object] | None = None) -> str:
     lines = ["---"]
     data = meta.model_dump(exclude_none=True)
+    data.update({k: v for k, v in (extra or {}).items() if v not in (None, "")})
     for key in _FRONTMATTER_ORDER:
         if key not in data:
             continue
@@ -85,7 +95,6 @@ def _format_yaml_scalar(value: object) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Staleness banner
 # ---------------------------------------------------------------------------
 
 
@@ -116,7 +125,6 @@ def emit_stale_banner(locale: str, year: str, source_year: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# <MajorsTable> JSX
 # ---------------------------------------------------------------------------
 
 
@@ -128,7 +136,7 @@ def emit_majors_table(group: FacultyGroup) -> str:
 
     The component declares `faculty` as an unused prop — we don't emit it. The
     per-faculty heading is rendered separately by the university emitter as
-    a `### Heading ([Abbr](url))`.
+    a `
     """
     if not group.rows:
         return ""
@@ -145,7 +153,6 @@ def _format_row_props(row: MajorRow) -> str:
         v = data[key]
         if v is None or v == "":
             continue
-        # Coerce HttpUrl back to string for serialization.
         v = str(v) if not isinstance(v, (int, float, bool, str)) else v
         parts.append(f"{key}: {_format_jsx_value(v)}")
     return ", ".join(parts)
@@ -158,8 +165,6 @@ def _format_jsx_value(v: object) -> str:
     if isinstance(v, (int, float)):
         return str(v)
     s = str(v)
-    # JSON-encode (handles all escapes) then convert to single-quoted form,
-    # escaping any embedded single quotes.
     inner = json.dumps(s)[1:-1].replace('\\"', '"').replace("'", "\\'")
     return f"'{inner}'"
 
@@ -173,7 +178,6 @@ def emit_faculty_heading(group: FacultyGroup, depth: int) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Block → Markdown
 # ---------------------------------------------------------------------------
 
 
@@ -212,8 +216,6 @@ def _render_block(block: Block, depth_offset: int) -> str:
         fence = "```" + (block.lang or "")
         return f"{fence}\n{block.value}\n```"
     if isinstance(block, RawHtml):
-        # Emit the HTML verbatim — no MDX escaping. The editor authored this
-        # as literal markup (e.g. `<div className="alert-warning">`).
         return block.content
     if isinstance(block, Component):
         return _render_component(block, depth_offset)
@@ -273,8 +275,6 @@ def _render_runs(runs: list[Run]) -> str:
 def _render_run(run: Run) -> str:
     if isinstance(run, TextRun):
         if run.code:
-            # Inline code is rendered between backticks; the contents stay
-            # literal (no MDX/Markdown interpretation).
             return f"`{run.text}`"
         text = _escape_mdx_text(run.text)
         if run.bold and run.italic:
@@ -286,7 +286,6 @@ def _render_run(run: Run) -> str:
         return text
     if isinstance(run, LinkRun):
         url = run.url
-        # Drop dangerous schemes (T-R.3).
         if any(url.lower().startswith(scheme) for scheme in _DANGEROUS_URL_SCHEMES):
             return _escape_mdx_text(run.text)
         text = _escape_mdx_text(run.text)
@@ -329,7 +328,6 @@ def _render_table(table: Table) -> str:
 
     def cells_to_md(row) -> list[str]:
         out = [_render_runs(c.runs) for c in row.cells]
-        # Pad short rows so the markdown is well-formed.
         out += [""] * (n_cols - len(out))
         return out
 

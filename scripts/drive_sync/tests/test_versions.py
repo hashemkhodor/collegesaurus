@@ -42,9 +42,7 @@ def test_missing_slug_is_carried_forward_and_marked_stale() -> None:
     for e in plan.entries:
         by_year.setdefault(e.year, {})[e.files.slug] = e.stale_from
 
-    # The old version shows only what existed then.
     assert by_year[OLD] == {"aub": None}
-    # The new version keeps aub alive, flagged as carried forward.
     assert by_year[NEW] == {"aub": OLD, "lau": None}
 
 
@@ -118,9 +116,37 @@ def test_validate_does_not_parse(tmp_path, monkeypatch) -> None:
     ):
         f = root / rel
         f.parent.mkdir(parents=True, exist_ok=True)
-        f.write_text("not a real docx")  # never opened, because validate stops first
+        f.write_text("not a real docx")
 
     monkeypatch.chdir(tmp_path)
     code = main(["--content-root", str(root), "--validate"])
     assert code == 0, "a structurally valid tree validates even with unparseable files"
     assert not (tmp_path / "parse-report.json").exists(), "validate writes nothing"
+
+
+def test_carried_forward_page_shows_the_year_its_content_is_from() -> None:
+    """A stale page must not label old figures with the new year.
+
+    The banner says the content is from an earlier year; the Tuition heading
+    has to agree with it, or the page contradicts itself.
+    """
+    from drive_sync.emit.university import emit_university
+    from drive_sync.models import Metadata, Section, UniversityIR
+
+    ir = UniversityIR(
+        slug="lau",
+        locale="en",
+        year=NEW,
+        meta=Metadata(title="LAU", sidebar_label="LAU", sidebar_position=1),
+        sections=[Section(heading="Tuition", key="tuition", blocks=[])],
+        majors=[],
+        source_info_id="x",
+        source_majors_id="y",
+    )
+
+    fresh = emit_university(ir, year=NEW)
+    assert f"## Tuition (AY {NEW})" in fresh
+
+    carried = emit_university(ir, stale_from=OLD, year=NEW)
+    assert f"## Tuition (AY {OLD})" in carried, "heading shows the content's year"
+    assert f"Not yet updated for {NEW}" in carried, "banner still names the new year"
