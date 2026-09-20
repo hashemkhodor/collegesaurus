@@ -9,14 +9,11 @@
 #
 # Run from the repo root. Restore the repo afterwards with `scripts/sync-clean.sh`.
 #
-# Env vars, in order of precedence: already exported > ./.env > built-in default.
-#   GDRIVE_CONTENT_ROOT_ID           Drive folder id (or full URL — pipeline strips it)
+# Env vars, in precedence order: already exported > ./.env > built-in default.
+# Copy .env.example to .env to set them once.
+#   GDRIVE_CONTENT_ROOT_ID           Drive folder id (or full URL)
 #   GDRIVE_SERVICE_ACCOUNT_JSON      service-account JSON key contents
-#   GDRIVE_SERVICE_ACCOUNT_JSON_FILE path to the key file; read into the above.
-#                                    Defaults to ~/.gcloud-keys/collegesaurus-drive-sync.json
-#
-# Copy .env.example to .env to set these once. `.env` is symlinked into each
-# argus task worktree (worktree.config), so one copy serves every worktree.
+#   GDRIVE_SERVICE_ACCOUNT_JSON_FILE path to the key file; read into the above
 
 set -euo pipefail
 
@@ -38,8 +35,7 @@ while [ $# -gt 0 ]; do
     case "$1" in
         --serve) serve=true; shift ;;
         --dry-run|--only|--cache-dir|--out-prefix|-v|--verbose)
-            # Hold the flag in a scalar: macOS ships bash 3.2, which has no
-            # negative array subscripts (${arr[-1]} is a "bad array subscript").
+            # Scalar, not ${sync_args[-1]}: macOS bash 3.2 has no negative subscripts.
             flag="$1"; sync_args+=("$flag"); shift
             # If the flag takes a value, also forward it.
             case "$flag" in
@@ -61,12 +57,7 @@ done
 # Sanity: venv + python.
 [ -x .venv/bin/python ] || fail "no .venv/ — run: python3.11 -m venv .venv && .venv/bin/pip install -r requirements.txt"
 
-# Load ./.env, then credentials. Precedence: exported > .env > default path.
-#
-# `set -a` exports everything .env defines, but sourcing also overwrites vars
-# already in the environment — so stash what was set beforehand and restore it
-# after, keeping one-off overrides authoritative:
-#   GDRIVE_CONTENT_ROOT_ID=<other> ./scripts/sync-test.sh --dry-run
+# Sourcing .env would clobber vars already exported, so stash and restore them.
 pre_root_id="${GDRIVE_CONTENT_ROOT_ID:-}"
 pre_sa_json="${GDRIVE_SERVICE_ACCOUNT_JSON:-}"
 pre_sa_file="${GDRIVE_SERVICE_ACCOUNT_JSON_FILE:-}"
@@ -83,10 +74,8 @@ if [ -n "$pre_root_id" ]; then GDRIVE_CONTENT_ROOT_ID="$pre_root_id"; fi
 if [ -n "$pre_sa_json" ]; then GDRIVE_SERVICE_ACCOUNT_JSON="$pre_sa_json"; fi
 if [ -n "$pre_sa_file" ]; then GDRIVE_SERVICE_ACCOUNT_JSON_FILE="$pre_sa_file"; fi
 
-# Resolve the key: explicit JSON wins, else read the file the pointer names.
 if [ -z "${GDRIVE_SERVICE_ACCOUNT_JSON:-}" ]; then
     key_file="${GDRIVE_SERVICE_ACCOUNT_JSON_FILE:-$HOME/.gcloud-keys/collegesaurus-drive-sync.json}"
-    # A quoted "~/..." in .env arrives literally; expand it ourselves.
     case "$key_file" in "~/"*) key_file="$HOME/${key_file#\~/}" ;; esac
     [ -r "$key_file" ] || fail "no service-account key: set GDRIVE_SERVICE_ACCOUNT_JSON, or point GDRIVE_SERVICE_ACCOUNT_JSON_FILE at a readable key (tried $key_file)"
     GDRIVE_SERVICE_ACCOUNT_JSON="$(cat "$key_file")"
