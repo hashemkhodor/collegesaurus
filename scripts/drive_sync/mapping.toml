@@ -1,0 +1,188 @@
+# How .docx constructs map to MDX. This file is data, not code: adding a Word
+# style or a page section should be an edit here, never a parser change.
+#
+# Matching is case-insensitive and whitespace-trimmed throughout — Google Docs'
+# export is not consistent about style-name casing (the live corpus carries body
+# text as both "normal" and "Normal").
+
+# --------------------------------------------------------------------------
+# Paragraph styles → block kind
+# --------------------------------------------------------------------------
+# block: section | heading | paragraph | blockquote | list
+# An unmapped style falls back to a paragraph and is reported once, so it is
+# visible rather than silently flattened.
+
+[styles."heading 1"]
+block = "section"
+
+[styles."heading 2"]
+block = "heading"
+depth = 2
+
+[styles."heading 3"]
+block = "heading"
+depth = 3
+
+[styles."heading 4"]
+block = "heading"
+depth = 4
+
+[styles."heading 5"]
+block = "heading"
+depth = 5
+
+[styles."heading 6"]
+block = "heading"
+depth = 6
+
+# Google Docs' "Title"/"Subtitle" are used as headings by editors (93 uses
+# across the live corpus) but matched nothing before, so they rendered as body
+# prose.
+[styles.title]
+block = "heading"
+depth = 2
+
+[styles.subtitle]
+block = "heading"
+depth = 3
+
+[styles.quote]
+block = "blockquote"
+
+[styles."intense quote"]
+block = "blockquote"
+
+[styles.caption]
+block = "paragraph"
+italic = true
+
+[styles.normal]
+block = "paragraph"
+
+[styles."body text"]
+block = "paragraph"
+
+# Word's generic list style: ambiguous on its own, so the docx numbering
+# definition decides bullet vs numbered.
+[styles."list paragraph"]
+block = "list"
+
+[styles."list bullet"]
+block = "list"
+ordered = false
+
+[styles."list continue"]
+block = "list"
+
+[styles."list number"]
+block = "list"
+ordered = true
+
+# --------------------------------------------------------------------------
+# Page sections
+# --------------------------------------------------------------------------
+# `aliases` are matched against the docx H1 (normalized: case-folded,
+# non-alphanumerics stripped). A *substring* match counts, so both
+# "Faculty (الكلية)" and "الكلية (Faculty)" resolve — the old rule was a
+# prefix match, which only accepted English-first headings.
+#
+# `labels` drive the emitted H2 per locale. A section whose heading matches no
+# alias is still emitted, under its own heading.
+
+[[sections.university]]
+key = "faculty"
+aliases = ["Introduction", "Faculty", "الكلية", "الكليات"]
+majors = true          # the <MajorsTable> blocks are appended to this section
+[sections.university.labels]
+en = "Faculty"
+ar = "الكليات"
+
+[[sections.university]]
+key = "application"
+aliases = ["Application", "التقديم"]
+[sections.university.labels]
+en = "Application"
+ar = "التقديم"
+
+[[sections.university]]
+key = "tuition"
+aliases = ["Tuition", "الأقساط"]
+year_suffix = true     # renders the academic year from the content path
+[sections.university.labels]
+en = "Tuition"
+ar = "الأقساط"
+
+[[sections.university]]
+key = "scholarships"
+aliases = ["Scholarships", "المنح"]
+[sections.university.labels]
+en = "Scholarships"
+ar = "المنح"
+
+[[sections.university]]
+key = "requirements"
+aliases = ["Requirements", "المتطلبات"]
+[sections.university.labels]
+en = "Requirements"
+ar = "المتطلبات"
+
+[[sections.university]]
+key = "contacts"
+aliases = ["Contacts", "جهات الاتصال", "جهات اتصال"]
+[sections.university.labels]
+en = "Contacts"
+ar = "جهات الاتصال"
+
+# Scholarships have always been open-ended (amideast's H1s are program cards,
+# not canonical sections). These entries only supply localized labels for the
+# common ones; anything else passes through verbatim.
+
+[[sections.scholarship]]
+key = "overview"
+aliases = ["Overview", "نظرة عامة"]
+[sections.scholarship.labels]
+en = "Overview"
+ar = "نظرة عامة"
+
+[[sections.scholarship]]
+key = "grades"
+aliases = ["Grade & background requirements", "Grade and background", "شروط العلامات"]
+[sections.scholarship.labels]
+en = "Grade & background requirements"
+ar = "شروط العلامات والخلفية"
+
+[[sections.scholarship]]
+key = "window"
+aliases = ["Application window", "نافذة التقديم"]
+[sections.scholarship.labels]
+en = "Application window"
+ar = "نافذة التقديم"
+
+[[sections.scholarship]]
+key = "universities"
+aliases = ["Supported universities", "الجامعات المدعومة", "الجامعات المشاركة"]
+[sections.scholarship.labels]
+en = "Supported universities"
+ar = "الجامعات المشاركة"
+
+[[sections.scholarship]]
+key = "benefits"
+aliases = ["Benefits", "المنافع", "الفوائد"]
+[sections.scholarship.labels]
+en = "Benefits"
+ar = "الفوائد"
+
+[[sections.scholarship]]
+key = "recipients"
+aliases = ["Contacts of recipients", "جهات اتصال المستفيدين"]
+[sections.scholarship.labels]
+en = "Contacts of recipients"
+ar = "جهات اتصال المستفيدين"
+
+# --------------------------------------------------------------------------
+# Localized bits the emitter needs
+# --------------------------------------------------------------------------
+
+[year_suffix]
+en = "AY {year}"
+ar = "للعام {year}"

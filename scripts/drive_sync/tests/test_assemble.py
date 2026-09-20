@@ -38,13 +38,13 @@ def test_assemble_aub_university(aub_paths) -> None:
     assert ir.locale == "en"
     assert ir.meta.title.startswith("AUB")
     assert ir.meta.page_h1 is not None
-    assert ir.tuition_year_label == "AY 2025-2026"
     assert len(ir.majors) == 6
-    assert ir.application
-    assert ir.tuition
-    assert ir.scholarships
-    assert ir.requirements
-    assert ir.contacts
+    # Every H1 becomes a section, in document order, with the registry key
+    # attached where it matched.
+    assert [s.key for s in ir.sections] == [
+        "faculty", "application", "tuition", "scholarships", "requirements", "contacts",
+    ]
+    assert all(s.blocks for s in ir.sections)
 
 
 def test_assemble_aub_arabic_university(aub_paths) -> None:
@@ -111,8 +111,12 @@ def test_assemble_fulbright_scholarship(fulbright_paths) -> None:
             assert s.blocks, f"section {s.heading!r} has no blocks"
 
 
-def test_assemble_reports_missing_required_section(aub_paths) -> None:
-    """Force-drop a section to confirm assemble fails loudly."""
+def test_assemble_warns_but_still_builds_when_a_section_is_missing(aub_paths) -> None:
+    """A missing canonical section is a lint warning, not a parse failure.
+
+    Dropping a section used to return None and fail the build. The page is now
+    emitted without it and the report says which one is gone.
+    """
     report = ParseReport()
     parsed = parse_docx(
         str(aub_paths["info_en"]),
@@ -133,6 +137,42 @@ def test_assemble_reports_missing_required_section(aub_paths) -> None:
         source_majors_id="local:majors.xlsx",
     )
     ir = assemble_university(parsed, [], ctx, report)
-    assert ir is None
-    assert report.has_errors()
-    assert any("Application" in e.message for e in report.entries)
+    assert ir is not None
+    assert not report.has_errors()
+    assert "application" not in {s.key for s in ir.sections}
+    assert any("missing expected section" in e.message for e in report.entries)
+
+
+def test_unrecognized_h1_is_kept_not_dropped(aub_paths) -> None:
+    """Adding a section to a .docx must not require a parser change.
+
+    A 7th H1 has no registry entry, so it gets no key — but it keeps its
+    heading and its blocks, and reaches the emitted page.
+    """
+    report = ParseReport()
+    parsed = parse_docx(
+        str(aub_paths["info_en"]),
+        ParseDocxOptions(file_label="universities/aub/info.docx"),
+        report,
+    )
+    assert parsed is not None
+    parsed.section_order.append("Rankings")
+    parsed.sections["Rankings"] = list(parsed.sections[parsed.section_order[0]])
+
+    ctx = AssembleContext(
+        slug="aub",
+        locale="en",
+        file_label="universities/aub/info.docx",
+        source_info_id="local:info.docx",
+        source_majors_id="local:majors.xlsx",
+    )
+    ir = assemble_university(parsed, [], ctx, report)
+    assert ir is not None
+    extra = [s for s in ir.sections if s.heading == "Rankings"]
+    assert len(extra) == 1
+    assert extra[0].key is None
+    assert extra[0].blocks
+
+    from drive_sync.emit.university import emit_university
+
+    assert "## Rankings" in emit_university(ir)

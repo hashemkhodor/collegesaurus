@@ -216,42 +216,46 @@ class FacultyGroup(BaseModel):
 Locale = Literal["en", "ar"]
 
 
+class Section(BaseModel):
+    """One H1 section of a page, in document order.
+
+    Both kinds use this. A section is kept whether or not the registry
+    recognizes it: `key` is set when the heading matched a known section (which
+    is how it gets a localized label and, for `faculty`, its majors tables), and
+    is None for anything the editor invented. An unrecognized H1 renders under
+    its own heading rather than being dropped — adding a section to a .docx must
+    never require a parser change.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    heading: str
+    """The H1 text as authored, verbatim. Used as the label when `key` is None."""
+
+    key: str | None = None
+    """Registry key (e.g. `faculty`, `tuition`) when the heading was recognized."""
+
+    blocks: list[Block]
+
+
+# Back-compat alias: scholarships used to have their own section type.
+ScholarshipSection = Section
+
+
 class UniversityIR(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     kind: Literal["university"] = "university"
     slug: str
     locale: Locale
+    year: str = ""
+    """Academic year from the content path, e.g. `2025-2026`."""
+
     meta: Metadata
-    introduction: list[Block]
-    application: list[Block]
-    tuition_year_label: str  # e.g. "AY 2025-2026"; "" when not present
-    tuition: list[Block]
-    scholarships: list[Block]
-    requirements: list[Block]
-    contacts: list[Block]
+    sections: list[Section]
     majors: list[FacultyGroup]
     source_info_id: str  # Drive file ID of info.docx (or local path in mirror mode)
     source_majors_id: str
-
-
-class ScholarshipSection(BaseModel):
-    """One H2-level section of a scholarship page.
-
-    Scholarships use a generic ordered-section model rather than fixed fields
-    (unlike `UniversityIR`, which has a strict canonical schema). This lets
-    a scholarship like amideast — whose H2s are program cards (`YES Program`,
-    `MENA`, `Hope Fund`, ...) rather than the canonical six — be managed by
-    the same pipeline. Editors can add or rename sections in Drive without
-    breaking the build.
-    """
-
-    model_config = ConfigDict(extra="forbid")
-
-    heading: str
-    """The H2 text as authored, verbatim (e.g. `Overview` or `YES Program`)."""
-
-    blocks: list[Block]
 
 
 class ScholarshipIR(BaseModel):
@@ -260,8 +264,9 @@ class ScholarshipIR(BaseModel):
     kind: Literal["scholarship"] = "scholarship"
     slug: str
     locale: Locale
+    year: str = ""
     meta: Metadata
-    sections: list[ScholarshipSection]
+    sections: list[Section]
     source_info_id: str
 
 
