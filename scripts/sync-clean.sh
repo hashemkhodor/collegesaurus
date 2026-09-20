@@ -6,8 +6,8 @@
 #   .drive-cache/, parse-report.json, build/, .docusaurus/,
 #   <plugin>_versioned_docs/, <plugin>_versioned_sidebars/, <plugin>_versions.json,
 #   the i18n/ar version-* counterparts, and static/attachments/.
-# - Does NOT touch ~/.gcloud-keys/ or ~/Desktop/drive-mirror-bootstrap/ — those
-#   are persistent local resources, not run artifacts.
+# - Does NOT touch ~/.gcloud-keys/ — that is a persistent local resource,
+#   not a run artifact.
 #
 # Usage:
 #   ./scripts/sync-clean.sh          # restore + remove artifacts
