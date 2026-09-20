@@ -16,7 +16,6 @@ from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator
 
 
 # ---------------------------------------------------------------------------
-# Inline runs (used inside a paragraph or table cell)
 # ---------------------------------------------------------------------------
 
 
@@ -48,7 +47,6 @@ Run = Annotated[Union[TextRun, LinkRun], Field(discriminator="kind")]
 
 
 # ---------------------------------------------------------------------------
-# Block-level content (paragraphs, tables, lists, etc.)
 # ---------------------------------------------------------------------------
 
 
@@ -63,7 +61,7 @@ class Heading(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     kind: Literal["heading"] = "heading"
-    depth: int  # 1-6, but the emitter typically demotes by 1 (so docx H1 → MDX H2)
+    depth: int
     runs: list[Run]
 
 
@@ -83,17 +81,16 @@ class Table(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     kind: Literal["table"] = "table"
-    rows: list[TableRow]  # first row is the header, by GFM convention
+    rows: list[TableRow]
 
 
 class ListItem(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     runs: list[Run]
-    # Future: nested children (sub-lists). Not in v1.
 
 
-class List_(BaseModel):  # `List` shadows typing.List; rename
+class List_(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     kind: Literal["list"] = "list"
@@ -160,7 +157,6 @@ Component.model_rebuild()
 
 
 # ---------------------------------------------------------------------------
-# Frontmatter / Metadata
 # ---------------------------------------------------------------------------
 
 
@@ -179,7 +175,6 @@ class Metadata(BaseModel):
     @field_validator("apply_url")
     @classmethod
     def _https_only(cls, v: HttpUrl | None) -> HttpUrl | None:
-        # Mitigates T-R.2 — only https:// URLs survive.
         if v is None:
             return None
         if v.scheme != "https":
@@ -202,7 +197,6 @@ class Metadata(BaseModel):
 
 
 # ---------------------------------------------------------------------------
-# Major rows + faculty groups (universities only)
 # ---------------------------------------------------------------------------
 
 
@@ -225,14 +219,13 @@ class FacultyGroup(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    heading: str  # e.g. "Maroun Semaan Faculty of Engineering & Architecture"
-    abbr: str | None = None  # e.g. "MSFEA"
-    url: HttpUrl | None = None  # faculty page URL
+    heading: str
+    abbr: str | None = None
+    url: HttpUrl | None = None
     rows: list[MajorRow]
 
 
 # ---------------------------------------------------------------------------
-# Page-level IRs
 # ---------------------------------------------------------------------------
 
 
@@ -261,7 +254,6 @@ class Section(BaseModel):
     blocks: list[Block]
 
 
-# Back-compat alias: scholarships used to have their own section type.
 ScholarshipSection = Section
 
 
@@ -277,7 +269,7 @@ class UniversityIR(BaseModel):
     meta: Metadata
     sections: list[Section]
     majors: list[FacultyGroup]
-    source_info_id: str  # Drive file ID of info.docx (or local path in mirror mode)
+    source_info_id: str
     source_majors_id: str
 
 
@@ -300,7 +292,6 @@ PageIR = Annotated[
 
 
 # ---------------------------------------------------------------------------
-# Slug validation (used by fetch.py)
 # ---------------------------------------------------------------------------
 
 import re

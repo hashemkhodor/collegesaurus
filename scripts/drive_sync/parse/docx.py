@@ -177,7 +177,6 @@ def parse_docx(
 
             directive = parse_directive(text)
             if directive is not None:
-                # Arms the next block; the directive line itself is not content.
                 pending_directive = directive
                 continue
 
@@ -220,8 +219,6 @@ def parse_docx(
         sections_buckets[current] = current_blocks
 
     if unmapped_styles:
-        # Falls back to a paragraph, but say so: a style nobody mapped is how
-        # content quietly loses its meaning.
         report.warn(
             options.file_label,
             "unmapped Word style(s) rendered as plain paragraphs: "
@@ -777,7 +774,6 @@ _ = Code
 
 
 # ---------------------------------------------------------------------------
-# @component: directives
 # ---------------------------------------------------------------------------
 
 

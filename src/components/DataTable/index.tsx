@@ -70,9 +70,6 @@ export default function DataTable({
   const {i18n} = useDocusaurusContext();
   const locale = i18n.currentLocale;
 
-  // Configured columns come first, then any key present in the data that the
-  // caller did not list. A column config must never be able to hide content:
-  // the corpus has 66 distinct table shapes, so no spec is exhaustive.
   const specs: ColumnSpec[] = useMemo(() => {
     const present: string[] = [];
     for (const r of rows) {
@@ -86,7 +83,6 @@ export default function DataTable({
     return [...configured, ...extra];
   }, [columns, rows, linkKeys]);
 
-  // Hide a column no row actually fills, the way MajorsTable hides Language.
   const visible = useMemo(
     () =>
       specs.filter((c) =>
