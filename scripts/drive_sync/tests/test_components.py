@@ -102,8 +102,9 @@ def test_unknown_component_falls_back_to_a_plain_table_and_warns(tmp_path: Path)
 
 
 def test_missing_required_column_falls_back_and_warns(tmp_path: Path) -> None:
+    """MajorsTable requires `program`; a table without it is clearly not one."""
     blocks, report = _parse(
-        _doc_with(tmp_path, "@component: TuitionTable", [["School", "Rate"], ["MSFEA", "990"]])
+        _doc_with(tmp_path, "@component: MajorsTable", [["School", "Rate"], ["MSFEA", "990"]])
     )
     assert any(isinstance(b, Table) for b in blocks)
     assert not report.has_errors()
@@ -159,3 +160,18 @@ numeric = ["position"]
         assert not report.has_errors()
     finally:
         load_components.cache_clear()
+
+
+def test_every_registered_component_is_available_to_mdx() -> None:
+    """components.toml and MDXComponents.tsx must not drift.
+
+    The pipeline will happily emit `<TuitionTable>`; if the site has not
+    registered that name, MDX renders it as an unknown element and the build
+    fails. This is the only thing holding the two registries together.
+    """
+    repo = Path(__file__).resolve().parents[3]
+    registered = (repo / "src" / "theme" / "MDXComponents.tsx").read_text(encoding="utf-8")
+    missing = [name for name in load_components() if name not in registered]
+    assert not missing, (
+        f"declared in components.toml but not registered in MDXComponents.tsx: {missing}"
+    )
