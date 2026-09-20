@@ -130,10 +130,33 @@ class RawHtml(BaseModel):
     content: str
 
 
+class Component(BaseModel):
+    """An MDX component the editor named in the docx with `@component: Name`.
+
+    The parser never learns what a component means: it captures the name, any
+    `key=value` args, and the block the directive was attached to. A table
+    becomes `rows`, anything else becomes `children`. Adding a new component is
+    a React file plus a row in components.toml.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    kind: Literal["component"] = "component"
+    name: str
+    props: dict[str, str] = Field(default_factory=dict)
+    rows: list[dict[str, str]] = Field(default_factory=list)
+    """One dict per table body row, keyed by slugified header cell."""
+
+    children: list["Block"] = Field(default_factory=list)
+    """Used when the directive was attached to something other than a table."""
+
+
 Block = Annotated[
-    Union[Paragraph, Heading, Table, List_, Blockquote, Code, RawHtml],
+    Union[Paragraph, Heading, Table, List_, Blockquote, Code, RawHtml, Component],
     Field(discriminator="kind"),
 ]
+
+Component.model_rebuild()
 
 
 # ---------------------------------------------------------------------------

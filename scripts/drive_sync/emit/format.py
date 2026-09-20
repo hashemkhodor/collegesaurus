@@ -18,9 +18,11 @@ from __future__ import annotations
 import json
 import re
 
+from drive_sync.mapping import load_components
 from drive_sync.models import (
     Block,
     Blockquote,
+    Component,
     Code,
     FacultyGroup,
     Heading,
@@ -213,7 +215,52 @@ def _render_block(block: Block, depth_offset: int) -> str:
         # Emit the HTML verbatim — no MDX escaping. The editor authored this
         # as literal markup (e.g. `<div className="alert-warning">`).
         return block.content
+    if isinstance(block, Component):
+        return _render_component(block, depth_offset)
     return ""
+
+
+def _render_component(block: Component, depth_offset: int) -> str:
+    """`<Name prop='v' rows={[...]} />`, or a wrapper around its children.
+
+    Nothing here is component-specific: the name came from the docx and the
+    row keys came from the table's header row.
+    """
+    rule = load_components().get(block.name)
+    numeric = set(rule.numeric) if rule else set()
+
+    attrs = "".join(f" {k}={_format_jsx_value(v)}" for k, v in sorted(block.props.items()))
+
+    if block.children:
+        inner = emit_blocks(block.children, depth_offset)
+        return f"<{block.name}{attrs}>\n\n{inner}\n\n</{block.name}>"
+
+    if not block.rows:
+        return f"<{block.name}{attrs} rows={{[]}} />"
+
+    lines = []
+    for row in block.rows:
+        pairs = []
+        for key, value in row.items():
+            pairs.append(f"{key}: {_format_jsx_value(_coerce(value, key in numeric))}")
+        lines.append("    {" + ", ".join(pairs) + "},")
+    body = "\n".join(lines)
+    return f"<{block.name}{attrs}\n  rows={{[\n{body}\n  ]}}\n/>"
+
+
+def _coerce(value: str, numeric: bool) -> object:
+    """Numbers declared in components.toml are emitted unquoted so the
+    component can sort them."""
+    if not numeric:
+        return value
+    cleaned = value.replace(",", "").replace("$", "").strip()
+    try:
+        return int(cleaned)
+    except ValueError:
+        try:
+            return float(cleaned)
+        except ValueError:
+            return value
 
 
 def _render_runs(runs: list[Run]) -> str:
