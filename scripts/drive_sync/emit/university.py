@@ -1,23 +1,22 @@
-"""UniversityIR → MDX string + locale-aware output path resolution.
+"""UniversityIR → MDX string.
 
 Page structure:
     ---<frontmatter>---
     # {page_h1 or title}
-    ## Faculty
-        {introduction body, headings demoted by 1}
-        ### {facultyHeading}
+    [staleness banner, when carried forward from an older year]
+    ## {localized label for each section, in document order}
+        {body, headings demoted by 1}
+        ### {facultyHeading}          (in the section flagged `majors`)
         <MajorsTable rows={[...]} />
-        ... per FacultyGroup
-    ## Application
-        {body, demoted}
-    ## Tuition (AY {yearLabel})
-        {body, demoted}
-    ## Scholarships
-    ## Requirements
-    ## Contacts
+
+Section labels come from `mapping.toml`, so an Arabic page gets Arabic
+headings and a section the registry does not know still renders under its own
+heading.
 """
 
 from __future__ import annotations
+
+import re
 
 from drive_sync.emit.format import (
     emit_blocks,
@@ -26,10 +25,12 @@ from drive_sync.emit.format import (
     emit_majors_table,
     emit_stale_banner,
 )
-from drive_sync.models import UniversityIR
+from drive_sync.mapping import load_mapping
+from drive_sync.models import Section, UniversityIR
 
 
 def emit_university(ir: UniversityIR, stale_from: str | None = None, year: str = "") -> str:
+    mapping = load_mapping()
     parts: list[str] = []
 
     parts.append(emit_frontmatter(ir.meta))
@@ -38,63 +39,42 @@ def emit_university(ir: UniversityIR, stale_from: str | None = None, year: str =
     parts.append(f"# {page_h1}")
     parts.append("")
     if stale_from:
-        parts.append(emit_stale_banner(ir.locale, year, stale_from))
+        parts.append(emit_stale_banner(ir.locale, year or ir.year, stale_from))
         parts.append("")
 
-    # Faculty section.
-    parts.append("## Faculty")
-    parts.append("")
-    intro = emit_blocks(ir.introduction, depth_offset=1)
-    if intro:
-        parts.append(intro)
+    for section in ir.sections:
+        rule = mapping.sections_by_key("university").get(section.key) if section.key else None
+        parts.append(f"## {section_label(ir, section, year)}")
         parts.append("")
-    for group in ir.majors:
-        parts.append(emit_faculty_heading(group, depth=3))
-        parts.append("")
-        rendered = emit_majors_table(group)
-        if rendered:
-            parts.append(rendered)
+        body = emit_blocks(section.blocks, depth_offset=1)
+        if body:
+            parts.append(body)
             parts.append("")
-
-    # Application
-    _push_section(parts, "Application", emit_blocks(ir.application, depth_offset=1))
-
-    # Tuition (with year label)
-    tuition_heading = (
-        f"## Tuition ({ir.tuition_year_label})" if ir.tuition_year_label else "## Tuition"
-    )
-    parts.append(tuition_heading)
-    parts.append("")
-    body = emit_blocks(ir.tuition, depth_offset=1)
-    if body:
-        parts.append(body)
-        parts.append("")
-
-    _push_section(parts, "Scholarships", emit_blocks(ir.scholarships, depth_offset=1))
-    _push_section(parts, "Requirements", emit_blocks(ir.requirements, depth_offset=1))
-    _push_section(parts, "Contacts", emit_blocks(ir.contacts, depth_offset=1))
+        if rule is not None and rule.majors:
+            for group in ir.majors:
+                parts.append(emit_faculty_heading(group, depth=3))
+                parts.append("")
+                rendered = emit_majors_table(group)
+                if rendered:
+                    parts.append(rendered)
+                    parts.append("")
 
     out = "\n".join(parts)
     # Collapse 3+ blank lines.
-    import re
     out = re.sub(r"\n{3,}", "\n\n", out).rstrip() + "\n"
     return out
 
 
-def _push_section(parts: list[str], heading: str, body: str) -> None:
-    parts.append(f"## {heading}")
-    parts.append("")
-    if body:
-        parts.append(body)
-        parts.append("")
-
-
-def university_output_path(ir: UniversityIR) -> str:
-    """Pre-versioning output path. Kept for the round-trip tests only.
-
-    Live output paths now come from `emit.versions.VersionEntry.output_path`,
-    which files every year under its Docusaurus version.
-    """
-    if ir.locale == "ar":
-        return f"i18n/ar/docusaurus-plugin-content-docs-universities/current/{ir.slug}.mdx"
-    return f"universities/{ir.slug}.mdx"
+def section_label(ir: UniversityIR | object, section: Section, year: str = "") -> str:
+    """Localized H2 text for a section, with the academic year where wanted."""
+    mapping = load_mapping()
+    locale = getattr(ir, "locale", "en")
+    kind = getattr(ir, "kind", "university")
+    rule = mapping.sections_by_key(kind).get(section.key) if section.key else None
+    if rule is None:
+        return section.heading
+    label = rule.label(locale, section.heading)
+    effective_year = year or getattr(ir, "year", "")
+    if rule.year_suffix and effective_year:
+        return f"{label} ({mapping.format_year(locale, effective_year)})"
+    return label

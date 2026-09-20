@@ -5,6 +5,7 @@ from drive_sync.models import (
     Metadata,
     MajorRow,
     FacultyGroup,
+    Section,
     UniversityIR,
     ScholarshipIR,
     Paragraph,
@@ -60,14 +61,13 @@ def test_university_ir_round_trip() -> None:
     ir = UniversityIR(
         slug="aub",
         locale="en",
+        year="2025-2026",
         meta=Metadata(title="AUB", sidebar_label="AUB", sidebar_position=1),
-        introduction=[Paragraph(runs=[TextRun(text="Hello.")])],
-        application=[],
-        tuition_year_label="AY 2025-2026",
-        tuition=[],
-        scholarships=[],
-        requirements=[],
-        contacts=[],
+        sections=[
+            Section(heading="Introduction", key="faculty",
+                    blocks=[Paragraph(runs=[TextRun(text="Hello.")])]),
+            Section(heading="Rankings", key=None, blocks=[]),
+        ],
         majors=[
             FacultyGroup(
                 heading="MSFEA",
@@ -88,10 +88,11 @@ def test_scholarship_ir_round_trip() -> None:
     ir = ScholarshipIR(
         slug="fulbright",
         locale="en",
+        year="2025-2026",
         meta=Metadata(title="Fulbright", sidebar_label="Fulbright", sidebar_position=2),
         sections=[
-            ScholarshipSection(heading="Overview", blocks=[]),
-            ScholarshipSection(heading="Benefits", blocks=[]),
+            ScholarshipSection(heading="Overview", key="overview", blocks=[]),
+            ScholarshipSection(heading="Benefits", key="benefits", blocks=[]),
         ],
         source_info_id="legacy:info.docx",
     )

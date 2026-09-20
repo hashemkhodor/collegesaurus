@@ -6,11 +6,11 @@ regenerate via:
 
     python -m drive_sync \\
         --content-root scripts/drive_sync/tests/fixtures \\
-        --out-prefix /tmp/regen-snapshots
-    # then move /tmp/regen-snapshots/* into the right names under
-    # scripts/drive_sync/tests/fixtures/expected/
+        --out-prefix /tmp/regen
+    # EN: /tmp/regen/<kind>_versioned_docs/version-<year>/<slug>.mdx
+    # AR: /tmp/regen/i18n/ar/docusaurus-plugin-content-docs-<kind>/version-<year>/<slug>.mdx
+    # then copy into scripts/drive_sync/tests/fixtures/expected/<slug>[.ar].mdx
 
-Design: spec/001-add-google-drive-backend-data/design.md §5.5.
 """
 
 from __future__ import annotations
@@ -41,6 +41,7 @@ def _build_university_mdx(
     slug: str,
     locale: str,
     file_label: str,
+    year: str = "2025-2026",
 ) -> tuple[str, ParseReport]:
     report = ParseReport()
     parsed = parse_docx(
@@ -61,6 +62,7 @@ def _build_university_mdx(
         file_label=file_label,
         source_info_id=str(info_path),
         source_majors_id=str(majors_path),
+        year=year,
     )
     ir = assemble_university(parsed, majors, ctx, report)
     assert ir is not None
@@ -73,6 +75,7 @@ def _build_scholarship_mdx(
     slug: str,
     locale: str,
     file_label: str,
+    year: str = "2025-2026",
 ) -> tuple[str, ParseReport]:
     report = ParseReport()
     parsed = parse_docx(
@@ -86,6 +89,7 @@ def _build_scholarship_mdx(
         locale=locale,
         file_label=file_label,
         source_info_id=str(info_path),
+        year=year,
     )
     ir = assemble_scholarship(parsed, ctx, report)
     assert ir is not None
@@ -307,26 +311,18 @@ def test_arabic_marks_pass_through_when_present_in_source(fulbright_paths) -> No
     assert len(mdx) > 100
 
 
-def test_arabic_locale_emits_to_i18n_path(aub_paths) -> None:
-    """The output path resolver must point Arabic content at i18n/ar/..."""
-    from drive_sync.emit.university import university_output_path
-    from drive_sync.models import (
-        FacultyGroup,
-        MajorRow,
-        Metadata,
-        UniversityIR,
-    )
+def test_arabic_locale_emits_to_the_versioned_i18n_path() -> None:
+    """Arabic content is filed under the version's i18n dir, not `current/`."""
+    from drive_sync.emit.versions import plan_versions
+    from drive_sync.fetch import ContentTree, SlugFiles
 
-    ir = UniversityIR(
-        slug="aub",
-        locale="ar",
-        meta=Metadata(title="AUB", sidebar_label="AUB", sidebar_position=1),
-        introduction=[], application=[], tuition_year_label="",
-        tuition=[], scholarships=[], requirements=[], contacts=[],
-        majors=[FacultyGroup(heading="X", rows=[MajorRow(program="X")])],
-        source_info_id="x",
-        source_majors_id="y",
+    tree = ContentTree()
+    tree.add(SlugFiles(slug="aub", kind="university", year="2025-2026"))
+    entry = plan_versions(tree).entries[0]
+
+    assert entry.output_path("ar") == (
+        "i18n/ar/docusaurus-plugin-content-docs-universities/version-2025-2026/aub.mdx"
     )
-    assert university_output_path(ir) == (
-        "i18n/ar/docusaurus-plugin-content-docs-universities/current/aub.mdx"
+    assert entry.output_path("en") == (
+        "universities_versioned_docs/version-2025-2026/aub.mdx"
     )
