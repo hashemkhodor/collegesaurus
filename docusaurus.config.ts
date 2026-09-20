@@ -155,16 +155,7 @@ const config: Config = {
         },
         {to: '/stories', label: 'Stories', position: 'left'},
         {to: '/contribute', label: 'Contribute', position: 'left'},
-        {
-          type: 'docsVersionDropdown',
-          docsPluginId: 'universities',
-          position: 'right',
-        },
-        {
-          type: 'docsVersionDropdown',
-          docsPluginId: 'scholarships',
-          position: 'right',
-        },
+        {type: 'custom-docsYear', position: 'right'},
         {type: 'localeDropdown', position: 'right'},
       ],
     },
