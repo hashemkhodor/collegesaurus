@@ -159,7 +159,11 @@ const config: Config = {
           type: 'docsVersionDropdown',
           docsPluginId: 'universities',
           position: 'right',
-          dropdownItemsAfter: [],
+        },
+        {
+          type: 'docsVersionDropdown',
+          docsPluginId: 'scholarships',
+          position: 'right',
         },
         {type: 'localeDropdown', position: 'right'},
       ],

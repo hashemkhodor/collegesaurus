@@ -10,6 +10,12 @@
  * The pipeline writes the true year into `content_year` frontmatter, and this
  * prefers it. Pages that are genuinely up to date have content_year equal to
  * their version, so nothing changes for them.
+ *
+ * It also renders whenever a page has a content_year, where Docusaurus would
+ * hide the badge for a section that only has one version. Here the badge means
+ * "which academic year is this from", which is worth saying even when there is
+ * nothing to switch to — scholarships have one year while universities have
+ * two, and the reader still wants the year on both.
  */
 import type {ReactNode} from 'react';
 import clsx from 'clsx';
@@ -22,15 +28,14 @@ type Props = {className?: string};
 export default function DocVersionBadge({className}: Props): ReactNode {
   const versionMetadata = useDocsVersion();
   const {frontMatter} = useDoc() as {frontMatter: {content_year?: string}};
+  const contentYear = frontMatter.content_year;
 
-  if (!versionMetadata.badge) {
+  if (!versionMetadata.badge && !contentYear) {
     return null;
   }
 
-  const versionLabel = frontMatter.content_year ?? versionMetadata.label;
-  const isStale =
-    frontMatter.content_year != null &&
-    frontMatter.content_year !== versionMetadata.label;
+  const versionLabel = contentYear ?? versionMetadata.label;
+  const isStale = contentYear != null && contentYear !== versionMetadata.label;
 
   return (
     <span
@@ -38,11 +43,11 @@ export default function DocVersionBadge({className}: Props): ReactNode {
         className,
         ThemeClassNames.docs.docVersionBadge,
         'badge',
-        isStale ? 'badge--warning' : 'badge--secondary',
+        isStale ? 'docVersionBadge--stale' : 'badge--secondary',
       )}
       title={
         isStale
-          ? `Content from ${frontMatter.content_year}; not yet updated for ${versionMetadata.label}`
+          ? `Content from ${contentYear}; not yet updated for ${versionMetadata.label}`
           : undefined
       }>
       <Translate
