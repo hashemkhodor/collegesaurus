@@ -100,3 +100,27 @@ def test_stale_banner_is_localized_and_names_both_years() -> None:
     ar = emit_stale_banner("ar", NEW, OLD)
     assert NEW in ar and OLD in ar
     assert any("؀" <= ch <= "ۿ" for ch in ar), "Arabic banner must be in Arabic"
+
+
+def test_validate_does_not_parse(tmp_path, monkeypatch) -> None:
+    """`--validate` must stop after the structural walk.
+
+    It deliberately skips the download, so there is nothing on disk to parse.
+    Continuing into the parse stage reported a missing cache path for every
+    page — 46 phantom errors against the live tree.
+    """
+    from drive_sync.__main__ import main
+
+    root = tmp_path / "mirror"
+    for rel in (
+        "v2/universities/2025-2026/aub/info.docx",
+        "v2/universities/2025-2026/aub/majors.xlsx",
+    ):
+        f = root / rel
+        f.parent.mkdir(parents=True, exist_ok=True)
+        f.write_text("not a real docx")  # never opened, because validate stops first
+
+    monkeypatch.chdir(tmp_path)
+    code = main(["--content-root", str(root), "--validate"])
+    assert code == 0, "a structurally valid tree validates even with unparseable files"
+    assert not (tmp_path / "parse-report.json").exists(), "validate writes nothing"

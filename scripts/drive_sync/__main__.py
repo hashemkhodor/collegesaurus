@@ -6,7 +6,8 @@ Flags:
                               (default `v2`; pass "" for the pre-v2 flat layout).
     --year <YYYY-YYYY>        Process only one academic year.
     --only <slug>             Process only one slug (e.g. `aub`).
-    --validate                Walk + parse + validate; download nothing, write nothing.
+    --validate                Structural check only: walk the tree and report.
+                              Downloads nothing, parses nothing, writes nothing.
     --dry-run                 Parse + validate, do not write MDX.
     --cache-dir <path>        Override default `.drive-cache/`.
     --out-prefix <path>       Write output under <path>/ (round-trip / dev only).
@@ -152,7 +153,7 @@ def main(argv: list[str] | None = None) -> int:
         )
     logger.info("Content prefix: {}", args.content_prefix or "<none>")
     if args.validate:
-        logger.info("Mode: validate (no download, no write)")
+        logger.info("Mode: validate (structure only; no download, no parse, no write)")
     elif args.dry_run:
         logger.info("Mode: dry-run (parse + validate; nothing written)")
     if args.out_prefix:
@@ -173,20 +174,21 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     # Step 2: pre-flight.
-    logger.info("Stage 2/4: pre-flight checks")
+    logger.info("Stage {}: pre-flight checks", "2/2" if args.validate else "2/4")
     preflight_check(tree, report)
 
-    # Step 3: parse + emit.
-    logger.info("Stage 3/4: parsing + emitting")
-    plan = plan_versions(tree, only_year=args.year)
-    n_emitted = _process(plan, report, args)
-    logger.info("Wrote {} file{}", n_emitted, "" if n_emitted == 1 else "s")
+    if not args.validate:
+        # Step 3: parse + emit.
+        logger.info("Stage 3/4: parsing + emitting")
+        plan = plan_versions(tree, only_year=args.year)
+        n_emitted = _process(plan, report, args)
+        logger.info("Wrote {} file{}", n_emitted, "" if n_emitted == 1 else "s")
 
-    if not (args.validate or args.dry_run):
-        write_version_manifests(plan, args.out_prefix)
+        if not args.dry_run:
+            write_version_manifests(plan, args.out_prefix)
 
-    # Step 4: report.
-    logger.info("Stage 4/4: writing report")
+        logger.info("Stage 4/4: writing report")
+
     report.print()
     if not args.validate:
         report.write_json("parse-report.json")
