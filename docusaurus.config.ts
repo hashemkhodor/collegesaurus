@@ -72,7 +72,7 @@ const config: Config = {
         indexBlog: true,
         language: ['en', 'ar'],
         docsRouteBasePath: ['universities', 'scholarships'],
-        docsDir: ['universities', 'scholarships'],
+        docsDir: ['universities_versioned_docs', 'scholarships_versioned_docs'],
         blogRouteBasePath: 'stories',
         blogDir: 'stories',
         docsPluginIdForPreferredVersion: 'universities',
@@ -87,6 +87,11 @@ const config: Config = {
         sidebarPath: './sidebars/universities.ts',
         admonitions: {},
         rehypePlugins: [rehypeTableDataLabels],
+        // Every academic year is a version, written by `python -m drive_sync`
+        // into universities_versioned_docs/. There is deliberately no "current"
+        // version: with includeCurrentVersion the newest year would be served
+        // at /universities/next/ and every existing URL would move.
+        includeCurrentVersion: false,
       },
     ],
     [
@@ -98,6 +103,11 @@ const config: Config = {
         sidebarPath: './sidebars/scholarships.ts',
         admonitions: {},
         rehypePlugins: [rehypeTableDataLabels],
+        // Every academic year is a version, written by `python -m drive_sync`
+        // into scholarships_versioned_docs/. There is deliberately no "current"
+        // version: with includeCurrentVersion the newest year would be served
+        // at /scholarships/next/ and every existing URL would move.
+        includeCurrentVersion: false,
       },
     ],
   ],
@@ -145,6 +155,12 @@ const config: Config = {
         },
         {to: '/stories', label: 'Stories', position: 'left'},
         {to: '/contribute', label: 'Contribute', position: 'left'},
+        {
+          type: 'docsVersionDropdown',
+          docsPluginId: 'universities',
+          position: 'right',
+          dropdownItemsAfter: [],
+        },
         {type: 'localeDropdown', position: 'right'},
       ],
     },
