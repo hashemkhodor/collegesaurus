@@ -17,11 +17,11 @@ from __future__ import annotations
 
 import re
 
-from drive_sync.emit.format import emit_blocks, emit_frontmatter
+from drive_sync.emit.format import emit_blocks, emit_frontmatter, emit_stale_banner
 from drive_sync.models import ScholarshipIR
 
 
-def emit_scholarship(ir: ScholarshipIR) -> str:
+def emit_scholarship(ir: ScholarshipIR, stale_from: str | None = None, year: str = "") -> str:
     parts: list[str] = []
 
     parts.append(emit_frontmatter(ir.meta))
@@ -29,6 +29,9 @@ def emit_scholarship(ir: ScholarshipIR) -> str:
     page_h1 = ir.meta.page_h1 or ir.meta.title
     parts.append(f"# {page_h1}")
     parts.append("")
+    if stale_from:
+        parts.append(emit_stale_banner(ir.locale, year, stale_from))
+        parts.append("")
 
     for section in ir.sections:
         parts.append(f"## {section.heading}")
@@ -44,7 +47,7 @@ def emit_scholarship(ir: ScholarshipIR) -> str:
 
 
 def scholarship_output_path(ir: ScholarshipIR) -> str:
-    """Repo-relative path where the emitted MDX should be written."""
+    """Pre-versioning output path. Kept for the round-trip tests only."""
     if ir.locale == "ar":
         return f"i18n/ar/docusaurus-plugin-content-docs-scholarships/current/{ir.slug}.mdx"
     return f"scholarships/{ir.slug}.mdx"
