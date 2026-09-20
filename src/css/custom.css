@@ -154,3 +154,12 @@ nav[aria-label="Blog recent posts navigation"] [role="group"] > h3,
 .blog-list-page section:first-of-type > h2 {
   margin-top: 0;
 }
+
+/* Version badge on a page carried forward from an older year. Uses the same
+   warning tokens as the staleness admonition below it, so the two read as one
+   signal rather than a solid-yellow chip next to a soft card. */
+.docVersionBadge--stale {
+  background-color: var(--ifm-color-warning-contrast-background);
+  color: var(--ifm-color-warning-contrast-foreground);
+  border-color: var(--ifm-color-warning-dark);
+}
