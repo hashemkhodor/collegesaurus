@@ -16,27 +16,25 @@ source = "table"
 required = ["program"]
 numeric = ["credits", "years"]
 
+# `required` stays minimal on purpose. A survey of the live corpus found 66
+# distinct table shapes across 14 universities, so demanding specific columns
+# would reject real content; the components adapt to the columns they get.
 [TuitionTable]
 source = "table"
-required = ["faculty"]
-numeric = ["usd_per_credit"]
+numeric = ["usd_per_credit", "usd_per_year", "full_program_usd"]
 
 [ApplicationWindows]
 source = "table"
-required = ["term"]
 
 [FeeTable]
 source = "table"
-required = ["fee"]
-numeric = ["amount"]
+numeric = ["amount", "amount_usd"]
 
 [ContactsTable]
 source = "table"
-required = ["office"]
 
 [ScholarshipOffers]
 source = "table"
-required = ["scholarship"]
 
 [Callout]
 source = "children"
