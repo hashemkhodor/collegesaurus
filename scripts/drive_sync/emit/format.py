@@ -83,6 +83,37 @@ def _format_yaml_scalar(value: object) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Staleness banner
+# ---------------------------------------------------------------------------
+
+
+_STALE_TEXT = {
+    "en": (
+        "Not yet updated for {year}",
+        "This page still shows {source} information. Figures and deadlines may have changed.",
+    ),
+    "ar": (
+        "\u0644\u0645 \u064a\u062a\u0645 \u0627\u0644\u062a\u062d\u062f\u064a\u062b \u0628\u0639\u062f \u0644\u0639\u0627\u0645 {year}",
+        "\u0644\u0627 \u062a\u0632\u0627\u0644 \u0647\u0630\u0647 \u0627\u0644\u0635\u0641\u062d\u0629 \u062a\u0639\u0631\u0636 \u0645\u0639\u0644\u0648\u0645\u0627\u062a \u0639\u0627\u0645 {source}\u060c \u0648\u0642\u062f \u062a\u0643\u0648\u0646 \u0627\u0644\u0623\u0631\u0642\u0627\u0645 \u0648\u0627\u0644\u0645\u0648\u0627\u0639\u064a\u062f \u0642\u062f \u062a\u063a\u064a\u0651\u0631\u062a."
+    ),
+}
+
+
+def emit_stale_banner(locale: str, year: str, source_year: str) -> str:
+    """A Docusaurus admonition marking content carried forward from an older year.
+
+    Carrying a page forward keeps a live URL alive when a slug has no folder
+    for the new year; the banner is what stops that being a silent lie.
+    """
+    title, body = _STALE_TEXT.get(locale, _STALE_TEXT["en"])
+    return (
+        f":::warning[{title.format(year=year)}]\n\n"
+        f"{body.format(year=year, source=source_year)}\n\n"
+        ":::"
+    )
+
+
+# ---------------------------------------------------------------------------
 # <MajorsTable> JSX
 # ---------------------------------------------------------------------------
 
