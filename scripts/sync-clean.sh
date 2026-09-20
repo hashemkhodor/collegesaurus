@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # Reset working tree after a `sync-test.sh` run.
 #
-# - Restores the legacy .mdx files via `git checkout --` (universities/,
-#   scholarships/, and the i18n/ar/ counterparts).
-# - Deletes runtime artifacts: .drive-cache/, parse-report.json, build/, .docusaurus/.
+# Everything drive_sync writes is generated and gitignored, so there is nothing
+# to restore — this just deletes the artifacts:
+#   .drive-cache/, parse-report.json, build/, .docusaurus/,
+#   <plugin>_versioned_docs/, <plugin>_versioned_sidebars/, <plugin>_versions.json,
+#   the i18n/ar version-* counterparts, and static/attachments/.
 # - Does NOT touch ~/.gcloud-keys/ or ~/Desktop/drive-mirror-bootstrap/ — those
 #   are persistent local resources, not run artifacts.
 #
@@ -36,16 +38,27 @@ run() {
     fi
 }
 
-# 1. Restore legacy MDX (only if there's something to restore).
-say "restoring legacy MDX"
-if git diff --quiet -- universities/ scholarships/ i18n/ar/ 2>/dev/null; then
-    note "  working tree clean for managed paths — nothing to restore"
-else
-    run "git checkout -- universities/ scholarships/ i18n/ar/"
-fi
+# Remove runtime artifacts (each may or may not exist).
+paths=(.drive-cache parse-report.json build .docusaurus static/attachments)
+for plugin in universities scholarships; do
+    paths+=("${plugin}_versioned_docs" "${plugin}_versioned_sidebars" "${plugin}_versions.json")
+    paths+=("${plugin}"/*.mdx)
+done
+# Generated per-version Arabic mirrors + their version label files.
+for d in i18n/ar/docusaurus-plugin-content-docs-*/version-*; do
+    [ -e "$d" ] && paths+=("$d")
+done
+for d in i18n/ar/docusaurus-plugin-content-docs-*/current; do
+    [ -e "$d" ] && paths+=("$d")
+done
 
-# 2. Remove runtime artifacts (each may or may not exist).
-for path in .drive-cache parse-report.json build .docusaurus; do
+for path in "${paths[@]}"; do
+    # `universities/*.mdx` stays literal when nothing matches; skip those, and
+    # never delete the hand-authored templates.
+    case "$path" in
+        *'*'*) continue ;;
+        */_template.mdx) continue ;;
+    esac
     if [ -e "$path" ]; then
         suffix=""
         [ -d "$path" ] && suffix="/"
