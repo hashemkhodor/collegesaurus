@@ -163,7 +163,6 @@ def main(argv: list[str] | None = None) -> int:
     if args.only:
         logger.info("Filter: --only {}", args.only)
 
-    # Step 1: build the content tree (and download, unless validating).
     logger.info("Stage 1/4: building content tree")
     tree = _build_tree(args, report)
     logger.info(
@@ -173,12 +172,10 @@ def main(argv: list[str] | None = None) -> int:
         or "<none>",
     )
 
-    # Step 2: pre-flight.
     logger.info("Stage {}: pre-flight checks", "2/2" if args.validate else "2/4")
     preflight_check(tree, report)
 
     if not args.validate:
-        # Step 3: parse + emit.
         logger.info("Stage 3/4: parsing + emitting")
         plan = plan_versions(tree, only_year=args.year)
         n_emitted = _process(plan, report, args)
@@ -206,7 +203,6 @@ def main(argv: list[str] | None = None) -> int:
 
 def _build_tree(args: Args, report: ParseReport) -> ContentTree:
     if args.validate:
-        # Structure only: walk without downloading anything.
         if not args.content_root:
             from drive_sync.fetch import DriveSource, auth_drive, _normalize_folder_id
 
@@ -249,7 +245,7 @@ def _process_university(entry, report: ParseReport, args: Args) -> int:
     sf = entry.files
     if sf.info_en is None or sf.majors_en is None:
         logger.warning("Skipping {} (missing required files)", sf.label)
-        return 0  # already reported by preflight
+        return 0
     n = 0
     if _process_university_locale(entry, "en", report, args):
         n += 1
@@ -262,8 +258,6 @@ def _process_university(entry, report: ParseReport, args: Args) -> int:
 def _process_university_locale(entry, locale: str, report: ParseReport, args: Args) -> bool:
     sf: SlugFiles = entry.files
     info = sf.info_en if locale == "en" else sf.info_ar
-    # When an Arabic info.docx exists but no Arabic majors.xlsx, fall back to
-    # the English majors. Already warned about in preflight.
     majors = (
         sf.majors_en
         if locale == "en"

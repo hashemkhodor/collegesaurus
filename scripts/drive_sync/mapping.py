@@ -15,8 +15,6 @@ from pathlib import Path
 
 MAPPING_PATH = Path(__file__).parent / "mapping.toml"
 
-#: Word styles arrive with inconsistent casing through the Google Docs export
-#: ("normal" vs "Normal"), so every lookup is normalized.
 def normalize_style(name: str) -> str:
     return " ".join(name.split()).strip().lower()
 
@@ -78,7 +76,6 @@ class Mapping:
         for rule in self.sections.get(kind, ()):
             for alias in rule.aliases:
                 a = normalize_heading(alias)
-                # Longest alias wins, so "Contacts of recipients" beats "Contacts".
                 if a and a in norm and len(a) > best_len:
                     best, best_len = rule, len(a)
         return best
@@ -131,12 +128,10 @@ def expected_section_keys(kind: str) -> tuple[str, ...]:
 
 
 # ---------------------------------------------------------------------------
-# Component registry
 # ---------------------------------------------------------------------------
 
 COMPONENTS_PATH = Path(__file__).parent / "components.toml"
 
-#: `@component: Name key=value key2="two words"` on a paragraph of its own.
 DIRECTIVE_RE = re.compile(r"^\s*@component:\s*([A-Za-z][A-Za-z0-9_]*)\s*(.*?)\s*$")
 _ARG_RE = re.compile(r'([A-Za-z_][A-Za-z0-9_]*)\s*=\s*("([^"]*)"|\'([^\']*)\'|(\S+))')
 

@@ -16,9 +16,11 @@ from drive_sync.models import ScholarshipIR
 
 
 def emit_scholarship(ir: ScholarshipIR, stale_from: str | None = None, year: str = "") -> str:
+    content_year = stale_from or year or ir.year
+
     parts: list[str] = []
 
-    parts.append(emit_frontmatter(ir.meta))
+    parts.append(emit_frontmatter(ir.meta, {"content_year": content_year}))
     parts.append("")
     page_h1 = ir.meta.page_h1 or ir.meta.title
     parts.append(f"# {page_h1}")
@@ -28,7 +30,7 @@ def emit_scholarship(ir: ScholarshipIR, stale_from: str | None = None, year: str
         parts.append("")
 
     for section in ir.sections:
-        parts.append(f"## {section_label(ir, section, year)}")
+        parts.append(f"## {section_label(ir, section, content_year)}")
         parts.append("")
         body = emit_blocks(section.blocks, depth_offset=1)
         if body:

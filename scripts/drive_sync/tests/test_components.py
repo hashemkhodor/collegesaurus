@@ -61,10 +61,8 @@ def test_directive_turns_the_next_table_into_a_component(tmp_path: Path) -> None
     assert len(comps) == 1
     c = comps[0]
     assert c.name == "TuitionTable"
-    # The header row became the prop keys, slugified.
     assert c.rows == [{"faculty": "MSFEA", "usd_per_credit": "990", "reference": "https://x"}]
     assert not report.has_errors()
-    # The directive line itself is not content.
     assert not any("@component" in str(b) for b in blocks)
 
 

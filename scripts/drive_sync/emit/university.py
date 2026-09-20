@@ -2,11 +2,8 @@
 
 Page structure:
     ---<frontmatter>---
-    # {page_h1 or title}
     [staleness banner, when carried forward from an older year]
-    ## {localized label for each section, in document order}
         {body, headings demoted by 1}
-        ### {facultyHeading}          (in the section flagged `majors`)
         <MajorsTable rows={[...]} />
 
 Section labels come from `mapping.toml`, so an Arabic page gets Arabic
@@ -31,9 +28,11 @@ from drive_sync.models import Section, UniversityIR
 
 def emit_university(ir: UniversityIR, stale_from: str | None = None, year: str = "") -> str:
     mapping = load_mapping()
+    content_year = stale_from or year or ir.year
+
     parts: list[str] = []
 
-    parts.append(emit_frontmatter(ir.meta))
+    parts.append(emit_frontmatter(ir.meta, {"content_year": content_year}))
     parts.append("")
     page_h1 = ir.meta.page_h1 or ir.meta.title
     parts.append(f"# {page_h1}")
@@ -44,7 +43,7 @@ def emit_university(ir: UniversityIR, stale_from: str | None = None, year: str =
 
     for section in ir.sections:
         rule = mapping.sections_by_key("university").get(section.key) if section.key else None
-        parts.append(f"## {section_label(ir, section, year)}")
+        parts.append(f"## {section_label(ir, section, content_year)}")
         parts.append("")
         body = emit_blocks(section.blocks, depth_offset=1)
         if body:
@@ -60,7 +59,6 @@ def emit_university(ir: UniversityIR, stale_from: str | None = None, year: str =
                     parts.append("")
 
     out = "\n".join(parts)
-    # Collapse 3+ blank lines.
     out = re.sub(r"\n{3,}", "\n\n", out).rstrip() + "\n"
     return out
 

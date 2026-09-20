@@ -34,9 +34,6 @@ from drive_sync.models import is_valid_slug
 from drive_sync.report import ParseReport
 
 
-# A pasted Drive folder URL is a common copy-paste mistake. Strip the URL
-# prefix so `GDRIVE_CONTENT_ROOT_ID=https://drive.google.com/drive/folders/<id>`
-# also works.
 _DRIVE_FOLDER_URL_RE = re.compile(r"https?://drive\.google\.com/drive/folders/([\w-]+)")
 
 
@@ -58,17 +55,12 @@ KIND_BY_DIR: dict[str, Kind] = {
 }
 DIR_BY_KIND: dict[Kind, str] = {v: k for k, v in KIND_BY_DIR.items()}
 
-#: Top-level names that are known not to be content and are skipped quietly.
 IGNORED_TOP_LEVEL = frozenset({"templates"})
 
-#: Folder inside a slug holding supporting files (PDFs, images) that are
-#: published as static assets rather than parsed.
 ATTACHMENTS_DIR = "attachments"
 
-#: Academic-year folder name, e.g. `2025-2026`.
 YEAR_RE = re.compile(r"^\d{4}-\d{4}$")
 
-#: Sentinel year used when reading a pre-v2 tree that has no year level.
 UNVERSIONED_YEAR = "unversioned"
 
 _RECOGNIZED_UNIVERSITY = ("info.docx", "info.ar.docx", "majors.xlsx", "majors.ar.xlsx")
@@ -80,7 +72,6 @@ def is_valid_year(name: str) -> bool:
 
 
 # ---------------------------------------------------------------------------
-# Public types
 # ---------------------------------------------------------------------------
 
 
@@ -176,7 +167,6 @@ class FetchOptions:
 
 
 # ---------------------------------------------------------------------------
-# Source abstraction — one walk, two backends
 # ---------------------------------------------------------------------------
 
 
@@ -258,7 +248,6 @@ class LocalSource:
 
 
 # ---------------------------------------------------------------------------
-# Public API
 # ---------------------------------------------------------------------------
 
 
@@ -315,7 +304,6 @@ def _all_files(sf: SlugFiles) -> Iterator[DriveFileMeta]:
 
 
 # ---------------------------------------------------------------------------
-# The walk
 # ---------------------------------------------------------------------------
 
 
@@ -469,7 +457,6 @@ def _classify(
 
 
 # ---------------------------------------------------------------------------
-# Auth
 # ---------------------------------------------------------------------------
 
 
@@ -496,7 +483,6 @@ def _build_service(credentials):
     from googleapiclient.discovery import build
 
     http = AuthorizedHttp(credentials, http=httplib2.Http())
-    # cache_discovery=False suppresses the "file_cache not supported" warning.
     return build("drive", "v3", http=http, cache_discovery=False)
 
 
@@ -510,14 +496,11 @@ def auth_drive(service_account_json: str):
     info, creds = _make_credentials(service_account_json)
     logger.info("Authenticating as service account {}", info.get("client_email", "<unknown>"))
     service = _build_service(creds)
-    # Stash the credentials so `download_all` can build per-thread services
-    # without re-parsing the JSON key.
     service._drive_sync_credentials = creds
     return service
 
 
 # ---------------------------------------------------------------------------
-# Drive listing
 # ---------------------------------------------------------------------------
 
 
@@ -585,7 +568,6 @@ def _to_drive_file_meta(f: dict) -> DriveFileMeta | None:
 
 
 # ---------------------------------------------------------------------------
-# Download
 # ---------------------------------------------------------------------------
 
 
@@ -658,7 +640,7 @@ def download_all(drive, tree: ContentTree, cache_dir: str, concurrency: int) -> 
     ) as pool:
         futures = [pool.submit(fetch_one, j) for j in jobs]
         for fut in as_completed(futures):
-            fut.result()  # surface exceptions
+            fut.result()
 
     elapsed = time.monotonic() - started
     rate = len(jobs) / elapsed if elapsed > 0 else 0
@@ -683,7 +665,6 @@ def _download_file(drive, file_id: str, local_path: str) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Pre-flight checks
 # ---------------------------------------------------------------------------
 
 
@@ -712,7 +693,6 @@ def preflight_check(tree: ContentTree, report: ParseReport) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Retry + error helpers
 # ---------------------------------------------------------------------------
 
 
