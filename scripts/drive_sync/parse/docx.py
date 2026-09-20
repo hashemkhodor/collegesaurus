@@ -24,9 +24,15 @@ from docx.oxml.ns import qn
 from docx.table import Table as DocxTable
 from docx.text.paragraph import Paragraph as DocxParagraph
 
-from drive_sync.mapping import load_mapping
+from drive_sync.mapping import (
+    load_components,
+    load_mapping,
+    parse_directive,
+    slugify_key,
+)
 from drive_sync.models import (
     Block,
+    Component,
     Blockquote,
     Code,
     Heading,
@@ -108,6 +114,7 @@ def parse_docx(
     # single List_ block.
     pending_list: list[ListItem] | None = None
     pending_list_ordered: bool = False
+    pending_directive: tuple[str, dict[str, str]] | None = None
 
     def flush_list() -> None:
         """Emit the pending list (if any) as a Block."""
@@ -168,6 +175,21 @@ def parse_docx(
             if not runs and not text:
                 continue  # skip empty paragraphs
 
+            directive = parse_directive(text)
+            if directive is not None:
+                # Arms the next block; the directive line itself is not content.
+                pending_directive = directive
+                continue
+
+            if pending_directive is not None:
+                name, args = pending_directive
+                pending_directive = None
+                block = _component_from_block(
+                    name, args, Paragraph(runs=runs), options, report
+                )
+                current_blocks.append(block)
+                continue
+
             # Raw HTML / JSX passthrough: a paragraph whose entire content is
             # a single open or close tag (e.g. `<div className="alert-warning">`
             # or `</div>`) is preserved as-is in the emitted MDX. Editors author
@@ -182,7 +204,15 @@ def parse_docx(
             if current is None:
                 continue
             flush_list()
-            current_blocks.append(_docx_table_to_block(item))
+            table = _docx_table_to_block(item)
+            if pending_directive is not None:
+                name, args = pending_directive
+                pending_directive = None
+                current_blocks.append(
+                    _component_from_block(name, args, table, options, report)
+                )
+            else:
+                current_blocks.append(table)
 
     # Flush the final section.
     flush_list()
@@ -744,3 +774,74 @@ def _is_single_html_tag(text: str) -> bool:
 
 # Suppress "imported but unused" noise from Code being part of Block union.
 _ = Code
+
+
+# ---------------------------------------------------------------------------
+# @component: directives
+# ---------------------------------------------------------------------------
+
+
+def _component_from_block(
+    name: str,
+    args: dict[str, str],
+    block: Block,
+    options: ParseDocxOptions,
+    report: ParseReport,
+) -> Block:
+    """Bind a directive to the block under it, or fall back to that block.
+
+    Every failure here is a warning plus the plain block: a page must never
+    break because an editor mistyped a component name.
+    """
+    rule = load_components().get(name)
+    if rule is None:
+        report.warn(
+            options.file_label,
+            f"unknown component `{name}` — rendered as-is; "
+            f"add it to components.toml to style it",
+            web_view_link=options.web_view_link,
+            where=f"@component: {name}",
+        )
+        return block
+
+    if rule.source == "children":
+        return Component(name=name, props=args, children=[block])
+
+    if not isinstance(block, Table):
+        report.warn(
+            options.file_label,
+            f"`{name}` expects a table directly below the directive",
+            web_view_link=options.web_view_link,
+            where=f"@component: {name}",
+        )
+        return block
+
+    rows, headers = _table_to_rows(block)
+    missing = [c for c in rule.required if c not in headers]
+    if missing:
+        report.warn(
+            options.file_label,
+            f"`{name}` is missing required column(s) {', '.join(missing)} "
+            f"(found: {', '.join(headers) or 'none'}) — rendered as a plain table",
+            web_view_link=options.web_view_link,
+            where=f"@component: {name}",
+        )
+        return block
+
+    return Component(name=name, props=args, rows=rows)
+
+
+def _table_to_rows(table: Table) -> tuple[list[dict[str, str]], list[str]]:
+    """Header row becomes prop keys; every body row becomes one dict."""
+    if not table.rows:
+        return [], []
+    headers = [slugify_key(_runs_to_text(c.runs)) for c in table.rows[0].cells]
+    rows: list[dict[str, str]] = []
+    for row in table.rows[1:]:
+        values = [_runs_to_text(c.runs).strip() for c in row.cells]
+        if not any(values):
+            continue
+        rows.append(
+            {headers[i]: v for i, v in enumerate(values) if i < len(headers) and v}
+        )
+    return rows, headers
