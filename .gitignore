@@ -157,15 +157,25 @@ __pycache__/
 # drive_sync runtime artifacts
 parse-report.json
 
-# drive_sync emitted content (regenerated from .drive-cache/*/info.docx)
+# drive_sync emitted content (regenerated from Drive on every build).
+# Every academic year is a Docusaurus version; none of it is committed.
 universities/*.mdx
-!universities/intro.mdx
 !universities/_template.mdx
 scholarships/*.mdx
-!scholarships/intro.mdx
 !scholarships/_template.mdx
+universities_versioned_docs/
+scholarships_versioned_docs/
+universities_versioned_sidebars/
+scholarships_versioned_sidebars/
+universities_versions.json
+scholarships_versions.json
 i18n/ar/docusaurus-plugin-content-docs-universities/current/*.mdx
 i18n/ar/docusaurus-plugin-content-docs-scholarships/current/*.mdx
+i18n/ar/docusaurus-plugin-content-docs-universities/version-*/
+i18n/ar/docusaurus-plugin-content-docs-scholarships/version-*/
+i18n/ar/docusaurus-plugin-content-docs-universities/version-*.json
+i18n/ar/docusaurus-plugin-content-docs-scholarships/version-*.json
+static/attachments/
 
 # Symlink forms; the dir-only patterns above don't match them (worktree.config).
 node_modules
