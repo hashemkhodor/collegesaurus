@@ -167,10 +167,6 @@ scholarships/*.mdx
 i18n/ar/docusaurus-plugin-content-docs-universities/current/*.mdx
 i18n/ar/docusaurus-plugin-content-docs-scholarships/current/*.mdx
 
-# argus symlinks these into each task worktree (see worktree.config). The
-# dir-only patterns above ("node_modules/", ".venv/") match directories only,
-# not a symlink of the same name — without these lines every worktree would
-# show them as untracked, and `argus worktree rm` refuses to remove a worktree
-# that isn't clean.
+# Symlink forms; the dir-only patterns above don't match them (worktree.config).
 node_modules
 .venv
