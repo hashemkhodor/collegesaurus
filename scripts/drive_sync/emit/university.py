@@ -24,11 +24,12 @@ from drive_sync.emit.format import (
     emit_faculty_heading,
     emit_frontmatter,
     emit_majors_table,
+    emit_stale_banner,
 )
 from drive_sync.models import UniversityIR
 
 
-def emit_university(ir: UniversityIR) -> str:
+def emit_university(ir: UniversityIR, stale_from: str | None = None, year: str = "") -> str:
     parts: list[str] = []
 
     parts.append(emit_frontmatter(ir.meta))
@@ -36,6 +37,9 @@ def emit_university(ir: UniversityIR) -> str:
     page_h1 = ir.meta.page_h1 or ir.meta.title
     parts.append(f"# {page_h1}")
     parts.append("")
+    if stale_from:
+        parts.append(emit_stale_banner(ir.locale, year, stale_from))
+        parts.append("")
 
     # Faculty section.
     parts.append("## Faculty")
@@ -86,10 +90,10 @@ def _push_section(parts: list[str], heading: str, body: str) -> None:
 
 
 def university_output_path(ir: UniversityIR) -> str:
-    """Repo-relative path where the emitted MDX should be written.
+    """Pre-versioning output path. Kept for the round-trip tests only.
 
-    en  → universities/<slug>.mdx
-    ar  → i18n/ar/docusaurus-plugin-content-docs-universities/current/<slug>.mdx
+    Live output paths now come from `emit.versions.VersionEntry.output_path`,
+    which files every year under its Docusaurus version.
     """
     if ir.locale == "ar":
         return f"i18n/ar/docusaurus-plugin-content-docs-universities/current/{ir.slug}.mdx"
