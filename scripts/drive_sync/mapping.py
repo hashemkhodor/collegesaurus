@@ -128,3 +128,59 @@ def expected_section_keys(kind: str) -> tuple[str, ...]:
     still builds.
     """
     return tuple(r.key for r in load_mapping().sections.get(kind, ()))
+
+
+# ---------------------------------------------------------------------------
+# Component registry
+# ---------------------------------------------------------------------------
+
+COMPONENTS_PATH = Path(__file__).parent / "components.toml"
+
+#: `@component: Name key=value key2="two words"` on a paragraph of its own.
+DIRECTIVE_RE = re.compile(r"^\s*@component:\s*([A-Za-z][A-Za-z0-9_]*)\s*(.*?)\s*$")
+_ARG_RE = re.compile(r'([A-Za-z_][A-Za-z0-9_]*)\s*=\s*("([^"]*)"|\'([^\']*)\'|(\S+))')
+
+
+@dataclass(frozen=True)
+class ComponentRule:
+    name: str
+    source: str = "table"
+    required: tuple[str, ...] = ()
+    numeric: tuple[str, ...] = ()
+    props: tuple[str, ...] = ()
+
+
+def slugify_key(text: str) -> str:
+    """Table header cell → prop key. `USD per credit` → `usd_per_credit`."""
+    cleaned = re.sub(r"[^\w]+", "_", text.strip(), flags=re.UNICODE).strip("_").lower()
+    return cleaned or "col"
+
+
+def parse_directive(text: str) -> tuple[str, dict[str, str]] | None:
+    """Split `@component: Name key=value` into (name, args), or None."""
+    m = DIRECTIVE_RE.match(text)
+    if not m:
+        return None
+    name, rest = m.group(1), m.group(2) or ""
+    args = {
+        a.group(1): (a.group(3) if a.group(3) is not None
+                     else a.group(4) if a.group(4) is not None
+                     else a.group(5))
+        for a in _ARG_RE.finditer(rest)
+    }
+    return name, args
+
+
+@lru_cache(maxsize=1)
+def load_components(path: str | None = None) -> dict[str, ComponentRule]:
+    raw = tomllib.loads(Path(path or COMPONENTS_PATH).read_text(encoding="utf-8"))
+    return {
+        name: ComponentRule(
+            name=name,
+            source=rule.get("source", "table"),
+            required=tuple(rule.get("required", ())),
+            numeric=tuple(rule.get("numeric", ())),
+            props=tuple(rule.get("props", ())),
+        )
+        for name, rule in raw.items()
+    }

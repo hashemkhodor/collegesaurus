@@ -1,0 +1,43 @@
+# Components an editor may name in a .docx with `@component: Name`.
+#
+# Adding one is this file plus a React component in src/components/ — the
+# Python pipeline never learns what any of them mean.
+#
+#   source   = "table"    rows come from the table below the directive
+#            = "children"  the block below becomes the component's children
+#   required = column names (slugified) that must be present
+#   numeric  = columns emitted as numbers rather than strings
+#
+# A directive naming something that is not listed here renders as a plain
+# table (or its plain block) and is reported — a typo must never break a page.
+
+[MajorsTable]
+source = "table"
+required = ["program"]
+numeric = ["credits", "years"]
+
+[TuitionTable]
+source = "table"
+required = ["faculty"]
+numeric = ["usd_per_credit"]
+
+[ApplicationWindows]
+source = "table"
+required = ["term"]
+
+[FeeTable]
+source = "table"
+required = ["fee"]
+numeric = ["amount"]
+
+[ContactsTable]
+source = "table"
+required = ["office"]
+
+[ScholarshipOffers]
+source = "table"
+required = ["scholarship"]
+
+[Callout]
+source = "children"
+props = ["variant"]
