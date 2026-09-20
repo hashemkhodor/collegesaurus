@@ -24,6 +24,7 @@ from docx.oxml.ns import qn
 from docx.table import Table as DocxTable
 from docx.text.paragraph import Paragraph as DocxParagraph
 
+from drive_sync.mapping import load_mapping
 from drive_sync.models import (
     Block,
     Blockquote,
@@ -96,6 +97,7 @@ def parse_docx(
         )
         return None
 
+    unmapped_styles: set[str] = set()
     sections_buckets: dict[str, list[Block]] = {}
     section_order: list[str] = []
     current: str | None = None
@@ -117,6 +119,8 @@ def parse_docx(
 
     for item in _iter_block_items(doc):
         if isinstance(item, DocxParagraph):
+            if item.text.strip() and _rule(item) is None and _list_rule(item) is None:
+                unmapped_styles.add(_style_name(item) or "<no style>")
             depth = _heading_depth(item)
             if depth == 1:
                 # Section boundary.
@@ -184,6 +188,17 @@ def parse_docx(
     flush_list()
     if current is not None:
         sections_buckets[current] = current_blocks
+
+    if unmapped_styles:
+        # Falls back to a paragraph, but say so: a style nobody mapped is how
+        # content quietly loses its meaning.
+        report.warn(
+            options.file_label,
+            "unmapped Word style(s) rendered as plain paragraphs: "
+            + ", ".join(sorted(unmapped_styles))
+            + " — add them to mapping.toml to control how they render",
+            web_view_link=options.web_view_link,
+        )
 
     # ---- Metadata extraction ----
     metadata_key = next((s for s in section_order if _normalize(s) == "metadata"), None)
@@ -352,16 +367,32 @@ def _iter_blocks(parent, doc: Document) -> Iterator[DocxParagraph | DocxTable]:
         # is correctly silent: it carries no publishable block content.
 
 
+def _style_name(p: DocxParagraph) -> str:
+    """A paragraph with no explicit style is Word's default body text."""
+    name = (p.style.name if p.style else "") or ""
+    return name or "Normal"
+
+
+def _rule(p: DocxParagraph):
+    """The mapping.toml rule for this paragraph's style, or None if unmapped."""
+    return load_mapping().style(_style_name(p))
+
+
 def _heading_depth(p: DocxParagraph) -> int:
-    """Return 1-6 if the paragraph is styled `Heading N`, else 0."""
-    style = p.style.name if p.style else ""
-    if not style.startswith("Heading "):
+    """Section boundary → 1; a mapped heading → its depth; otherwise 0.
+
+    Depth comes from `mapping.toml`, so a style the editors use as a heading
+    (Google Docs' `Title` and `Subtitle`, 93 uses in the live corpus) is a
+    config entry rather than a parser change.
+    """
+    rule = _rule(p)
+    if rule is None:
         return 0
-    try:
-        depth = int(style.split()[-1])
-    except (ValueError, IndexError):
-        return 0
-    return depth if 1 <= depth <= 6 else 0
+    if rule.block == "section":
+        return 1
+    if rule.block == "heading":
+        return rule.depth if 1 <= rule.depth <= 6 else 0
+    return 0
 
 
 def _paragraph_text(p: DocxParagraph) -> str:
@@ -493,31 +524,38 @@ def _coalesce_runs(runs: list[Run]) -> list[Run]:
 
 
 def _is_blockquote(p: DocxParagraph) -> bool:
-    style = p.style.name if p.style else ""
-    return style in ("Quote", "Intense Quote")
-
-
-_LIST_STYLE_PREFIXES = ("List Bullet", "List Number", "List Continue")
+    rule = _rule(p)
+    return rule is not None and rule.block == "blockquote"
 
 
 def _is_list_paragraph(p: DocxParagraph) -> bool:
-    """A paragraph is a list item if it carries any of Word's built-in list
-    styles (`List Paragraph`, `List Bullet`, `List Bullet 2`, `List Number`,
-    `List Continue`, …) OR has an inline `<w:numPr>` override.
+    """A list item is a paragraph whose style maps to `list`, or one carrying
+    an inline `<w:numPr>` override.
 
-    Note: the bootstrap emit (`migrate/emit_docx.py`) writes `List Bullet` /
-    `List Number` paragraphs whose bullet/number markers come from the *style*
-    rather than from a per-paragraph `<w:numPr>` — so a style-name check is
-    required; checking only `numPr` would miss them and the round-trip would
-    flatten the list to plain paragraphs.
+    Word numbers `List Bullet 2`, `List Number 3` etc.; those share the base
+    style's meaning, so the lookup falls back to the un-numbered stem.
     """
-    style = p.style.name if p.style else ""
-    if style == "List Paragraph" or style.startswith(_LIST_STYLE_PREFIXES):
+    if _list_rule(p) is not None:
         return True
     p_pr = p._p.find(qn("w:pPr"))
     if p_pr is None:
         return False
     return p_pr.find(qn("w:numPr")) is not None
+
+
+def _list_rule(p: DocxParagraph):
+    """Resolve a (possibly numbered) list style like `List Bullet 2`."""
+    mapping = load_mapping()
+    name = _style_name(p)
+    rule = mapping.style(name)
+    if rule is not None and rule.block == "list":
+        return rule
+    stem = name.rstrip("0123456789 ").strip()
+    if stem and stem != name:
+        rule = mapping.style(stem)
+        if rule is not None and rule.block == "list":
+            return rule
+    return None
 
 
 def _is_ordered_list(p: DocxParagraph) -> bool:
@@ -533,11 +571,9 @@ def _is_ordered_list(p: DocxParagraph) -> bool:
        bullet → unordered). Used when an editor authored a list manually in
        Word/Google Docs without a list style.
     """
-    style = p.style.name if p.style else ""
-    if style.startswith("List Number"):
-        return True
-    if style.startswith(("List Bullet", "List Continue")):
-        return False
+    rule = _list_rule(p)
+    if rule is not None and rule.ordered is not None:
+        return rule.ordered
     p_pr = p._p.find(qn("w:pPr"))
     if p_pr is None:
         return False
