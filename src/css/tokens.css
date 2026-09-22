@@ -48,8 +48,9 @@
   --cs-pill-neutral-bg: #f2f4f7;
 
   /* Stays dark in both themes: it sits behind university marks that are
-     white, drawn for their own dark headers. */
-  --cs-mark-dark: #1e1b4b;
+     white, drawn for their own dark headers. Neutral graphite, so it reads as
+     a backdrop rather than a colour of its own. */
+  --cs-mark-dark: #23262b;
 
   --cs-focus-ring: var(--cs-brand-strong);
 

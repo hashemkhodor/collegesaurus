@@ -7,12 +7,25 @@ import {useCallback, useEffect, useRef, useState} from 'react';
  * agree on markup and the row keeps its height either way. Position comes from
  * an IntersectionObserver and scrolling is relative, which keeps the maths the
  * same whichever sign a browser gives scrollLeft in a right-to-left page.
+ *
+ * The strip also advances on its own; see the effect at the bottom for when it
+ * does not.
  */
+
+/** Long enough to read a card before the next one arrives. */
+const ADVANCE_MS = 5000;
+
 export function useSnapCarousel(count: number) {
   const trackRef = useRef<HTMLUListElement>(null);
   const perPageRef = useRef(1);
   const [pages, setPages] = useState(0);
   const [page, setPage] = useState(0);
+  const [stopped, setStopped] = useState(false);
+  // The timer reads these without re-arming itself on every page change.
+  const pageRef = useRef(0);
+  const pagesRef = useRef(0);
+  pageRef.current = page;
+  pagesRef.current = pages;
 
   const measure = useCallback(() => {
     const track = trackRef.current;
@@ -70,7 +83,7 @@ export function useSnapCarousel(count: number) {
     };
   }, [count, measure]);
 
-  const goToPage = useCallback((target: number) => {
+  const scrollToPage = useCallback((target: number) => {
     const track = trackRef.current;
     const item = track?.children[target * perPageRef.current];
     if (!track || !item) {
@@ -94,6 +107,70 @@ export function useSnapCarousel(count: number) {
         : 'smooth',
     });
   }, []);
+
+  /**
+   * The strip advances on its own so the row does not look frozen, but it is
+   * a courtesy, not a carousel that demands attention: it never starts when
+   * the visitor asked for reduced motion, it holds while a pointer is over it
+   * or focus is inside it, and the first deliberate interaction ends it for
+   * good rather than fighting the person scrolling.
+   */
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track || pages <= 1 || stopped) {
+      return undefined;
+    }
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (motion.matches) {
+      return undefined;
+    }
+
+    let held = false;
+    const hold = () => {
+      held = true;
+    };
+    const release = () => {
+      held = false;
+    };
+    const stop = () => setStopped(true);
+
+    const timer = window.setInterval(() => {
+      if (held || document.hidden) {
+        return;
+      }
+      scrollToPage((pageRef.current + 1) % pagesRef.current);
+    }, ADVANCE_MS);
+
+    track.addEventListener('pointerenter', hold);
+    track.addEventListener('pointerleave', release);
+    track.addEventListener('focusin', hold);
+    track.addEventListener('focusout', release);
+    track.addEventListener('pointerdown', stop);
+    track.addEventListener('keydown', stop);
+    track.addEventListener('wheel', stop, {passive: true});
+    motion.addEventListener('change', stop);
+
+    return () => {
+      window.clearInterval(timer);
+      track.removeEventListener('pointerenter', hold);
+      track.removeEventListener('pointerleave', release);
+      track.removeEventListener('focusin', hold);
+      track.removeEventListener('focusout', release);
+      track.removeEventListener('pointerdown', stop);
+      track.removeEventListener('keydown', stop);
+      track.removeEventListener('wheel', stop);
+      motion.removeEventListener('change', stop);
+    };
+  }, [pages, stopped, scrollToPage]);
+
+  /** Clicking a dot is a deliberate choice, so the strip stops advancing. */
+  const goToPage = useCallback(
+    (target: number) => {
+      setStopped(true);
+      scrollToPage(target);
+    },
+    [scrollToPage],
+  );
 
   return {trackRef, pages, page, goToPage};
 }

@@ -37,8 +37,7 @@ export const UNIVERSITY_LOGOS: Record<string, UniversityLogo> = {
   },
   aub: {
     file: 'aub.png',
-    source:
-      'https://www.aub.edu.lb/Style%20Library/AUB/images/American%20University%20of%20Beirut-AUB.png',
+    source: 'https://www.aub.edu.lb/Style%20Library/AUB/images/logo.png',
     verifiedOn: CHECKED,
     tone: 'dark',
   },
