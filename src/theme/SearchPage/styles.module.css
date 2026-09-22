@@ -1,0 +1,84 @@
+.page {
+  max-width: 50rem;
+  margin-inline: auto;
+  padding: var(--cs-section-space, 2.5rem) var(--cs-gutter, 1rem);
+}
+
+.heading {
+  font-family: var(--cs-font-display);
+  font-size: var(--cs-text-h2, 1.75rem);
+  font-weight: 700;
+  color: var(--cs-ink);
+  margin: 0 0 1rem;
+}
+
+.form {
+  margin-bottom: 1.25rem;
+}
+
+.input {
+  width: 100%;
+  height: 3rem;
+  padding-inline: 1rem;
+  border: 1px solid var(--cs-divider, var(--ifm-color-emphasis-300));
+  border-radius: var(--cs-radius-pill, 999px);
+  background: var(--cs-surface, var(--ifm-background-surface-color));
+  color: var(--cs-ink);
+  font-size: 1rem;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--cs-focus-ring, var(--ifm-color-primary));
+  outline-offset: 2px;
+}
+
+.count {
+  font-size: var(--cs-text-sm, 0.875rem);
+  color: var(--cs-ink-muted, var(--ifm-color-emphasis-700));
+  margin-bottom: 1.5rem;
+}
+
+.result {
+  padding-bottom: 1.1rem;
+  margin-bottom: 1.1rem;
+  border-bottom: 1px solid var(--cs-divider, var(--ifm-color-emphasis-200));
+}
+
+.result:last-of-type {
+  border-bottom: 0;
+}
+
+.resultTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0 0 0.2rem;
+}
+
+.breadcrumb {
+  font-size: var(--cs-text-xs, 0.75rem);
+  color: var(--cs-ink-subtle, var(--ifm-color-emphasis-600));
+  margin: 0 0 0.35rem;
+}
+
+.summary {
+  font-size: var(--cs-text-sm, 0.875rem);
+  line-height: 1.6;
+  color: var(--cs-ink-muted, var(--ifm-color-emphasis-700));
+  margin: 0;
+}
+
+/* The matched words, so it is obvious why a result came back. */
+.mark {
+  background: var(--cs-green-soft, rgb(0 166 81 / 0.18));
+  color: inherit;
+  padding: 0 0.1em;
+  border-radius: 3px;
+}
+
+.note {
+  color: var(--cs-ink-muted, var(--ifm-color-emphasis-700));
+}
