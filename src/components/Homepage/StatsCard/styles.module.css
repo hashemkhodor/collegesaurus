@@ -1,6 +1,9 @@
 .card {
   display: flex;
   flex-direction: column;
+  /* The sibling cards get this from `cardHead`; this title has no row of
+     actions beside it, so the card sets the same space itself. */
+  gap: 1.25rem;
 }
 
 .list {
