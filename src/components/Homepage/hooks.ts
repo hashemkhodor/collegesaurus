@@ -20,11 +20,14 @@ export function useHomepageData(): HomepageData {
  * A curated entry names a doc rather than a URL. Unresolved ones are dropped by
  * the caller, so a build with only fixture content emits no broken links.
  */
-export function useResolveDoc(ref: DocRef): HomeDoc | undefined {
-  const data = useHomepageData();
+export function findDoc(data: HomepageData, ref: DocRef): HomeDoc | undefined {
   const docs =
     ref.plugin === 'universities' ? data.universities : data.scholarships;
   return docs.find((doc) => doc.id === ref.id);
+}
+
+export function useResolveDoc(ref: DocRef): HomeDoc | undefined {
+  return findDoc(useHomepageData(), ref);
 }
 
 /** Entry URL of a docs section: its main doc in the newest academic year. */
