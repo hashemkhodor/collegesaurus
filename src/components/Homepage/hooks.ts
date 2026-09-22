@@ -1,6 +1,31 @@
 import {useEffect, useState} from 'react';
 import {useAllDocsData} from '@docusaurus/plugin-content-docs/client';
-import type {PluginId} from '@site/src/data/homepage/types';
+import {usePluginData} from '@docusaurus/useGlobalData';
+import type {DocRef, PluginId} from '@site/src/data/homepage/types';
+import type {HomeDoc, HomepageData} from '@site/plugins/homepage-data/types';
+
+const NO_DATA: HomepageData = {
+  generatedAt: '1970-01-01T00:00:00.000Z',
+  universities: [],
+  scholarships: [],
+  totals: {universities: 0, scholarships: 0, programs: null},
+};
+
+/** Index of the newest academic year, published by the homepage-data plugin. */
+export function useHomepageData(): HomepageData {
+  return (usePluginData('homepage-data') as HomepageData | undefined) ?? NO_DATA;
+}
+
+/**
+ * A curated entry names a doc rather than a URL. Unresolved ones are dropped by
+ * the caller, so a build with only fixture content emits no broken links.
+ */
+export function useResolveDoc(ref: DocRef): HomeDoc | undefined {
+  const data = useHomepageData();
+  const docs =
+    ref.plugin === 'universities' ? data.universities : data.scholarships;
+  return docs.find((doc) => doc.id === ref.id);
+}
 
 /** Entry URL of a docs section: its main doc in the newest academic year. */
 export function useDocsEntry(plugin: PluginId): string {
