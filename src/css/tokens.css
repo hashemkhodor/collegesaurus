@@ -47,13 +47,9 @@
   --cs-pill-neutral-fg: #475467; /* 6.98 */
   --cs-pill-neutral-bg: #f2f4f7;
 
-  /* The banner keeps the same dark gradient in both themes. */
-  --cs-banner-from: #1e1b4b;
-  --cs-banner-to: #4b3aa8;
-  --cs-banner-text: #ffffff; /* 8.5 at the lightest stop */
-  --cs-banner-muted: #d9d5fa; /* 6.0 */
-  --cs-banner-accent: #4ade80; /* 4.88 */
-  --cs-banner-ring: rgb(255 255 255 / 0.1);
+  /* Stays dark in both themes: it sits behind university marks that are
+     white, drawn for their own dark headers. */
+  --cs-mark-dark: #1e1b4b;
 
   --cs-focus-ring: var(--cs-brand-strong);
 
