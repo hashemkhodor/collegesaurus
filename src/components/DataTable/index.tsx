@@ -159,7 +159,7 @@ export default function DataTable({
                           href={String(v)}
                           target="_blank"
                           rel="noopener noreferrer">
-                          {linkLabel} ↗
+                          {linkLabel} <span aria-hidden="true">↗</span>
                         </a>
                       ) : (
                         (v ?? '')

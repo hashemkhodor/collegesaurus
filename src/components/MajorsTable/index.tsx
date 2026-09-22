@@ -166,7 +166,7 @@ export default function MajorsTable({rows}: Props): ReactNode {
                       href={r.source}
                       target="_blank"
                       rel="noopener noreferrer">
-                      {linkLabel} ↗
+                      {linkLabel} <span aria-hidden="true">↗</span>
                     </a>
                   ) : (
                     ''
