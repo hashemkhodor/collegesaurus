@@ -12,8 +12,12 @@
  * `tone: 'dark'` is for schools that publish only a white mark, built for their
  * own dark header; those sit on a dark tile so they stay visible. A slug with
  * no entry here falls back to its initials, so nothing breaks when a university
- * is added, and LAU sits there today because its asset host refuses downloads
- * and it publishes no colour version.
+ * is added.
+ *
+ * LAU is the one mark not taken from the school itself: its asset host answers
+ * 403 to anything but a live browser session, so this is the same lockup as
+ * published on its Wikipedia article, which carries the green background with
+ * it and needs no tile of its own.
  */
 
 export type UniversityLogo = {
@@ -66,6 +70,12 @@ export const UNIVERSITY_LOGOS: Record<string, UniversityLogo> = {
   liu: {
     file: 'liu.png',
     source: 'https://liu.edu.lb/cms26/assets/images/apple-touch-icon.png',
+    verifiedOn: CHECKED,
+  },
+  lau: {
+    file: 'lau.jpg',
+    source:
+      'https://upload.wikimedia.org/wikipedia/en/b/b6/Lebanese_American_University_(logo).jpg',
     verifiedOn: CHECKED,
   },
   lu: {
