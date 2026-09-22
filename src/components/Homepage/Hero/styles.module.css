@@ -213,10 +213,12 @@
 .mascot {
   position: absolute;
   /* Physical, not logical: the scene behind it is a fixed drawing that does not
-     mirror, so the mascot has to stay over its medallion in both directions. */
-  left: 12%;
-  bottom: 18%;
-  width: clamp(5rem, 13vw, 8rem);
+     mirror, so the mascot has to stay on its patch of ground in both
+     directions. */
+  left: 26%;
+  bottom: 20%;
+  transform: translateX(-50%);
+  width: clamp(4.5rem, 11vw, 7rem);
   height: auto;
 }
 
