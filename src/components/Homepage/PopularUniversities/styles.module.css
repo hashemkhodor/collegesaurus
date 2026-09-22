@@ -7,9 +7,9 @@
 .track {
   display: grid;
   grid-auto-flow: column;
-  /* A fixed card width leaves the peek to arithmetic, and it lands on zero at
-     some widths. Sizing from the number of whole cards keeps the sliver the
-     same everywhere. 100% here is the scrollport minus this track's padding. */
+  /* Sized from how many whole cards should be visible, so a sliver of the
+     next one always shows. 100% here is the scrollport minus this track's
+     padding. */
   --cards: 2;
   --peek: 2.5rem;
   grid-auto-columns: minmax(
@@ -33,10 +33,7 @@
   margin-block: -0.5rem -1.5rem;
   padding-block: 0.5rem 1.5rem;
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
   overscroll-behavior-x: contain;
-  /* Snapped cards land against the content edge, not the bleed edge. */
-  scroll-padding-inline: var(--cs-card-pad);
   scrollbar-width: none;
   -ms-overflow-style: none;
   /* Fades whatever sits in the bleed zone, so the peeking card trails off
@@ -91,7 +88,6 @@
 }
 
 .item {
-  scroll-snap-align: start;
   min-width: 0;
 }
 
@@ -204,54 +200,4 @@
   font-size: var(--cs-text-xs);
   font-weight: 600;
   color: var(--cs-brand-strong);
-}
-
-/* =====================================================
-   Dots
-   ===================================================== */
-
-.dots {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.4rem;
-  /* Reserved so measuring the pages after mount shifts nothing. */
-  min-height: 1.75rem;
-  margin-top: 0.75rem;
-}
-
-.dot {
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  position: relative;
-}
-
-.dot::before {
-  content: '';
-  position: absolute;
-  inset: 50% auto auto 50%;
-  transform: translate(-50%, -50%);
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--cs-surface-muted);
-  transition: background var(--ifm-transition-fast) var(--cs-ease);
-}
-
-.dot:hover::before {
-  background: var(--cs-ink-subtle);
-}
-
-.dotActive::before {
-  background: var(--cs-brand);
-}
-
-.dot:focus-visible {
-  outline: 2px solid var(--cs-focus-ring);
-  outline-offset: 0;
-  border-radius: 50%;
 }
