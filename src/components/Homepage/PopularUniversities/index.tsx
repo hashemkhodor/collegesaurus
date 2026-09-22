@@ -2,10 +2,12 @@ import type {ReactNode} from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import Translate, {translate} from '@docusaurus/Translate';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import {usePluralForm} from '@docusaurus/theme-common';
 import Heading from '@theme/Heading';
 import type {HomeUniversity} from '@site/plugins/homepage-data/types';
 import {featuredFirst} from '@site/src/data/homepage/featured';
+import {UNIVERSITY_LOGOS} from '@site/src/data/homepage/logos';
 import type {Tint} from '../ui';
 import {ArrowLink} from '../ui';
 import ui from '../ui/ui.module.css';
@@ -31,11 +33,33 @@ function UniversityCard({
   index: number;
   programsLabel: (count: number) => string;
 }) {
+  const logo = UNIVERSITY_LOGOS[university.id];
+  const logoBase = useBaseUrl('/img/universities/');
   return (
     <li className={styles.item} data-index={index}>
       <Link to={university.permalink} className={styles.tile}>
-        <span className={clsx(styles.monogram, styles[tint])}>
-          {monogram(university.shortName)}
+        <span
+          className={clsx(
+            styles.mark,
+            logo
+              ? logo.tone === 'dark'
+                ? styles.markDark
+                : styles.markLogo
+              : styles[tint],
+          )}>
+          {logo ? (
+            /* Decorative: the card already names the university in text. */
+            <img
+              className={styles.logo}
+              src={logoBase + logo.file}
+              alt=""
+              width={112}
+              height={40}
+              decoding="async"
+            />
+          ) : (
+            monogram(university.shortName)
+          )}
         </span>
         <span className={styles.shortName}>{university.shortName}</span>
         <span className={styles.fullName}>{university.fullName}</span>

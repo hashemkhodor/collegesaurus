@@ -20,9 +20,16 @@ export function useSnapCarousel(count: number) {
     if (!track || !first) {
       return;
     }
-    const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+    const style = getComputedStyle(track);
+    const gap = parseFloat(style.columnGap) || 0;
     const step = first.getBoundingClientRect().width + gap;
-    const perPage = Math.max(1, Math.round(track.clientWidth / step));
+    // clientWidth includes the track's own padding, which is the bleed zone a
+    // card only peeks into, so a page counts whole cards between the edges.
+    const visible =
+      track.clientWidth -
+      (parseFloat(style.paddingLeft) || 0) -
+      (parseFloat(style.paddingRight) || 0);
+    const perPage = Math.max(1, Math.floor((visible + gap) / step));
     perPageRef.current = perPage;
     setPages(Math.ceil(count / perPage));
   }, [count]);
@@ -71,12 +78,17 @@ export function useSnapCarousel(count: number) {
     }
     const trackBox = track.getBoundingClientRect();
     const itemBox = item.getBoundingClientRect();
-    const rtl = getComputedStyle(track).direction === 'rtl';
+    const style = getComputedStyle(track);
+    const rtl = style.direction === 'rtl';
+    // Land the card against the content edge, inside the bleed padding.
+    const inset = parseFloat(style.paddingLeft) || 0;
     // Marked straight away so the dot responds to the click even before the
     // observer catches up with the scroll.
     setPage(target);
     track.scrollBy({
-      left: rtl ? itemBox.right - trackBox.right : itemBox.left - trackBox.left,
+      left: rtl
+        ? itemBox.right - (trackBox.right - inset)
+        : itemBox.left - (trackBox.left + inset),
       behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
         ? 'auto'
         : 'smooth',
