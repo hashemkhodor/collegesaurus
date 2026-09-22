@@ -12,7 +12,7 @@ import type {Tint} from '../ui';
 import {ArrowLink} from '../ui';
 import ui from '../ui/ui.module.css';
 import {useDocsEntry, useHomepageData} from '../hooks';
-import {useSnapCarousel} from './useSnapCarousel';
+import {useMarquee} from './useMarquee';
 import styles from './styles.module.css';
 
 const TINTS: Tint[] = ['green', 'purple', 'orange', 'blue'];
@@ -25,19 +25,22 @@ function monogram(shortName: string): string {
 function UniversityCard({
   university,
   tint,
-  index,
   programsLabel,
+  copy = false,
 }: {
   university: HomeUniversity;
   tint: Tint;
-  index: number;
   programsLabel: (count: number) => string;
+  copy?: boolean;
 }) {
   const logo = UNIVERSITY_LOGOS[university.id];
   const logoBase = useBaseUrl('/img/universities/');
   return (
-    <li className={styles.item} data-index={index}>
-      <Link to={university.permalink} className={styles.tile}>
+    <li className={styles.item} aria-hidden={copy || undefined}>
+      <Link
+        to={university.permalink}
+        className={styles.tile}
+        tabIndex={copy ? -1 : undefined}>
         <span
           className={clsx(
             styles.mark,
@@ -78,7 +81,7 @@ export default function PopularUniversities(): ReactNode {
   const entry = useDocsEntry('universities');
   const {selectMessage} = usePluralForm();
   const ordered = featuredFirst(universities);
-  const {trackRef, pages, page, goToPage} = useSnapCarousel(ordered.length);
+  const trackRef = useMarquee(ordered.length);
 
   const programsLabel = (count: number) =>
     selectMessage(
@@ -119,39 +122,17 @@ export default function PopularUniversities(): ReactNode {
           id: 'homepage.universities.trackLabel',
           message: 'Universities, scrollable',
         })}>
-        {ordered.map((university, index) => (
+        {[...ordered, ...ordered].map((university, index) => (
           <UniversityCard
-            key={university.id}
+            key={`${university.id}-${index}`}
             university={university}
-            tint={TINTS[index % TINTS.length]!}
-            index={index}
+            tint={TINTS[index % ordered.length % TINTS.length]!}
             programsLabel={programsLabel}
+            copy={index >= ordered.length}
           />
         ))}
       </ul>
 
-      {pages > 1 ? (
-        <div className={styles.dots}>
-          {Array.from({length: pages}, (_, index) => (
-            <button
-              key={index}
-              type="button"
-              className={clsx(styles.dot, index === page && styles.dotActive)}
-              aria-current={index === page}
-              aria-label={translate(
-                {
-                  id: 'homepage.universities.page',
-                  message: 'Page {page} of {total}',
-                },
-                {page: index + 1, total: pages},
-              )}
-              onClick={() => goToPage(index)}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className={styles.dots} aria-hidden="true" />
-      )}
     </section>
   );
 }
