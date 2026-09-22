@@ -7,21 +7,76 @@
 .track {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(8.5rem, 1fr);
+  /* A fixed card width leaves the peek to arithmetic, and it lands on zero at
+     some widths. Sizing from the number of whole cards keeps the sliver the
+     same everywhere. 100% here is the scrollport minus this track's padding. */
+  --cards: 2;
+  --peek: 2.5rem;
+  grid-auto-columns: minmax(
+    calc((100% - var(--peek) - (var(--cards) - 1) * 0.75rem) / var(--cards)),
+    14rem
+  );
   /* Fills the height the row gives the card, with the strip centred in it;
      the tiles themselves still stretch to a common height. */
   flex: 1;
   align-content: center;
   gap: 0.75rem;
   list-style: none;
-  margin: 0;
-  padding: 0;
+  /* Bleeds to the card's edges and pads itself back in, so the first card
+     lines up with the heading while scrolled cards pass under the card's
+     padding instead of being sliced at it. */
+  margin-inline: calc(-1 * var(--cs-card-pad));
+  padding-inline: var(--cs-card-pad);
+  /* Room for the tile shadow and its hover lift. The raised shadow reaches
+     about 36px below the tile, so the bottom gets more than the top, and the
+     mirrored negative margins keep both the height and the centring intact. */
+  margin-block: -0.5rem -1.5rem;
+  padding-block: 0.5rem 1.5rem;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   overscroll-behavior-x: contain;
-  scroll-padding-inline: 0;
+  /* Snapped cards land against the content edge, not the bleed edge. */
+  scroll-padding-inline: var(--cs-card-pad);
   scrollbar-width: none;
   -ms-overflow-style: none;
+  /* Fades whatever sits in the bleed zone, so the peeking card trails off
+     instead of ending on a hard edge. Symmetric, so RTL needs no rule. */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 var(--cs-card-pad),
+    #000 calc(100% - var(--cs-card-pad)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 var(--cs-card-pad),
+    #000 calc(100% - var(--cs-card-pad)),
+    transparent 100%
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+/* Widen the strip as the card gets wider: two cards in the narrow desktop
+   column and on a phone, more in the full-width rows between. */
+@media (min-width: 641px) {
+  .track {
+    --cards: 4;
+  }
+}
+
+@media (min-width: 997px) {
+  .track {
+    --cards: 5;
+  }
+}
+
+@media (min-width: 1200px) {
+  .track {
+    --cards: 2;
+  }
 }
 
 .track::-webkit-scrollbar {
@@ -30,7 +85,9 @@
 
 .track:focus-visible {
   outline: 2px solid var(--cs-focus-ring);
-  outline-offset: 3px;
+  /* Inside the border box: the mask above clips anything drawn outside it,
+     and this is the keyboard affordance for the whole strip. */
+  outline-offset: -2px;
 }
 
 .item {
@@ -66,18 +123,43 @@
   outline-offset: 3px;
 }
 
-.monogram {
+/* One box for both a logo and the initials fallback, so a strip that mixes
+   the two still reads as one set of cards. Wide rather than square, because
+   most university marks are wordmarks. */
+.mark {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 3rem;
-  height: 3rem;
+  width: 100%;
+  height: 3.25rem;
+  padding: 0.4rem 0.5rem;
   border-radius: var(--cs-radius-sm);
   font-family: var(--cs-font-display);
   font-size: 0.85rem;
   font-weight: 800;
   letter-spacing: 0.01em;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.45rem;
+}
+
+/* Light in both themes: these marks are mostly dark ink on transparent and
+   would disappear on the dark card. */
+.markLogo {
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--cs-divider);
+}
+
+/* A few schools publish only a white mark, drawn for their own dark header. */
+.markDark {
+  background: var(--cs-banner-from);
+}
+
+.logo {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
 }
 
 .green {
