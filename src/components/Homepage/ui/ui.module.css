@@ -1,0 +1,141 @@
+/* =====================================================
+   Shared landing-page surfaces, composed into each section
+   ===================================================== */
+
+.card {
+  background: var(--cs-surface);
+  border-radius: var(--cs-radius-lg);
+  box-shadow: var(--cs-card-ring), var(--cs-shadow-card);
+  padding: var(--cs-card-pad);
+  isolation: isolate;
+}
+
+.cardHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.cardTitle {
+  font-family: var(--cs-font-display);
+  font-size: var(--cs-text-h2);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--cs-ink);
+  margin: 0;
+}
+
+.eyebrow {
+  font-size: var(--cs-text-xs);
+  font-weight: 700;
+  letter-spacing: var(--cs-tracking-caps);
+  text-transform: var(--cs-transform-caps);
+  color: var(--cs-brand-strong);
+  margin: 0;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* =====================================================
+   Icon chip
+   ===================================================== */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  border-radius: var(--cs-radius-pill);
+}
+
+.chipSquare {
+  border-radius: var(--cs-radius-sm);
+}
+
+.green {
+  background: var(--cs-green-soft);
+  color: var(--cs-brand-strong);
+}
+
+.purple {
+  background: var(--cs-purple-soft);
+  color: var(--cs-purple);
+}
+
+.orange {
+  background: var(--cs-orange-soft);
+  color: var(--cs-orange);
+}
+
+.blue {
+  background: var(--cs-blue-soft);
+  color: var(--cs-blue);
+}
+
+/* =====================================================
+   Arrow link
+   ===================================================== */
+
+.arrowLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: var(--cs-text-sm);
+  font-weight: 600;
+  color: var(--cs-brand-strong);
+  white-space: nowrap;
+}
+
+.arrowLink:hover {
+  color: var(--cs-brand-strong);
+  text-decoration: none;
+}
+
+.arrow {
+  transition: transform var(--ifm-transition-fast) var(--cs-ease);
+}
+
+.arrowLink:hover .arrow {
+  transform: translateX(3px);
+}
+
+[dir='rtl'] .arrow {
+  transform: scaleX(-1);
+}
+
+[dir='rtl'] .arrowLink:hover .arrow {
+  transform: scaleX(-1) translateX(3px);
+}
+
+/* =====================================================
+   Accent word: brand green with a drawn underline
+   ===================================================== */
+
+.accent {
+  color: var(--cs-accent-text);
+}
+
+.underline {
+  /* A repeating background keeps the stroke under each line when the headline
+     wraps, which Arabic and French both do. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M3 8.5C28 3.5 62 2.5 117 6' fill='none' stroke='%2300A651' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 0.28em;
+  padding-bottom: 0.12em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}

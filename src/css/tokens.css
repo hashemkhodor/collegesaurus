@@ -1,0 +1,147 @@
+/**
+ * Landing page design tokens.
+ *
+ * Custom properties only. `future.v4` puts Infima into a CSS cascade layer, so
+ * site CSS is unlayered and always wins: a plain element selector here would
+ * silently restyle every page.
+ *
+ * Contrast ratios in the comments are measured against the surface the token is
+ * used on, and all text pairs meet WCAG AA.
+ */
+
+:root {
+  /* =====================================================
+     Colour
+     ===================================================== */
+
+  --cs-ink: #0f1b3d; /* 16.9 on white */
+  --cs-ink-muted: #475467; /* 7.7 */
+  --cs-ink-subtle: #667085; /* 4.97, 4.69 on --cs-bg-soft */
+
+  --cs-bg: #ffffff;
+  --cs-bg-soft: #f7f8fc;
+  --cs-surface: #ffffff;
+  --cs-surface-muted: #f2f4f7;
+  --cs-divider: rgb(16 24 40 / 0.08);
+
+  /* The brand green is only 3.19 on white: fine for the underline, icons and
+     other decoration, never for text. Text uses the two darker steps. */
+  --cs-brand: var(--ifm-color-primary);
+  --cs-accent-text: var(--ifm-color-primary-dark); /* 3.9; display sizes only */
+  --cs-brand-strong: #007439; /* 5.9, 5.56 on --cs-bg-soft */
+  --cs-brand-fill: #007a3d; /* 5.45 against white button text */
+  --cs-brand-fill-hover: #007439;
+
+  --cs-green-soft: #e8f7ee;
+  --cs-purple: #6d5ae6;
+  --cs-purple-soft: #f0edff;
+  --cs-orange: #e07b00;
+  --cs-orange-soft: #fff4e5;
+  --cs-blue: #2f6bf0;
+  --cs-blue-soft: #eaf1ff;
+
+  --cs-pill-open-fg: #007439; /* 5.33 on its background */
+  --cs-pill-open-bg: #e8f7ee;
+  --cs-pill-soon-fg: #9a4a00; /* 5.63 */
+  --cs-pill-soon-bg: #fff1dd;
+  --cs-pill-neutral-fg: #475467; /* 6.98 */
+  --cs-pill-neutral-bg: #f2f4f7;
+
+  /* The banner keeps the same dark gradient in both themes. */
+  --cs-banner-from: #1e1b4b;
+  --cs-banner-to: #4b3aa8;
+  --cs-banner-text: #ffffff; /* 8.5 at the lightest stop */
+  --cs-banner-muted: #d9d5fa; /* 6.0 */
+  --cs-banner-accent: #4ade80; /* 4.88 */
+  --cs-banner-ring: rgb(255 255 255 / 0.1);
+
+  --cs-focus-ring: var(--cs-brand-strong);
+
+  /* =====================================================
+     Type
+     ===================================================== */
+
+  --cs-font-display: var(--ifm-heading-font-family);
+
+  --cs-text-display: clamp(2.5rem, 1.5rem + 4vw, 4.25rem);
+  --cs-lh-display: 1.05;
+  --cs-tracking-display: -0.03em;
+  --cs-text-h2: clamp(1.375rem, 1.1rem + 1vw, 1.875rem);
+  --cs-text-h3: 1.125rem;
+  --cs-text-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.1875rem);
+  --cs-text-sm: 0.875rem;
+  --cs-text-xs: 0.75rem;
+  --cs-tracking-caps: 0.06em;
+  --cs-transform-caps: uppercase;
+
+  /* =====================================================
+     Layout, shape, motion
+     ===================================================== */
+
+  --cs-container: 1200px;
+  --cs-gutter: clamp(1rem, 4vw, 2rem);
+  --cs-gap: clamp(1rem, 2vw, 1.5rem);
+  --cs-card-pad: clamp(1.25rem, 2.5vw, 1.75rem);
+  --cs-section-space: clamp(2rem, 5vw, 4rem);
+
+  --cs-radius-sm: 10px;
+  --cs-radius-md: 16px;
+  --cs-radius-lg: 24px;
+  --cs-radius-pill: 999px;
+
+  --cs-card-ring: 0 0 0 1px transparent;
+  --cs-shadow-card: 0 1px 2px rgb(16 24 40 / 0.04),
+    0 12px 32px -12px rgb(16 24 40 / 0.12);
+  --cs-shadow-raised: 0 2px 6px rgb(16 24 40 / 0.05),
+    0 24px 56px -16px rgb(16 24 40 / 0.2);
+  --cs-shadow-brand: 0 10px 24px -8px rgb(0 122 61 / 0.45);
+
+  --cs-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+[data-theme='dark'] {
+  --cs-ink: #e9ecf5; /* 13.0 on the dark surface */
+  --cs-ink-muted: #b4bccb; /* 8.0 */
+  --cs-ink-subtle: #9aa4b2; /* 6.1 */
+
+  --cs-bg: var(--ifm-background-color);
+  --cs-bg-soft: #202123;
+  --cs-surface: var(--ifm-background-surface-color);
+  --cs-surface-muted: rgb(255 255 255 / 0.06);
+  --cs-divider: rgb(255 255 255 / 0.08);
+
+  --cs-accent-text: #32a364; /* 5.0 */
+  --cs-brand-strong: #59c287; /* 6.9 */
+  --cs-brand-fill: #277f4e; /* 4.96 against white button text */
+  --cs-brand-fill-hover: #22704a;
+
+  --cs-green-soft: rgb(60 179 113 / 0.16);
+  --cs-purple: #a99bff;
+  --cs-purple-soft: rgb(139 124 246 / 0.18);
+  --cs-orange: #fdba74;
+  --cs-orange-soft: rgb(245 158 11 / 0.16);
+  --cs-blue: #8db0ff;
+  --cs-blue-soft: rgb(96 145 255 / 0.18);
+
+  --cs-pill-open-fg: #6ee7a0; /* 7.63 */
+  --cs-pill-open-bg: rgb(60 179 113 / 0.16);
+  --cs-pill-soon-fg: #fdba74; /* 6.76 */
+  --cs-pill-soon-bg: rgb(245 158 11 / 0.16);
+  --cs-pill-neutral-fg: #b4bccb; /* 6.32 */
+  --cs-pill-neutral-bg: rgb(255 255 255 / 0.06);
+
+  --cs-card-ring: 0 0 0 1px var(--cs-divider);
+  --cs-shadow-card: 0 1px 2px rgb(0 0 0 / 0.3),
+    0 16px 40px -16px rgb(0 0 0 / 0.6);
+  --cs-shadow-raised: 0 2px 6px rgb(0 0 0 / 0.35),
+    0 28px 60px -20px rgb(0 0 0 / 0.7);
+  --cs-shadow-brand: 0 10px 24px -8px rgb(0 0 0 / 0.5);
+}
+
+/* Arabic joins its letters, so tracking and small-caps styling have to go. */
+:lang(ar) {
+  --cs-lh-display: 1.3;
+  --cs-tracking-display: 0;
+  --cs-tracking-caps: 0;
+  --cs-transform-caps: none;
+}
