@@ -37,6 +37,11 @@
   margin: 0;
 }
 
+.focusable:focus-visible {
+  outline: 2px solid var(--cs-focus-ring);
+  outline-offset: 3px;
+}
+
 .visuallyHidden {
   position: absolute;
   width: 1px;

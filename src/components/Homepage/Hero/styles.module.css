@@ -1,0 +1,277 @@
+/* =====================================================
+   Hero
+   ===================================================== */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(
+      55rem 30rem at 85% -15%,
+      var(--cs-blue-soft),
+      transparent 62%
+    ),
+    radial-gradient(38rem 26rem at 5% 0%, var(--cs-green-soft), transparent 58%),
+    var(--cs-bg);
+  padding-block: clamp(1.5rem, 4vw, 3rem) 0;
+}
+
+.inner {
+  max-width: var(--cs-container);
+  margin-inline: auto;
+  padding-inline: var(--cs-gutter);
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: start;
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+  padding-top: clamp(0.5rem, 3vw, 2.5rem);
+}
+
+.eyebrow {
+  background: var(--cs-green-soft);
+  border-radius: var(--cs-radius-pill);
+  padding: 0.4rem 0.85rem;
+}
+
+.title {
+  font-family: var(--cs-font-display);
+  font-size: var(--cs-text-display);
+  line-height: var(--cs-lh-display);
+  letter-spacing: var(--cs-tracking-display);
+  font-weight: 800;
+  color: var(--cs-ink);
+  margin: 0;
+}
+
+.titleLine {
+  display: block;
+}
+
+.lead {
+  font-size: var(--cs-text-lead);
+  line-height: 1.6;
+  color: var(--cs-ink-muted);
+  max-width: 32rem;
+  margin: 0;
+}
+
+/* =====================================================
+   Search
+   ===================================================== */
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 34rem;
+  background: var(--cs-surface);
+  border-radius: var(--cs-radius-pill);
+  box-shadow: var(--cs-card-ring), var(--cs-shadow-card);
+  padding: 0.4rem;
+  padding-inline-start: 1rem;
+}
+
+.searchIcon {
+  display: flex;
+  color: var(--cs-ink-subtle);
+  flex: none;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  height: 2.75rem;
+  border: 0;
+  background: transparent;
+  color: var(--cs-ink);
+  font-size: 1rem;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.searchInput::placeholder {
+  color: var(--cs-ink-subtle);
+  opacity: 1;
+}
+
+.searchInput::-webkit-search-decoration,
+.searchInput::-webkit-search-cancel-button,
+.searchInput::-webkit-search-results-button,
+.searchInput::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+}
+
+.searchButton {
+  composes: focusable from '../ui/ui.module.css';
+  flex: none;
+  height: 2.75rem;
+  padding-inline: clamp(1rem, 3vw, 1.75rem);
+  border: 0;
+  border-radius: var(--cs-radius-pill);
+  background: var(--cs-brand-fill);
+  box-shadow: var(--cs-shadow-brand);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--ifm-transition-fast) var(--cs-ease);
+}
+
+.searchButton:hover {
+  background: var(--cs-brand-fill-hover);
+}
+
+.search:focus-within {
+  box-shadow: var(--cs-card-ring), var(--cs-shadow-raised);
+}
+
+/* =====================================================
+   Popular searches
+   ===================================================== */
+
+.popular {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.popularTitle {
+  font-size: var(--cs-text-sm);
+  font-weight: 600;
+  color: var(--cs-ink-muted);
+  flex: none;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.chips::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  composes: focusable from '../ui/ui.module.css';
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--cs-radius-pill);
+  background: var(--cs-surface-muted);
+  color: var(--cs-ink-muted);
+  font-size: var(--cs-text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background var(--ifm-transition-fast) var(--cs-ease);
+}
+
+.chip:hover {
+  background: var(--cs-green-soft);
+  color: var(--cs-brand-strong);
+  text-decoration: none;
+}
+
+/* =====================================================
+   Illustration and quick actions
+   ===================================================== */
+
+.artColumn {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.art {
+  position: relative;
+  width: 100%;
+  margin-inline: auto;
+}
+
+.scene {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.mascot {
+  position: absolute;
+  inset-inline-start: 12%;
+  bottom: 18%;
+  width: clamp(5rem, 13vw, 8rem);
+  height: auto;
+}
+
+/* The panel rides up over the illustration, as in the reference. */
+.artColumn > :last-child {
+  margin-top: clamp(-3.5rem, -4vw, -2rem);
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 996px) {
+  .inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .copy {
+    align-items: center;
+    text-align: center;
+    padding-top: 0;
+  }
+
+  .lead {
+    margin-inline: auto;
+  }
+
+  .popular {
+    justify-content: center;
+  }
+
+  .art {
+    max-width: 26rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .art {
+    max-width: 18rem;
+  }
+
+  /* One scrolling row keeps the chips from pushing the page down on a phone. */
+  .chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .popular {
+    /* The row scrolls, so fade its trailing edge instead of clipping a chip. */
+    -webkit-mask-image: linear-gradient(to right, #000 82%, transparent);
+    mask-image: linear-gradient(to right, #000 82%, transparent);
+  }
+
+  [dir='rtl'] .popular {
+    -webkit-mask-image: linear-gradient(to left, #000 82%, transparent);
+    mask-image: linear-gradient(to left, #000 82%, transparent);
+  }
+
+  .popularTitle {
+    display: none;
+  }
+}
