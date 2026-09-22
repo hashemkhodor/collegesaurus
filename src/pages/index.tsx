@@ -3,8 +3,10 @@ import {translate} from '@docusaurus/Translate';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import Hero from '@site/src/components/Homepage/Hero';
+import StatsCard from '@site/src/components/Homepage/StatsCard';
+import PopularUniversities from '@site/src/components/Homepage/PopularUniversities';
+import UpcomingDeadlines from '@site/src/components/Homepage/UpcomingDeadlines';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
-import UniversityQuickList from '@site/src/components/UniversityQuickList';
 
 import styles from './index.module.css';
 
@@ -23,8 +25,14 @@ export default function Home(): ReactNode {
           so a hero outside it would put the search out of that link's reach. */}
       <main className={styles.page}>
         <Hero />
+        <div className={styles.container}>
+          <div className={styles.row}>
+            <StatsCard />
+            <PopularUniversities />
+            <UpcomingDeadlines />
+          </div>
+        </div>
         <HomepageFeatures />
-        <UniversityQuickList />
       </main>
     </Layout>
   );
