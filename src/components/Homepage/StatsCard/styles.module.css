@@ -1,0 +1,58 @@
+.card {
+  display: flex;
+  flex-direction: column;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.85rem, 2vw, 1.35rem);
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.value {
+  font-family: var(--cs-font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--cs-ink);
+  letter-spacing: -0.02em;
+}
+
+.label {
+  font-size: var(--cs-text-sm);
+  color: var(--cs-ink-muted);
+}
+
+/* Two columns read better than a tall list once the card is full width. */
+@media (min-width: 641px) and (max-width: 996px) {
+  .list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 420px) {
+  .list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+
+  .value {
+    font-size: 1.25rem;
+  }
+}
