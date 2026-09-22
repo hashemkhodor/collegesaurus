@@ -9,7 +9,6 @@ import {Accent, Icon} from '../ui';
 import ui from '../ui/ui.module.css';
 import {findDoc, useHomepageData} from '../hooks';
 import QuickActions from '../QuickActions';
-import HeroArt from './HeroArt';
 import styles from './styles.module.css';
 
 function HeroSearch() {
@@ -120,10 +119,7 @@ export default function Hero(): ReactNode {
           <PopularSearches />
         </div>
 
-        <div className={styles.artColumn}>
-          <HeroArt />
-          <QuickActions />
-        </div>
+        <QuickActions />
       </div>
     </section>
   );

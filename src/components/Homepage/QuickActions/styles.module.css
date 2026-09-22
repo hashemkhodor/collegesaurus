@@ -1,6 +1,8 @@
+/* Three full-width rows at every size. As columns they had to share the hero's
+   narrow half, which left each one a cramped strip of text under an oversized
+   chip. */
 .panel {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   background: var(--cs-surface);
   border-radius: var(--cs-radius-lg);
   box-shadow: var(--cs-card-ring), var(--cs-shadow-raised);
@@ -9,18 +11,21 @@
 
 .action {
   composes: focusable from '../ui/ui.module.css';
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    'chip kicker arrow'
+    'chip title arrow'
+    'chip description arrow';
   align-items: center;
-  gap: 0.35rem;
-  padding: clamp(1rem, 2vw, 1.5rem) 0.75rem;
-  text-align: center;
+  gap: 0 0.9rem;
+  padding: clamp(0.9rem, 2vw, 1.25rem) clamp(1rem, 2.5vw, 1.5rem);
   color: inherit;
   transition: background var(--ifm-transition-fast) var(--cs-ease);
 }
 
 .action + .action {
-  border-inline-start: 1px solid var(--cs-divider);
+  border-top: 1px solid var(--cs-divider);
 }
 
 .action:hover {
@@ -29,13 +34,19 @@
   color: inherit;
 }
 
+.action > :first-child {
+  grid-area: chip;
+}
+
 .kicker {
+  grid-area: kicker;
+  align-self: end;
   font-size: var(--cs-text-sm);
   color: var(--cs-ink-subtle);
-  margin-top: 0.35rem;
 }
 
 .title {
+  grid-area: title;
   font-family: var(--cs-font-display);
   font-size: var(--cs-text-h3);
   font-weight: 700;
@@ -43,15 +54,16 @@
 }
 
 .description {
+  grid-area: description;
+  align-self: start;
   font-size: var(--cs-text-sm);
   line-height: 1.45;
   color: var(--cs-ink-muted);
-  max-width: 14rem;
 }
 
 .arrow {
+  grid-area: arrow;
   color: var(--cs-brand-strong);
-  margin-top: 0.5rem;
   transition: transform var(--ifm-transition-fast) var(--cs-ease);
 }
 
@@ -65,54 +77,4 @@
 
 [dir='rtl'] .action:hover .arrow {
   transform: scaleX(-1) translateX(3px);
-}
-
-/* Stacked rows read better than three narrow columns on a phone. */
-@media (max-width: 640px) {
-  .panel {
-    grid-template-columns: 1fr;
-  }
-
-  .action {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    grid-template-areas:
-      'chip kicker arrow'
-      'chip title arrow'
-      'chip description arrow';
-    align-items: center;
-    gap: 0 0.9rem;
-    text-align: start;
-    padding: 1rem;
-  }
-
-  .action + .action {
-    border-inline-start: 0;
-    border-top: 1px solid var(--cs-divider);
-  }
-
-  .action > :first-child {
-    grid-area: chip;
-  }
-
-  .kicker {
-    grid-area: kicker;
-    margin-top: 0;
-    align-self: end;
-  }
-
-  .title {
-    grid-area: title;
-  }
-
-  .description {
-    grid-area: description;
-    align-self: start;
-    max-width: none;
-  }
-
-  .arrow {
-    grid-area: arrow;
-    margin-top: 0;
-  }
 }
