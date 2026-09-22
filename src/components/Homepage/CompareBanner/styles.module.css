@@ -1,0 +1,117 @@
+.banner {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  align-items: center;
+  gap: var(--cs-gap);
+  margin-top: var(--cs-section-space);
+  padding: clamp(1.5rem, 4vw, 3rem);
+  border-radius: var(--cs-radius-lg);
+  background:
+    radial-gradient(
+      28rem 18rem at 78% 20%,
+      rgb(139 124 246 / 0.55),
+      transparent 70%
+    ),
+    linear-gradient(115deg, var(--cs-banner-from), var(--cs-banner-to));
+  box-shadow: 0 0 0 1px var(--cs-banner-ring), var(--cs-shadow-raised);
+  overflow: hidden;
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: var(--cs-text-xs);
+  font-weight: 700;
+  letter-spacing: var(--cs-tracking-caps);
+  text-transform: var(--cs-transform-caps);
+  color: var(--cs-banner-muted);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--cs-font-display);
+  font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: var(--cs-tracking-display);
+  color: var(--cs-banner-text);
+}
+
+.accent {
+  color: var(--cs-banner-accent);
+}
+
+.body {
+  margin: 0;
+  max-width: 30rem;
+  font-size: var(--cs-text-lead);
+  line-height: 1.55;
+  color: var(--cs-banner-muted);
+}
+
+.cta {
+  composes: focusable from '../ui/ui.module.css';
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--cs-radius-pill);
+  background: #fff;
+  color: #0f1b3d;
+  font-weight: 700;
+  transition: transform var(--ifm-transition-fast) var(--cs-ease);
+}
+
+.cta:hover {
+  color: #0f1b3d;
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+
+.ctaArrow {
+  transition: transform var(--ifm-transition-fast) var(--cs-ease);
+}
+
+.cta:hover .ctaArrow {
+  transform: translateX(3px);
+}
+
+[dir='rtl'] .ctaArrow {
+  transform: scaleX(-1);
+}
+
+[dir='rtl'] .cta:hover .ctaArrow {
+  transform: scaleX(-1) translateX(3px);
+}
+
+.art {
+  width: 100%;
+  height: auto;
+  max-height: 16rem;
+}
+
+@media (max-width: 996px) {
+  .banner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .art {
+    max-height: 12rem;
+    justify-self: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .art {
+    display: none;
+  }
+}
