@@ -326,32 +326,8 @@
     "message": "الوسوم",
     "description": "The title of the tag list page"
   },
-  "homepage.hero.title": {
-    "message": "دليلك إلى الجامعة في لبنان، بكل وضوح."
-  },
-  "homepage.hero.subtitle": {
-    "message": "دليل مجاني من إعداد طلاب لاستكشاف الجامعات والمنح، بنفس القالب لكل جامعة لتقارن ما يهمّ فعلاً."
-  },
-  "homepage.hero.ctaUniversities": {
-    "message": "استكشف الجامعات"
-  },
-  "homepage.hero.ctaScholarships": {
-    "message": "ابحث عن منحة"
-  },
   "homepage.hero.searchLabel": {
     "message": "ابحث في الجامعات والمنح"
-  },
-  "homepage.stats.ariaLabel": {
-    "message": "لمحة سريعة"
-  },
-  "homepage.features.heading": {
-    "message": "ماذا ستجد هنا"
-  },
-  "homepage.unilist.heading": {
-    "message": "انتقل مباشرةً إلى جامعة"
-  },
-  "homepage.unilist.subheading": {
-    "message": "تجاوز القائمة. اختر الجامعة وانتقل إلى صفحتها مباشرةً."
   },
   "theme.SearchBar.noResultsText": {
     "message": "لا توجد نتائج"
@@ -389,33 +365,218 @@
     "description": "The paragraph for empty search result"
   },
   "homepage.stats.universities": {
-    "message": "جامعة"
+    "message": "جامعة|جامعة|جامعة|جامعات|جامعة|جامعة",
+    "description": "Label under the university count, by plural form"
   },
   "homepage.stats.scholarships": {
-    "message": "منحة"
+    "message": "منحة|منحة|منحة|منح|منحة|منحة",
+    "description": "Label under the scholarship count, by plural form"
   },
   "homepage.stats.languages": {
-    "message": "لغتان"
-  },
-  "homepage.features.universities.title": {
-    "message": "الجامعات في لبنان"
-  },
-  "homepage.features.universities.description": {
-    "message": "التخصصات، ومتطلبات SAT والثانوية، ومواعيد التقديم، وأنواع الطلبات، والوثائق، وجهات الاتصال لـ AUB و LAU والجامعة اللبنانية وغيرها."
-  },
-  "homepage.features.universities.cta": {
-    "message": "تصفّح الجامعات"
-  },
-  "homepage.features.scholarships.title": {
-    "message": "المنح الخارجية"
-  },
-  "homepage.features.scholarships.description": {
-    "message": "منح من منظمات غير حكومية ومؤسسات لبنانية وبرامج دولية، مع شروط الأهلية، ومواعيد التقديم، والوثائق، وآلية التقديم."
-  },
-  "homepage.features.scholarships.cta": {
-    "message": "تصفّح المنح"
+    "message": "لغة|لغة|لغة|لغات|لغة|لغة",
+    "description": "Label under the language count, by plural form"
   },
   "homepage.hero.searchPlaceholder": {
     "message": "ابحث في الجامعات والمنح والتخصصات…"
+  },
+  "homepage.meta.description": {
+    "message": "دليل الطلاب إلى الجامعات والمنح الخارجية في لبنان.",
+    "description": "The homepage meta description"
+  },
+  "homepage.deadline.aubTransferSpring": {
+    "message": "طلبات الانتقال، ربيع 2027"
+  },
+  "homepage.deadline.mepiTl": {
+    "message": "قادة الغد، الفترة المتوقعة"
+  },
+  "homepage.deadline.stipendiumHungaricum": {
+    "message": "الدورة المقبلة، الموعد المتوقع"
+  },
+  "homepage.majors.computerScience": {
+    "message": "علوم الحاسوب"
+  },
+  "homepage.majors.engineering": {
+    "message": "الهندسة"
+  },
+  "homepage.majors.medicine": {
+    "message": "الطب"
+  },
+  "homepage.majors.nursing": {
+    "message": "التمريض"
+  },
+  "homepage.majors.business": {
+    "message": "إدارة الأعمال"
+  },
+  "homepage.majors.law": {
+    "message": "الحقوق"
+  },
+  "homepage.majors.architecture": {
+    "message": "الهندسة المعمارية"
+  },
+  "homepage.majors.arts": {
+    "message": "الفنون والتصميم"
+  },
+  "homepage.majors.psychology": {
+    "message": "علم النفس"
+  },
+  "homepage.majors.education": {
+    "message": "التربية"
+  },
+  "homepage.search.computerScience": {
+    "message": "علوم الحاسوب"
+  },
+  "homepage.search.medicine": {
+    "message": "الطب"
+  },
+  "homepage.search.engineering": {
+    "message": "الهندسة"
+  },
+  "homepage.benefits.sourced.title": {
+    "message": "مصادر رسمية"
+  },
+  "homepage.benefits.sourced.description": {
+    "message": "كل معلومة مرتبطة بمصدرها الرسمي، وكل صفحة تذكر السنة الدراسية التي تغطيها."
+  },
+  "homepage.benefits.together.title": {
+    "message": "كل شيء في مكان واحد"
+  },
+  "homepage.benefits.together.description": {
+    "message": "الجامعات والتخصصات والمتطلبات والأقساط والمنح، بالشكل نفسه في كل مكان."
+  },
+  "homepage.benefits.forYou.title": {
+    "message": "مصمم لطلاب لبنان"
+  },
+  "homepage.benefits.forYou.description": {
+    "message": "أعدّه طلاب مرّوا بالتجربة، ليساعدك على الاختيار بثقة."
+  },
+  "homepage.benefits.free.title": {
+    "message": "مجاني 100%"
+  },
+  "homepage.benefits.free.description": {
+    "message": "بلا تسجيل وبلا رسوم، والموقع مفتوح المصدر بالكامل."
+  },
+  "homepage.benefits.title": {
+    "message": "لماذا Collegesaurus"
+  },
+  "homepage.compare.eyebrow": {
+    "message": "كل الجامعات بقالب واحد"
+  },
+  "homepage.compare.title": {
+    "message": "قارن ما {accent}"
+  },
+  "homepage.compare.titleAccent": {
+    "message": "يهم فعلًا."
+  },
+  "homepage.compare.body": {
+    "message": "الأقساط والبرامج والمتطلبات ومواعيد التقديم، معروضة بالطريقة نفسها لكل جامعة."
+  },
+  "homepage.compare.cta": {
+    "message": "تصفّح الجامعات"
+  },
+  "homepage.majors.title": {
+    "message": "استكشف حسب التخصص"
+  },
+  "homepage.majors.subtitle": {
+    "message": "تصفّح المجالات الشائعة واعثر على مسارك."
+  },
+  "homepage.universities.programs": {
+    "message": "{count} برنامج|{count} برنامج|{count} برنامج|{count} برامج|{count} برنامج|{count} برنامج",
+    "description": "Program count on a university card, by plural form"
+  },
+  "homepage.universities.title": {
+    "message": "جامعات شائعة"
+  },
+  "homepage.universities.viewAll": {
+    "message": "عرض الكل"
+  },
+  "homepage.universities.trackLabel": {
+    "message": "الجامعات، قابلة للتمرير"
+  },
+  "homepage.universities.page": {
+    "message": "صفحة {page} من {total}"
+  },
+  "homepage.quick.kicker": {
+    "message": "ابحث عن"
+  },
+  "homepage.quick.university.title": {
+    "message": "جامعة"
+  },
+  "homepage.quick.university.description": {
+    "message": "استكشف الجامعات في لبنان"
+  },
+  "homepage.quick.major.title": {
+    "message": "تخصص"
+  },
+  "homepage.quick.major.description": {
+    "message": "اكتشف البرامج التي تناسبك"
+  },
+  "homepage.quick.scholarship.title": {
+    "message": "منحة"
+  },
+  "homepage.quick.scholarship.description": {
+    "message": "موّل دراستك الجامعية"
+  },
+  "homepage.hero.searchButton": {
+    "message": "ابحث"
+  },
+  "homepage.hero.popularLabel": {
+    "message": "عمليات بحث شائعة"
+  },
+  "homepage.hero.popularTitle": {
+    "message": "عمليات بحث شائعة"
+  },
+  "homepage.hero.eyebrow": {
+    "message": "كل المعلومات. بلا تخمين."
+  },
+  "homepage.hero.titleLine1": {
+    "message": "مستقبلك."
+  },
+  "homepage.hero.titleLine2": {
+    "message": "قرارك."
+  },
+  "homepage.hero.titleLine3": {
+    "message": "ونحن نجعله {accent}"
+  },
+  "homepage.hero.titleAccent": {
+    "message": "بسيطًا."
+  },
+  "homepage.hero.lead": {
+    "message": "يساعد Collegesaurus طلاب لبنان على اكتشاف الجامعات والتخصصات والمنح، كلها في مكان واحد."
+  },
+  "homepage.stats.programs": {
+    "message": "برنامج|برنامج|برنامج|برامج|برنامج|برنامج",
+    "description": "Label under the program count, by plural form"
+  },
+  "homepage.stats.title": {
+    "message": "كل ما تحتاجه، {accent}"
+  },
+  "homepage.stats.titleAccent": {
+    "message": "في مكان واحد."
+  },
+  "homepage.deadlines.open": {
+    "message": "التقديم مفتوح"
+  },
+  "homepage.deadlines.closing": {
+    "message": "بقي {count} يوم|بقي يوم واحد|بقي يومان|بقيت {count} أيام|بقي {count} يومًا|بقي {count} يوم",
+    "description": "Days until a deadline closes, by plural form"
+  },
+  "homepage.deadlines.opening": {
+    "message": "يفتح خلال {count} يوم|يفتح غدًا|يفتح خلال يومين|يفتح خلال {count} أيام|يفتح خلال {count} يومًا|يفتح خلال {count} يوم",
+    "description": "Days until a deadline opens, by plural form"
+  },
+  "homepage.deadlines.closed": {
+    "message": "أُغلق"
+  },
+  "homepage.deadlines.closes": {
+    "message": "يُغلق في {date}"
+  },
+  "homepage.deadlines.title": {
+    "message": "مواعيد تقديم قريبة"
+  },
+  "homepage.deadlines.empty": {
+    "message": "لا مواعيد تقديم في الأسابيع المقبلة."
+  },
+  "homepage.deadlines.emptyLink": {
+    "message": "تجد مواعيد التقديم في صفحة كل جامعة."
   }
 }

@@ -3,6 +3,13 @@
   padding-bottom: var(--cs-section-space);
 }
 
+/* Keeps the last tiles clear of the floating chat button on a phone. */
+@media (max-width: 640px) {
+  .page {
+    padding-bottom: 5rem;
+  }
+}
+
 .container {
   max-width: var(--cs-container);
   margin-inline: auto;

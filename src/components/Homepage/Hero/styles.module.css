@@ -212,7 +212,9 @@
 
 .mascot {
   position: absolute;
-  inset-inline-start: 12%;
+  /* Physical, not logical: the scene behind it is a fixed drawing that does not
+     mirror, so the mascot has to stay over its medallion in both directions. */
+  left: 12%;
   bottom: 18%;
   width: clamp(5rem, 13vw, 8rem);
   height: auto;

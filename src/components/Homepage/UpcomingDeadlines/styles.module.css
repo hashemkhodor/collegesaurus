@@ -95,12 +95,15 @@
   margin: 0;
 }
 
-@media (max-width: 420px) {
+/* Narrow enough that the pill beside the name breaks it mid-word, so it gets
+   its own line under the text instead. */
+@media (max-width: 460px) {
   .row {
     flex-wrap: wrap;
   }
 
   .when {
+    flex-basis: 100%;
     margin-inline-start: calc(40px + 0.75rem);
   }
 }
