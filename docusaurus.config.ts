@@ -65,6 +65,9 @@ const config: Config = {
   ],
 
   plugins: [
+    // Path spelled out to the file: plugin paths go through require.resolve,
+    // which would not find a directory holding only index.ts.
+    './plugins/homepage-data/index.ts',
     [
       require.resolve('@easyops-cn/docusaurus-search-local'),
       {
