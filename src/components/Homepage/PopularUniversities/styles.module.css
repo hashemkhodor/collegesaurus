@@ -150,7 +150,7 @@
 
 /* A few schools publish only a white mark, drawn for their own dark header. */
 .markDark {
-  background: var(--cs-banner-from);
+  background: var(--cs-mark-dark);
 }
 
 .logo {

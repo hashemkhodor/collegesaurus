@@ -458,21 +458,6 @@
   "homepage.benefits.title": {
     "message": "لماذا Collegesaurus"
   },
-  "homepage.compare.eyebrow": {
-    "message": "كل الجامعات بقالب واحد"
-  },
-  "homepage.compare.title": {
-    "message": "قارن ما {accent}"
-  },
-  "homepage.compare.titleAccent": {
-    "message": "يهم فعلًا."
-  },
-  "homepage.compare.body": {
-    "message": "الأقساط والبرامج والمتطلبات ومواعيد التقديم، معروضة بالطريقة نفسها لكل جامعة."
-  },
-  "homepage.compare.cta": {
-    "message": "تصفّح الجامعات"
-  },
   "homepage.majors.title": {
     "message": "استكشف حسب التخصص"
   },
