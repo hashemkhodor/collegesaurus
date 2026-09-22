@@ -48,7 +48,9 @@
 @media (max-width: 420px) {
   .list {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    /* Two columns when they fit, one when they don't: at 320px a forced pair
+       left "Scholarships" wider than its cell. */
+    grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
     gap: 0.85rem;
   }
 
