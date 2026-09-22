@@ -23,7 +23,9 @@
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
   gap: clamp(1.5rem, 4vw, 3rem);
-  align-items: start;
+  /* Both columns are now content, so centre the shorter one against the
+     headline instead of pinning it to the top. */
+  align-items: center;
 }
 
 .copy {
@@ -186,47 +188,6 @@
   background: var(--cs-green-soft);
   color: var(--cs-brand-strong);
   text-decoration: none;
-}
-
-/* =====================================================
-   Illustration and quick actions
-   ===================================================== */
-
-.artColumn {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.art {
-  position: relative;
-  width: 100%;
-  margin-inline: auto;
-}
-
-.scene {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.mascot {
-  position: absolute;
-  /* Physical, not logical: the scene behind it is a fixed drawing that does not
-     mirror, so the mascot has to stay on its patch of ground in both
-     directions. */
-  left: 26%;
-  bottom: 20%;
-  transform: translateX(-50%);
-  width: clamp(4.5rem, 11vw, 7rem);
-  height: auto;
-}
-
-/* The panel rides up over the illustration, as in the reference. */
-.artColumn > :last-child {
-  margin-top: clamp(-3.5rem, -4vw, -2rem);
-  position: relative;
-  z-index: 1;
 }
 
 @media (max-width: 996px) {
