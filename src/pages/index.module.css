@@ -1,6 +1,10 @@
 .page {
   background: var(--cs-bg);
   padding-bottom: var(--cs-section-space);
+  /* Nothing here scrolls sideways: the strips that do are their own scroll
+     containers. `clip` rather than `hidden` so it creates no scroll container
+     of its own and leaves sticky positioning alone. */
+  overflow-x: clip;
 }
 
 /* Keeps the last tiles clear of the floating chat button on a phone. */
