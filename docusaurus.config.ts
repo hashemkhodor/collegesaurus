@@ -79,6 +79,13 @@ const config: Config = {
         blogRouteBasePath: 'stories',
         blogDir: 'stories',
         docsPluginIdForPreferredVersion: 'universities',
+        // Decorative nodes are not content: without this the table sort glyphs
+        // and every "↗" land in the index and open most snippets.
+        ignoreCssSelectors: ['[aria-hidden="true"]'],
+        // Near-miss matching only adds noise on a corpus this small.
+        fuzzyMatchingDistance: 0,
+        // The navbar's quick list; the search page ranks a much larger pool.
+        searchResultLimits: 10,
       },
     ],
     [
