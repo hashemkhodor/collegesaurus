@@ -951,7 +951,7 @@ button {
 }
 
 .kv-row dd {
-  flex: 0 1 auto;
+  flex: 0 0 auto;
   max-width: 60%;
   margin: 0;
   font-weight: 700;

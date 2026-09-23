@@ -21,10 +21,13 @@ Then open <http://127.0.0.1:8765/design/university-page/>. Opening `index.html`
 straight from disk also works, because it uses plain scripts and relative paths into
 `src/css/tokens.css` and `static/img/`.
 
-Three universities are in the snapshot:
-- **AUB**, with lots of content.
-- **AUST**, with thin content, carried forward from 2025-26.
+All 14 universities are in the snapshot. Three show the range best:
+- **AUB**, with lots of content, and the only page already updated for 2026-27.
+- **AUST**, with thin content.
 - **USJ**, a stress test with 31 faculty groups and four tuition tables.
+
+The other 13 pages still carry 2025-26 content, so they open with the "Not yet
+updated" notice, and their application dates show as closed.
 
 To switch between them:
 - **Desktop:** pick a university in the sidebar. The navbar's globe switches English
@@ -158,9 +161,10 @@ two columns on desktop.
 - The layout mirrors, arrows flip, and program names are isolated.
 - English asides inside Arabic headings are isolated too, so their brackets survive
   a line break.
-- Fact values and the year chip are pinned left to right, like data. Prose and
-  headings keep the natural bidi order, so "2025-2026" inside an Arabic heading
-  reads right to left as it does on the live site; see decision 7.
+- Fact values and the year chip are pinned left to right, like data, unless the
+  value itself is in Arabic script: LU's "500,000 ل.ل" keeps its right-to-left
+  order. Prose and headings keep the natural bidi order, so "2025-2026" inside an
+  Arabic heading reads right to left as it does on the live site; see decision 7.
 
 **Behaviour.**
 - Anchor links open whatever collapsed group holds their target.
@@ -191,9 +195,10 @@ the rules know the Arabic headers and "ل.ل".
 
 Two checks back this up:
 - The script verifies that every link in the MDX survives parsing.
-- A browser check confirmed that every unique link and every table cell for AUB,
-  AUST and USJ, in both languages, is on the rendered page. That's 77, 58 and 117
-  links, and 230, 33 and 258 cells.
+- A browser check confirmed that every unique link and every table cell of all 14
+  universities, in both languages, is on the rendered page: 945 links and 1,645
+  cells in English. The same check found no horizontal scroll and no clipped table
+  at 320, 390, 768, 1024, 1280 and 1440px.
 
 ## Word editing stays the same
 
@@ -288,7 +293,7 @@ and icons.
   plain table, never to an error.
 
 **QA matrix for the build:**
-- universities: AUB, AUST, USJ and one more
+- universities: all 14
 - languages: EN, AR and FR
 - themes: light and dark
 - widths: 320, 390, 768, 1024, 1280 and 1440
@@ -323,7 +328,7 @@ one page, and borrowed C's collapsing only for long lists.
 | `index.html` | The mockup page |
 | `assets/mockup.css` | Layout and components; reads the real tokens from `src/css/tokens.css` |
 | `assets/mockup.js` | Rendering and behaviour, as a plain script |
-| `assets/content.js` | A generated snapshot of the 2026-2027 Drive sync of 2026-09-23 (AUB, AUST, USJ; EN and AR) |
+| `assets/content.js` | A generated snapshot of the 2026-2027 Drive sync of 2026-09-23 (all 14 universities, EN and AR) |
 | `build_content.py` | The MDX-to-snapshot prototype, with the fact rules and the coverage report |
 
 To refresh the snapshot, run from the repository root with Drive credentials in `.env`:
@@ -337,5 +342,4 @@ python3 design/university-page/build_content.py /tmp/sync
 **Limits of the mockup:**
 - It renders in the browser from a snapshot: no server rendering and no real site
   search.
-- The navbar links, the Ask AI bubble and the universities not in the snapshot are
-  inert.
+- The navbar links and the Ask AI bubble are inert.

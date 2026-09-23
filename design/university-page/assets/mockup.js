@@ -2,7 +2,7 @@
   'use strict';
 
   const DATA = window.UNIVERSITY_MOCKUP;
-  const MOCK_UNIS = ['aub', 'aust', 'usj'];
+  const MOCK_UNIS = Object.keys(DATA.docs);
   const FORM =
     'https://docs.google.com/forms/d/e/1FAIpQLScUnf_qsTZXRX5CKP1KkK_Yy5VuhkUBjo988FNbqSzzYz301w/viewform?usp=dialog';
   const PROGRAMS_SHOWN = 8;
@@ -362,8 +362,10 @@
   }
 
   function factInner(fact) {
+    // Values in Arabic script ("500,000 ل.ل") keep their own direction; the rest read left to right.
+    const dir = /[\u0600-\u06FF]/.test(fact.value || '') ? '' : ' dir="ltr"';
     const value = fact.value
-      ? `<span class="fact-value${fact.small ? ' small' : ''}"><bdi dir="ltr">${esc(fact.value)}</bdi></span>`
+      ? `<span class="fact-value${fact.small ? ' small' : ''}"><bdi${dir}>${esc(fact.value).replace('@', '@<wbr>')}</bdi></span>`
       : '';
     const labels = [fact.label, fact.label2].filter(Boolean).map((l) => `<span class="fact-label">${esc(l)}</span>`).join('');
     return `${chip(fact.icon, fact.tint)}<span class="fact-text">${fact.pill || ''}${value}${labels}</span>`;
@@ -546,7 +548,7 @@
   function windowRow(b, item, s) {
     const w = b.windows;
     const {cells, i, status} = item;
-    const date = (j) => `<span class="nowrap">${cells[j]}</span>`;
+    const date = (j) => ((b.cells[i][j] || '').length <= 20 ? `<span class="nowrap">${cells[j]}</span>` : cells[j]);
     const dates =
       w.opens !== null
         ? `${date(w.opens)}<span class="win-to" aria-hidden="true"> – </span>${date(w.closes)}`
