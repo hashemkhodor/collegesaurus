@@ -21,16 +21,19 @@ Then open <http://127.0.0.1:8765/design/university-page/>. Opening `index.html`
 straight from disk also works, because it uses plain scripts and relative paths into
 `src/css/tokens.css` and `static/img/`.
 
-The dark bar at the top is the mockup's own control; it is not part of the design.
+Three universities are in the snapshot:
+- **AUB**, with lots of content.
+- **AUST**, with thin content, carried forward from 2025-26.
+- **USJ**, a stress test with 31 faculty groups and four tuition tables.
 
-| Control | Options |
-|---|---|
-| University | **AUB** (lots of content), **AUST** (thin, carried forward from 2025-26), **USJ** (stress test: 31 faculty groups, four tuition tables) |
-| Language | English or Arabic (right to left) |
-| Theme | Auto, light or dark |
+To switch between them:
+- **Desktop:** pick a university in the sidebar. The navbar's globe switches English
+  and Arabic, and the moon/sun switches the theme.
+- **Phone:** all three controls are in the ☰ menu.
+- **URL:** parameters work too, for example `?u=aust&lang=ar&theme=dark`.
 
-To see the phone layout, narrow the window or use the browser's device mode. The
-layout changes at 997px and 1280px.
+A line in the footer marks the page as a mockup. To see the phone layout, narrow the
+window or use the browser's device mode.
 
 ## What changes for a student
 
@@ -39,10 +42,10 @@ today's live page against the mockup's default view.
 
 | | Today | Guidebook |
 |---|---|---|
-| AUB, whole page | 45.0 screens | 15.3 (25.9 with everything opened) |
+| AUB, whole page | 45.0 screens | 14.2 (26.3 with everything opened) |
 | AUB, the Application section starts on | screen 17.5 | screen 2.3 |
-| AUB, the Tuition section starts on | screen 22.2 | screen 5.7 |
-| AUST, whole page | 22.8 | 9.1 (12.1 opened) |
+| AUB, the Tuition section starts on | screen 22.2 | screen 4.5 |
+| AUST, whole page | 22.8 | 9.2 (12.2 opened) |
 | USJ, whole page | 53.5 | 21.0 (32.1 opened) |
 | USJ, the Application section starts on | screen 26.5 | screen 3.1 |
 
@@ -56,6 +59,7 @@ now show on the first screen, as key facts.
 | Every section has the same weight, and "On this page" lists 22 entries | Six cards with an icon each, and a row of section chips that stays at the top of the screen and marks where you are |
 | About 90 repeated "Link" / "Reference" cells | A reference column shared by every row becomes one "Source" line; otherwise a small ↗ per row |
 | Two table styles; dates and phone numbers wrapping mid-value | One table style in three shapes (see below). Phones and emails become tap targets. |
+| Application windows crammed into a narrow table; dates split over two lines, and 7 of AUB's 8 windows already closed | One row per window with its dates on one line. Open windows come first, and closed ones fold away. |
 | The Apply and Ask AI pills cover the bottom of the phone screen | Apply moves into the header, the chips and the rail; Ask AI stays |
 | A big yellow banner on 13 of 14 pages | The pipeline's own "Not yet updated for …" text becomes a compact notice under the name |
 | The Arabic title's parentheses break | The Arabic name is the title; the English name is a separate, isolated line |
@@ -94,17 +98,40 @@ now show on the first screen, as key facts.
 - Rows past the first 8 are in the page but collapsed with `hidden="until-found"`,
   so Ctrl+F and anchor links still reach them.
 
+**Application windows.** A table with a Closes / Deadline / Last day column (or
+يغلق / تُقفل) becomes a list of windows.
+- Each row shows the window's name, its dates on one line exactly as the editor wrote
+  them, and the other columns (Decisions, Latest SAT, …) as small details underneath.
+- A status label (Open now, N days left, Opens in N days, Closed) appears only when
+  the row's closing date is a full date. "By end Dec 2025" or "November 30" get no
+  label.
+- Open and upcoming windows come first. When at least one is open, the closed ones
+  fold behind "Show N closed windows".
+- Closed windows are muted. When every window is closed (USJ today), they all stay
+  visible.
+- This is separate from the header's deadline fact, which still comes only from
+  `deadlines.ts`.
+
 **Tables.**
 - The reference column (Reference, Source, Link, المرجع, …) is lifted out of the grid.
 - Each table takes one of three shapes:
   - one column left: a list, with each row's link beside it;
   - two or three columns: label/value rows under a small header line;
-  - four or more: a table on desktop and compact cards on phones. Cards drop "—" cells.
-- Tables over 8 rows show 6, then "Show N more".
+  - four or more: a table with natural column widths.
+- A four-plus-column table becomes stacked cards whenever its own space is under
+  700px. It uses a CSS container query, so this covers phones and the three-column
+  desktop layout. Cards drop "—" cells.
+- Tables over 8 rows show 6, then "Show N more". The extra rows stay in the same
+  table, so columns line up. The cost: Ctrl+F only finds those rows once they are
+  open.
 - A section with more than 3 subheadings and more than 14 rows collapses after its
   third subheading. That applies to AUB's scholarships and USJ's tuition.
 - A collapsed group always starts at a heading, so a lead-in is never separated
   from its table.
+
+**Lists.** A list whose every item starts with a bold term and a dash ("**Early
+Merit** — Apply by October 31…") becomes term/description pairs: stacked on phones,
+two columns on desktop.
 
 **Notes and sources.**
 - Blockquotes render as neutral notes, with no "not published" label, because not
@@ -112,15 +139,17 @@ now show on the first screen, as key facts.
 - "Reference:" lines become a small "Sources" row.
 
 **Arabic.**
-- The layout mirrors, arrows flip and program names are isolated.
+- The layout mirrors, arrows flip, and program names are isolated.
+- English asides inside Arabic headings are isolated too, so their brackets survive
+  a line break.
 - Fact values and the year chip are pinned left to right, like data. Prose and
   headings keep the natural bidi order, so "2025-2026" inside an Arabic heading
   reads right to left as it does on the live site; see decision 7.
 
 **Behaviour.**
 - Anchor links open whatever collapsed group holds their target.
-- Printing opens everything and hides the navigation, the rail, the chips and the
-  pills.
+- Printing opens everything, including closed windows and extra table rows, and
+  hides the navigation, the rail, the chips and the pills.
 - Everything works from the keyboard with a visible focus ring. Reduced motion is
   respected.
 
@@ -209,6 +238,9 @@ This is proposed and not started.
 - **Components** in `src/components/University/`: `Header`, `Facts`, `Section`,
   `ProgramExplorer` (replaces `MajorsTable` through `MDXComponents`), `SmartTable`
   (plain markdown tables inside university sections), `Note` and `Sources`.
+  `SmartTable` routes a table with a Closes / Deadline column to the windows list.
+  That list should be the existing `ApplicationWindows` component, so a table marked
+  with `@component: ApplicationWindows` in Word looks the same.
 - **Layout.** A university branch in `src/theme/DocItem/Layout` renders the header,
   the facts and the chips, and swaps the TOC column for the rail from 1280px. Per
   decision 1, it drops `FloatingApplyButton` there.
