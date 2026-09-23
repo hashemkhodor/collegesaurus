@@ -169,46 +169,6 @@ const config: Config = {
         {type: 'localeDropdown', position: 'right'},
       ],
     },
-    footer: {
-      style: 'dark',
-      links: [
-        {
-          title: 'Guide',
-          items: [
-            {label: 'Universities', to: '/universities/aub'},
-            {label: 'Scholarships', to: '/scholarships/life'},
-          ],
-        },
-        {
-          title: 'More',
-          items: [
-            {label: 'Stories', to: '/stories'},
-          ],
-        },
-        {
-          title: 'Contribute',
-          items: [
-            {
-              label: 'Suggest a correction',
-              href: 'https://docs.google.com/forms/d/e/1FAIpQLScUnf_qsTZXRX5CKP1KkK_Yy5VuhkUBjo988FNbqSzzYz301w/viewform?usp=dialog',
-            },
-            {
-              label: 'Suggest a scholarship',
-              href: 'https://docs.google.com/forms/d/e/1FAIpQLScUnf_qsTZXRX5CKP1KkK_Yy5VuhkUBjo988FNbqSzzYz301w/viewform?usp=dialog',
-            },
-            {
-              label: 'Share your experience',
-              href: 'https://docs.google.com/forms/d/e/1FAIpQLScUnf_qsTZXRX5CKP1KkK_Yy5VuhkUBjo988FNbqSzzYz301w/viewform?usp=dialog',
-            },
-            {
-              label: 'How to contribute',
-              to: '/contribute',
-            },
-          ],
-        },
-      ],
-      copyright: `Copyright © ${new Date().getFullYear()} Collegesaurus. Built with Docusaurus.`,
-    },
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
