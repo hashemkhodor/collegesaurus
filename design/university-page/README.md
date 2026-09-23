@@ -212,6 +212,17 @@ Two checks back this up:
   - Don't refer to on-screen positions. Thirteen English docs, and eleven Arabic
     ones, say "the Apply Now button at the bottom-left of this page", which this
     layout no longer has.
+- **A new section needs no code change.** A new Heading 1 in the Word document
+  becomes its own card, phone tab and "On this page" link, in document order, with
+  a generic icon. A "Student Life" section added to copies of AUST's English and
+  Arabic documents went through the real pipeline and into the mockup this way.
+  It doesn't feed the key facts, which come only from the six known sections.
+  Two naming traps come from today's pipeline, and its report stays silent on both:
+  - A heading that contains a known section name joins that section:
+    "Application Tips" is published as a second "Application". The names, in
+    both languages, are the aliases in `mapping.toml`.
+  - A heading used twice in one document loses the first copy's content: both
+    sections are published with the second copy's text.
 
 ## Decisions for the owner
 
@@ -241,6 +252,9 @@ Two checks back this up:
 8. **Deadlines.** Only AUB has a hand-checked entry, so only AUB shows an open
    window. Is extending `deadlines.ts` per university acceptable upkeep, or should
    the tile stay rare?
+9. **Section-heading guard.** Should drive_sync warn when a Heading 1 repeats (its
+   first copy's content is lost today) or contains a known section name? Both are
+   pipeline changes, outside this redesign.
 
 ## Plan for the real build
 
