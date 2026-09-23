@@ -114,6 +114,7 @@ const config: Config = {
         routeBasePath: 'scholarships',
         sidebarPath: './sidebars/scholarships.ts',
         admonitions: {},
+        remarkPlugins: [[remarkGuidebook, {kind: 'scholarship'}]],
         rehypePlugins: [rehypeTableDataLabels],
         // Every academic year is a version, written by `python -m drive_sync`
         // into scholarships_versioned_docs/. There is deliberately no "current"

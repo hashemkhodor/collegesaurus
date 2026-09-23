@@ -1,5 +1,5 @@
 import {Children, isValidElement, useCallback, useId, useRef, useState, type ReactElement, type ReactNode, type RefObject} from 'react';
-import {deadlineStatus, type DeadlineStatus} from '@site/src/components/Homepage/UpcomingDeadlines/status';
+import {CLOSING_SOON_DAYS, daysUntil, deadlineStatus, type DeadlineStatus} from '@site/src/components/Homepage/UpcomingDeadlines/status';
 import type {Deadline} from '@site/src/data/homepage/types';
 import {useGuide, type GuideStrings} from './strings';
 import {Ext, ExtLink, MoreButton, StatusPill, useCollapsible, useNow, useRevealListener} from './parts';
@@ -16,6 +16,8 @@ type Windows = {
   dates: {opens: string | null; closes: string | null}[];
 };
 
+type Timeline = {col: number; dates: (string | null)[]};
+
 type Props = {
   shape: 'list' | 'kv' | 'wide';
   head: string;
@@ -23,6 +25,7 @@ type Props = {
   refs: string;
   sharedRef?: string;
   windows?: string;
+  timeline?: string;
   children: ReactNode;
 };
 
@@ -88,7 +91,9 @@ export function GuideTable(props: Props): ReactNode {
   const refs: Ref[] = JSON.parse(props.refs);
   const sharedRef: Ref = props.sharedRef ? JSON.parse(props.sharedRef) : null;
   const windows: Windows | null = props.windows ? JSON.parse(props.windows) : null;
+  const timeline: Timeline | null = props.timeline ? JSON.parse(props.timeline) : null;
   const rows = readRows(props.children);
+  const now = useNow();
   const id = useId();
   const [expanded, setExpanded] = useState(false);
   const open = useCallback(() => setExpanded(true), []);
@@ -149,6 +154,53 @@ export function GuideTable(props: Props): ReactNode {
             </table>
           </div>
         </div>
+        {more}
+        {sources}
+      </>
+    );
+  }
+
+  if (props.shape === 'kv' && timeline) {
+    // A stage per row: the date on the right, marked once it has passed or when it is close.
+    const stageRow = (row: Row, i: number) => {
+      const iso = timeline.dates[i];
+      const days = now && iso ? daysUntil(now, iso) : null;
+      const others = row.cells.map((cell, j) => ({cell, j})).filter(({j}) => j !== timeline.col);
+      return (
+        <div className={`kv-row${days !== null && days < 0 ? ' past' : ''}`} key={i}>
+          <dt>
+            {others[0]?.cell}
+            {others.slice(1).map(({cell, j}) => (
+              <span className="kv-note" key={j}>
+                {cell}
+              </span>
+            ))}
+            {row.note ? <span className="kv-note">{row.note}</span> : null}
+          </dt>
+          <dd>
+            {row.cells[timeline.col]}
+            {days !== null ? (
+              <span className={`pill ${days >= 0 && days <= CLOSING_SOON_DAYS ? 'pill-soon' : 'pill-neutral'}`}>
+                {days < 0 ? s.passed : s.inDays(days)}
+              </span>
+            ) : null}
+            {refs[i] ? <RefIcon value={refs[i]} s={s} /> : null}
+          </dd>
+        </div>
+      );
+    };
+    return (
+      <>
+        <p className="kv-head">
+          <span>{head.filter((_, j) => j !== timeline.col)[0]}</span>
+          <span>{head[timeline.col]}</span>
+        </p>
+        <dl className="t-kv">{rows.slice(0, folds ? ROWS_SHOWN : n).map(stageRow)}</dl>
+        {folds ? (
+          <dl className="t-kv overflow" id={id} ref={overflow as RefObject<HTMLDListElement>} hidden={!expanded}>
+            {rows.slice(ROWS_SHOWN).map((row, i) => stageRow(row, i + ROWS_SHOWN))}
+          </dl>
+        ) : null}
         {more}
         {sources}
       </>

@@ -10,6 +10,12 @@ export const SECTION_LOOK: Record<string, [IconName, string]> = {
   scholarships: ['star', 'purple'],
   requirements: ['shieldCheck', 'green'],
   contacts: ['mail', 'blue'],
+  overview: ['info', 'blue'],
+  grades: ['shieldCheck', 'green'],
+  window: ['calendar', 'blue'],
+  universities: ['university', 'purple'],
+  benefits: ['star', 'orange'],
+  recipients: ['mail', 'blue'],
 };
 
 export const REVEAL = 'guidebook:reveal';

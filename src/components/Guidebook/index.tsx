@@ -1,7 +1,7 @@
 /**
- * The Guidebook layout of a university page: header, key facts, section
- * chips (tabs on phones), the section cards from the MDX, and the "At a
- * glance" rail from 1280px. src/remark/remarkGuidebook.mjs builds the data.
+ * The Guidebook layout of a university or scholarship page: header, key facts,
+ * section chips (tabs on phones), the section cards from the MDX, and the "At
+ * a glance" rail from 1280px. src/remark/remarkGuidebook.mjs builds the data.
  */
 import {useEffect, useMemo, useRef, type ReactNode, type RefObject} from 'react';
 import useBaseUrl from '@docusaurus/useBaseUrl';
@@ -18,22 +18,31 @@ import './guidebook.css';
 const FORM =
   'https://docs.google.com/forms/d/e/1FAIpQLScUnf_qsTZXRX5CKP1KkK_Yy5VuhkUBjo988FNbqSzzYz301w/viewform?usp=dialog';
 
+type UniversityFacts = {
+  programs: {count: number; units: number};
+  fee: {value: string; label: string} | null;
+  tuition: {min: number; max: number; currency: string; notes: boolean} | null;
+  contact: {office: string; phone: string | null; email: string | null} | null;
+  scholarships: number | null;
+};
+
+type ScholarshipFacts = {
+  provider: string | null;
+  type: string | null;
+  universities: number | null;
+};
+
 type GuideData = {
+  kind: 'university' | 'scholarship';
   shortName: string;
   fullName: string;
   alt: string | null;
   applyUrl: string | null;
   applyHost: string | null;
   contentYear: string | null;
-  notice: {type: string; title: string; text: string} | null;
+  notice: {type: string; title: string; text: string; href?: string} | null;
   sections: {id: string; key: string | null; title: string}[];
-  facts: {
-    programs: {count: number; units: number};
-    fee: {value: string; label: string} | null;
-    tuition: {min: number; max: number; currency: string; notes: boolean} | null;
-    contact: {office: string; phone: string | null; email: string | null} | null;
-    scholarships: number | null;
-  };
+  facts: UniversityFacts | ScholarshipFacts;
 };
 
 type Fact = {
@@ -49,13 +58,12 @@ type Fact = {
 
 const shortYear = (y: string) => y.replace(/^(\d{4})-\d{2}(\d{2})$/, '$1–$2');
 
-function money(t: NonNullable<GuideData['facts']['tuition']>): string {
+function money(t: NonNullable<UniversityFacts['tuition']>): string {
   const one = (v: number) => (t.currency.length > 1 ? `${t.currency} ${v.toLocaleString('en')}` : `${t.currency}${v.toLocaleString('en')}`);
   return t.min === t.max ? one(t.min) : `${one(t.min)}–${one(t.max)}`;
 }
 
 function buildFacts(d: GuideData, s: GuideStrings, deadline: Deadline | null, now: Date | null, locale: string): Fact[] {
-  const f = d.facts;
   const href = (key: string) => {
     const sec = d.sections.find((x) => x.key === key);
     return sec ? `#${sec.id}` : '#';
@@ -70,9 +78,19 @@ function buildFacts(d: GuideData, s: GuideStrings, deadline: Deadline | null, no
       label: deadline.title,
       label2:
         status?.kind === 'opening' && deadline.opens ? s.opensOn(formatDate(deadline.opens, locale)) : s.closes(formatDate(deadline.closes, locale)),
-      href: href('application'),
+      href: href(d.kind === 'scholarship' ? 'window' : 'application'),
     });
   }
+  if (d.kind === 'scholarship') {
+    const f = d.facts as ScholarshipFacts;
+    if (f.provider) list.push({icon: 'briefcase', tint: 'blue', value: f.provider, label: s.provider, href: href('overview'), small: true});
+    if (f.type) list.push({icon: 'star', tint: 'orange', value: f.type, label: s.type, href: href('overview'), small: true});
+    if (f.universities) {
+      list.push({icon: 'university', tint: 'purple', value: String(f.universities), label: s.universitiesCount(f.universities), href: href('universities')});
+    }
+    return list;
+  }
+  const f = d.facts as UniversityFacts;
   list.push({
     icon: 'cap',
     tint: 'green',
@@ -135,22 +153,38 @@ function FactInner({fact}: {fact: Fact}): ReactNode {
   );
 }
 
+const same = (a: string, b: string) => a.toLowerCase().replace(/\W+/g, '') === b.toLowerCase().replace(/\W+/g, '');
+
+function Notice({notice, className}: {notice: NonNullable<GuideData['notice']>; className: string}): ReactNode {
+  const title = notice.href ? <a href={notice.href}>{notice.title}</a> : notice.title;
+  return (
+    <p className={`${className}${notice.type === 'danger' ? ' danger' : ''}`} role="note">
+      <Icon name="alert" size={className === 'stale' ? 18 : 16} className="icon" />
+      <span>
+        {notice.title ? <strong>{title}{notice.text ? '. ' : ''}</strong> : null}
+        {notice.text}
+      </span>
+    </p>
+  );
+}
+
 function Header({d, s, docId}: {d: GuideData; s: GuideStrings; docId: string}): ReactNode {
-  const logo = UNIVERSITY_LOGOS[docId];
+  // Scholarships have no marks of their own, so their name leads.
+  const logo = d.kind === 'university' ? UNIVERSITY_LOGOS[docId] : undefined;
   const src = useBaseUrl(logo ? `/img/universities/${logo.file}` : '/');
   return (
-    <header className="uni-head">
+    <header className={`uni-head${d.kind === 'scholarship' ? ' no-mark' : ''}`}>
       {logo ? (
         <div className={`mark${logo.tone === 'dark' ? ' tone-dark' : ''}`}>
           <img src={src} alt="" decoding="async" />
         </div>
-      ) : (
+      ) : d.kind === 'university' ? (
         <div className="mark">
           <strong>{d.shortName}</strong>
         </div>
-      )}
+      ) : null}
       <div className="uni-id">
-        <p className="uni-short">{d.shortName}</p>
+        {d.shortName && !same(d.shortName, d.fullName) ? <p className="uni-short">{d.shortName}</p> : null}
         <h1 className="uni-name">{d.fullName}</h1>
         {d.alt ? (
           <p className="uni-alt" dir="auto">
@@ -159,13 +193,7 @@ function Header({d, s, docId}: {d: GuideData; s: GuideStrings; docId: string}): 
         ) : null}
       </div>
       {d.notice ? (
-        <p className="stale" role="note">
-          <Icon name="alert" size={18} className="icon" />
-          <span>
-            {d.notice.title ? <strong>{d.notice.title}. </strong> : null}
-            {d.notice.text}
-          </span>
-        </p>
+        <Notice notice={d.notice} className="stale" />
       ) : d.contentYear ? (
         <div className="uni-meta">
           <span className="year-chip">
@@ -198,12 +226,7 @@ function Rail({d, s, facts, label}: {d: GuideData; s: GuideStrings; facts: Fact[
           </p>
         </>
       ) : null}
-      {d.notice?.title ? (
-        <p className="rail-stale">
-          <Icon name="alert" size={16} className="icon" />
-          <span>{d.notice.title}</span>
-        </p>
-      ) : null}
+      {d.notice?.title ? <Notice notice={{...d.notice, text: ''}} className="rail-stale" /> : null}
       <h2>{s.glance}</h2>
       <ul className="rail-facts">
         {facts.map((fact) => (
@@ -400,9 +423,10 @@ export default function Guidebook({data, children}: {data: string; children: Rea
   const {metadata} = useDoc();
   const docId = metadata.id.split('/').pop() ?? metadata.id;
   const now = useNow();
+  const plugin = d.kind === 'scholarship' ? 'scholarships' : 'universities';
   const deadline = useMemo(
-    () => deadlines().find((x) => x.ref.plugin === 'universities' && x.ref.id === docId) ?? null,
-    [docId],
+    () => deadlines().find((x) => x.ref.plugin === plugin && x.ref.id === docId) ?? null,
+    [plugin, docId],
   );
   const facts = buildFacts(d, s, deadline, now, locale);
   const root = useRef<HTMLDivElement>(null);

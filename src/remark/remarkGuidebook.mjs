@@ -1,6 +1,7 @@
 /**
- * Remark plugin for university pages: turns the MDX that drive_sync emits into
- * the Guidebook layout without changing what editors write in Word.
+ * Remark plugin for university and scholarship pages: turns the MDX that
+ * drive_sync emits into the Guidebook layout without changing what editors
+ * write in Word.
  *
  * - Each H2 section becomes <GuideSection>, keyed through the labels and
  *   aliases in scripts/drive_sync/mapping.toml.
@@ -11,7 +12,8 @@
  *   facts are derived here; a fact the tables don't support is left out.
  *
  * Runs after Docusaurus' own remark plugins, so heading ids and the TOC are
- * already set. Registered on the universities docs plugin only.
+ * already set. Registered on the universities and scholarships docs plugins,
+ * with `kind` naming which mapping.toml sections to read.
  */
 import fs from 'node:fs';
 
@@ -41,15 +43,16 @@ const AR_MONTHS = {
   'تشرين الثاني': 11,
   'كانون الأول': 12,
 };
+const DATE_HEADER = /\bdate\b|تاريخ|التاريخ|الموعد/i;
 const SECTION_HEADINGS_SHOWN = 3;
 const SECTION_ROWS_LIMIT = 14;
 const EMPTY = /^[—–-]?$/;
 
-let sectionRules;
+const sectionRules = {};
 
-// Just enough TOML for the [[sections.university]] blocks of mapping.toml.
-function loadSectionRules() {
-  if (sectionRules) return sectionRules;
+// Just enough TOML for the [[sections.<kind>]] blocks of mapping.toml.
+function loadSectionRules(kind) {
+  if (sectionRules[kind]) return sectionRules[kind];
   const rules = [];
   let current = null;
   let inLabels = false;
@@ -57,11 +60,11 @@ function loadSectionRules() {
     const line = raw.trim();
     if (!line || line.startsWith('#')) continue;
     if (line.startsWith('[')) {
-      if (line === '[[sections.university]]') {
+      if (line === `[[sections.${kind}]]`) {
         current = {key: null, aliases: [], labels: {}};
         rules.push(current);
         inLabels = false;
-      } else if (line === '[sections.university.labels]' && current) {
+      } else if (line === `[sections.${kind}.labels]` && current) {
         inLabels = true;
       } else {
         current = null;
@@ -76,16 +79,16 @@ function loadSectionRules() {
     else if (m[1] === 'key') current.key = value;
     else if (m[1] === 'aliases') current.aliases = value;
   }
-  sectionRules = rules;
+  sectionRules[kind] = rules;
   return rules;
 }
 
 const normalize = (text) => text.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
 const REF_NORMALIZED = new Set(REF_HEADERS.map(normalize));
 
-function sectionKey(title) {
+function sectionKey(title, kind) {
   const text = title.replace(/\s*\((?:AY|للعام)\s[^)]*\)\s*$/, '').trim();
-  const rules = loadSectionRules();
+  const rules = loadSectionRules(kind);
   const exact = rules.find((rule) => Object.values(rule.labels).includes(text));
   if (exact) return exact.key;
   const norm = normalize(text);
@@ -174,7 +177,14 @@ function refOf(cell) {
   return {note: true};
 }
 
-function convertTable(table) {
+// "Stage | Date" tables on scholarship pages: each row gets a status when its date is exact.
+function timelineOf(head, rows, keep) {
+  const col = keep.find((i) => DATE_HEADER.test(head[i]));
+  if (col === undefined) return null;
+  return {col: keep.indexOf(col), dates: rows.map((r) => parseDate(r[col]))};
+}
+
+function convertTable(table, kind) {
   const [headRow, ...bodyRows] = table.children;
   const width = headRow.children.length;
   const head = headRow.children.map(plain);
@@ -194,6 +204,7 @@ function convertTable(table) {
   const keep = head.map((_, i) => i).filter((i) => i !== refCol);
   const shape = keep.length === 1 ? 'list' : keep.length <= 3 ? 'kv' : 'wide';
   const windows = keep.length > 1 ? windowsOf(head, texts, keep) : null;
+  const timeline = kind === 'scholarship' && !windows && shape === 'kv' ? timelineOf(head, texts, keep) : null;
   const rows = body.map((row, r) =>
     jsx('GuideRow', {}, [
       ...keep.map((i) => jsx('GuideCell', {}, row[i].children)),
@@ -209,6 +220,7 @@ function convertTable(table) {
       refs: refs.map((r) => (r && !r.note ? r : null)),
       sharedRef,
       windows,
+      timeline,
     },
     rows,
   );
@@ -347,15 +359,27 @@ function markLead(paragraph) {
   paragraph.data = {...paragraph.data, hProperties: {...paragraph.data?.hProperties, className: ['lead-in']}};
 }
 
-// "**Term** — description" items read better as a definition list.
-function definitionList(list) {
+// "**Term** — description" items read better as a definition list, and so do
+// scholarship pages' "**Provider:** description" ones.
+function definitionList(list, kind) {
   if (list.children.length < 2) return null;
   const pairs = [];
   for (const item of list.children) {
     const [para, ...rest] = item.children;
     if (rest.length || para?.type !== 'paragraph') return null;
     const [strong, after, ...more] = para.children;
-    if (strong?.type !== 'strong' || after?.type !== 'text') return null;
+    if (strong?.type !== 'strong') return null;
+    if (kind === 'scholarship' && /:\s*$/.test(toText(strong))) {
+      const desc = [after, ...more].filter(Boolean);
+      if (!plain({children: desc})) return null;
+      const term = strong.children.map((node, i, all) =>
+        i === all.length - 1 && node.type === 'text' ? text(node.value.replace(/:\s*$/, '')) : node,
+      );
+      if (desc[0].type === 'text') desc[0] = text(desc[0].value.replace(/^\s+/, ''));
+      pairs.push({term, desc});
+      continue;
+    }
+    if (after?.type !== 'text') return null;
     const m = after.value.match(/^\s*[—–:-]\s*/);
     const desc = m ? after.value.slice(m[0].length) : '';
     if (!m || (!desc && !more.length)) return null;
@@ -384,6 +408,47 @@ function isolateLatin(nodes) {
         );
     });
   }
+}
+
+// "**Label:** value" lines, read before the lists are converted.
+function fieldsOf(nodes) {
+  const fields = [];
+  for (const node of nodes) {
+    if (node.type !== 'list') continue;
+    for (const item of node.children) {
+      const [para] = item.children;
+      if (para?.type !== 'paragraph') continue;
+      const [strong, ...rest] = para.children;
+      if (strong?.type !== 'strong') continue;
+      const label = plain(strong).replace(/:\s*$/, '').trim();
+      const value = plain({children: rest});
+      if (label && value) fields.push({label, value});
+    }
+  }
+  return fields;
+}
+
+const firstClause = (value) => value?.split(/\s*[,;،؛(]\s*|\s+[—–]\s+/)[0].replace(/\.\s*$/, '').trim() || null;
+
+// The page's own red or amber box, surfaced as the header notice.
+function alertOf(nodes) {
+  for (const node of nodes) {
+    if (node.type !== 'mdxJsxFlowElement' || node.name !== 'div') continue;
+    const cls = node.attributes?.find((a) => a.name === 'className')?.value;
+    const m = typeof cls === 'string' ? cls.match(/\balert-(danger|warning)\b/) : null;
+    if (!m) continue;
+    let strong = null;
+    const find = (n) => {
+      if (strong) return;
+      if (n.type === 'strong') strong = n;
+      else (n.children ?? []).forEach(find);
+    };
+    find(node);
+    const id = 'page-alert';
+    node.attributes.push({type: 'mdxJsxAttribute', name: 'id', value: id});
+    return {type: m[1], title: plain(strong ?? node).slice(0, 160), text: '', href: `#${id}`};
+  }
+  return null;
 }
 
 function rowCount(nodes) {
@@ -420,7 +485,7 @@ function buildSection(section) {
   const convert = (list) =>
     autolink(list).map((node) => {
       if (node.type === 'table') {
-        const {node: converted, raw} = convertTable(node);
+        const {node: converted, raw} = convertTable(node, section.kind);
         tables.push(raw);
         return converted;
       }
@@ -429,7 +494,7 @@ function buildSection(section) {
         if (sources) return sources;
         markLead(node);
       }
-      if (node.type === 'list') return definitionList(node) ?? node;
+      if (node.type === 'list') return definitionList(node, section.kind) ?? node;
       if (node.type === 'blockquote') section.hasNotes = true;
       return node;
     });
@@ -519,13 +584,13 @@ function deriveContact(section) {
   return null;
 }
 
-function header(frontMatter, h1) {
+function header(frontMatter, h1, kind) {
   const title = String(frontMatter.title ?? '');
   const dash = title.indexOf('—');
   const shortName = dash > 0 ? title.slice(0, dash).trim() : String(frontMatter.sidebar_label ?? '');
   const fullName = dash > 0 ? title.slice(dash + 1).trim() : title || h1;
   let alt = null;
-  const m = (h1 ?? '').match(/^(.*?)\s*\((.+)\)\s*$/);
+  const m = kind === 'university' ? (h1 ?? '').match(/^(.*?)\s*\((.+)\)\s*$/) : null;
   if (m) {
     const inner = m[2].replace(/\s*[—–]\s*[^—–]*$/, '').trim();
     if (inner && inner !== shortName && normalize(inner) !== normalize(fullName)) alt = inner;
@@ -550,7 +615,34 @@ const isTitle = (node) =>
     node.children[0].type === 'heading' &&
     node.children[0].depth === 1);
 
-export default function remarkGuidebook() {
+function universityFacts(byKey, sections) {
+  const programs = sections.flatMap((section) => section.groups);
+  const scholarships = (byKey('scholarships')?.tables ?? [])
+    .filter((table) => table.head.length >= 3)
+    .reduce((n, table) => n + table.rows.length, 0);
+  return {
+    programs: {count: programs.reduce((n, group) => n + group.rows.length, 0), units: programs.length},
+    fee: deriveFee(byKey('application')),
+    tuition: deriveTuition(byKey('tuition')),
+    contact: deriveContact(byKey('contacts')),
+    scholarships: scholarships || null,
+  };
+}
+
+function scholarshipFacts(byKey) {
+  const fields = byKey('overview')?.fields ?? [];
+  const field = (pattern) => fields.find((f) => pattern.test(f.label))?.value ?? null;
+  const universities = (byKey('universities')?.tables ?? [])
+    .filter((table) => /universit|الجامع/i.test(table.head[0] ?? ''))
+    .reduce((n, table) => n + table.rows.length, 0);
+  return {
+    provider: firstClause(field(/^(provider|الجهة المانحة|المموّل|المانح)/i)),
+    type: firstClause(field(/^(type|النوع)$/i)),
+    universities: universities || null,
+  };
+}
+
+export default function remarkGuidebook({kind = 'university'} = {}) {
   return (root, file) => {
     const frontMatter = file.data?.frontMatter ?? {};
     const top = [];
@@ -562,7 +654,7 @@ export default function remarkGuidebook() {
       if (node.type === 'mdxjsEsm') {
         top.push(node);
       } else if (node.type === 'heading' && node.depth === 2) {
-        sections.push({heading: node, nodes: [], hasNotes: false});
+        sections.push({heading: node, nodes: [], hasNotes: false, kind});
       } else if (sections.length) {
         sections[sections.length - 1].nodes.push(node);
       } else if (h1 === null && isTitle(node)) {
@@ -579,28 +671,27 @@ export default function remarkGuidebook() {
     for (const section of sections) {
       section.title = plain(section.heading);
       section.id = headingId(section.heading);
-      section.key = sectionKey(section.title);
+      section.key = sectionKey(section.title, kind);
       if (arabic) isolateLatin(section.nodes);
+      section.fields = fieldsOf(section.nodes);
+      notice ??= alertOf(section.nodes);
       buildSection(section);
     }
 
     const byKey = (key) => sections.find((section) => section.key === key);
-    const programs = sections.flatMap((section) => section.groups);
-    const scholarships = (byKey('scholarships')?.tables ?? [])
-      .filter((table) => table.head.length >= 3)
-      .reduce((n, table) => n + table.rows.length, 0);
+    const facts = kind === 'scholarship' ? scholarshipFacts(byKey) : universityFacts(byKey, sections);
+    const counts = {
+      faculty: facts.programs?.count,
+      scholarships: facts.scholarships,
+      universities: facts.universities,
+    };
     const data = {
-      ...header(frontMatter, h1),
+      kind,
+      ...header(frontMatter, h1, kind),
       h1,
       notice,
       sections: sections.map(({id, key, title}) => ({id, key, title})),
-      facts: {
-        programs: {count: programs.reduce((n, group) => n + group.rows.length, 0), units: programs.length},
-        fee: deriveFee(byKey('application')),
-        tuition: deriveTuition(byKey('tuition')),
-        contact: deriveContact(byKey('contacts')),
-        scholarships: scholarships || null,
-      },
+      facts,
     };
 
     root.children = [
@@ -614,12 +705,7 @@ export default function remarkGuidebook() {
               sectionId: section.id,
               sectionKey: section.key ?? undefined,
               title: section.title,
-              count:
-                section.key === 'faculty'
-                  ? String(data.facts.programs.count)
-                  : section.key === 'scholarships' && data.facts.scholarships
-                    ? String(data.facts.scholarships)
-                    : undefined,
+              count: section.key && counts[section.key] ? String(counts[section.key]) : undefined,
             },
             section.body,
           ),

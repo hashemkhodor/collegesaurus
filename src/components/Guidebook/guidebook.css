@@ -1318,3 +1318,41 @@ main:has(.guidebook) {
     display: grid !important;
   }
 }
+
+/* Scholarship pages: no mark, a red notice when the page carries a danger box, and dated stages. */
+.guidebook {
+  --gb-danger-bg: #fdecea;
+  --gb-danger-fg: #a4221b;
+}
+
+[data-theme='dark'] .guidebook {
+  --gb-danger-bg: rgb(231 76 60 / 0.16);
+  --gb-danger-fg: #ff9b8f;
+}
+
+.guidebook .uni-head.no-mark {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.guidebook .stale.danger,
+.guidebook .rail-stale.danger {
+  background: var(--gb-danger-bg);
+  color: var(--gb-danger-fg);
+}
+
+.guidebook .stale a,
+.guidebook .rail-stale a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.guidebook .kv-row dd .pill {
+  margin-inline-start: 8px;
+  vertical-align: 1px;
+}
+
+.guidebook .kv-row.past dt,
+.guidebook .kv-row.past dd {
+  color: var(--cs-ink-subtle);
+}

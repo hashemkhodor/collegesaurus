@@ -2,9 +2,10 @@
  * Wraps Docusaurus' default DocItem Layout so we can mount the floating
  * Apply button on any doc whose frontmatter carries `apply_url`.
  *
- * University pages get the Guidebook instead: no TOC column (the Guidebook
- * draws its own rail), no floating button (Apply sits in the header, the chips
- * and the rail), and no version badge (the header shows the year).
+ * University and scholarship pages get the Guidebook instead: no TOC column
+ * (the Guidebook draws its own rail), no floating button (Apply sits in the
+ * header, the chips and the rail), and no version badge (the header shows the
+ * year).
  *
  * Swizzle pattern: https://docusaurus.io/docs/swizzling#wrapper-your-site-with-root
  */
@@ -47,7 +48,7 @@ function GuidebookLayout({children}: LayoutProps): ReactNode {
 export default function LayoutWrapper(props: LayoutProps): ReactNode {
   const {frontMatter} = useDoc();
   const plugin = useActivePlugin({failfast: false});
-  if (plugin?.pluginId === 'universities') {
+  if (plugin?.pluginId === 'universities' || plugin?.pluginId === 'scholarships') {
     return <GuidebookLayout>{props.children}</GuidebookLayout>;
   }
   const {apply_url: applyUrl, apply_label: applyLabel} =
