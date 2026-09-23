@@ -258,7 +258,13 @@ Two checks back this up:
 
 ## Plan for the real build
 
-This is proposed and not started.
+**Built for university pages**, phases 1 and 2 together:
+- `src/remark/remarkGuidebook.mjs` turns each page's MDX into sections, the
+  programs explorer and smart tables, and derives the key facts.
+- `src/components/Guidebook/` draws the header, facts, chips, cards and rail.
+- `src/theme/DocItem/Layout` gives university pages that layout.
+
+This folder stays as the reference mockup. The plan as proposed follows.
 
 **Phase 1, the foundation.** It is useful whatever the layout.
 - **`src/remark/remarkUniversitySections.mjs`**, registered only on the
