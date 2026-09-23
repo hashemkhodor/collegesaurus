@@ -19,6 +19,10 @@ import {
   ScholarshipOffers,
   TuitionTable,
 } from '@site/src/components/ContentTables';
+import Guidebook from '@site/src/components/Guidebook';
+import ProgramExplorer from '@site/src/components/Guidebook/ProgramExplorer';
+import {GuideExt, GuideMore, GuideSection, GuideSources} from '@site/src/components/Guidebook/Blocks';
+import {GuideCell, GuideRef, GuideRow, GuideTable} from '@site/src/components/Guidebook/GuideTable';
 
 export default {
   ...MDXComponents,
@@ -31,4 +35,15 @@ export default {
   ContactsTable,
   ScholarshipOffers,
   Callout,
+  // Inserted by src/remark/remarkGuidebook.mjs on university pages; never written by editors.
+  Guidebook,
+  GuideSection,
+  GuideMore,
+  GuideSources,
+  GuideExt,
+  GuideTable,
+  GuideRow,
+  GuideCell,
+  GuideRef,
+  ProgramExplorer,
 };

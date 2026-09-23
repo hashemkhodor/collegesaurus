@@ -3,6 +3,7 @@ import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 // @ts-expect-error — local ESM plugin without types
 import rehypeTableDataLabels from './src/remark/rehypeTableDataLabels.mjs';
+import remarkGuidebook from './src/remark/remarkGuidebook.mjs';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -96,6 +97,7 @@ const config: Config = {
         routeBasePath: 'universities',
         sidebarPath: './sidebars/universities.ts',
         admonitions: {},
+        remarkPlugins: [remarkGuidebook],
         rehypePlugins: [rehypeTableDataLabels],
         // Every academic year is a version, written by `python -m drive_sync`
         // into universities_versioned_docs/. There is deliberately no "current"

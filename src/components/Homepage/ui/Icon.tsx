@@ -168,6 +168,35 @@ const PATHS = {
       <polyline points="4.5,7.5 12,13 19.5,7.5" />
     </>
   ),
+  wallet: (
+    <>
+      <rect x="3.5" y="6.5" width="17" height="13" rx="2.5" />
+      <path d="M20.5 11h-4a1.5 1.5 0 0 0 0 3h4" />
+      <path d="M6 6.5l9.5-3 1 3" />
+    </>
+  ),
+  receipt: (
+    <>
+      <path d="M6 3.5h12v17l-2-1.3-2 1.3-2-1.3-2 1.3-2-1.3-2 1.3z" />
+      <line x1="9" y1="8.5" x2="15" y2="8.5" />
+      <line x1="9" y1="12" x2="15" y2="12" />
+    </>
+  ),
+  chevronDown: <polyline points="6,9 12,15 18,9" />,
+  info: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <line x1="12" y1="11" x2="12" y2="16.5" />
+      <circle cx="12" cy="7.8" r="0.5" fill="currentColor" />
+    </>
+  ),
+  alert: (
+    <>
+      <path d="M12 4 21.5 20h-19z" />
+      <line x1="12" y1="10" x2="12" y2="14.5" />
+      <circle cx="12" cy="17.3" r="0.5" fill="currentColor" />
+    </>
+  ),
   rss: (
     <>
       <circle cx="5.5" cy="18.5" r="1" />
