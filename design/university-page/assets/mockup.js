@@ -195,8 +195,7 @@
   let state = readState();
   let seq = 0;
   let explorers = {};
-  let startTab = null;
-  let lastActive = null;
+  let activeTab = null;
   let tabbed = null;
   const TABS = matchMedia('(max-width: 760px)');
 
@@ -863,25 +862,16 @@
     if (!id) return;
     const target = document.getElementById(id);
     if (!target) return;
-    const slot = target.closest('.sec-slot');
-    if (slot && scroll && tabMode()) {
-      startTab = slot.dataset.slot;
-      applyTabs();
-    }
     let hidden = target.closest('[hidden]');
     while (hidden) {
       reveal(hidden);
       hidden = target.closest('[hidden]');
     }
-    if (scroll) {
-      target.scrollIntoView({block: 'start'});
-      sectionsInView();
-    }
+    if (scroll) target.scrollIntoView({block: 'start'});
   }
 
   // ------------------------------------------------------------------
-  // Phones: a chip starts the page at its section. Earlier sections step
-  // aside, so scrolling up returns to the header; later ones follow below.
+  // Phones: the section chips act as tabs, one section at a time
   // ------------------------------------------------------------------
 
   const tabMode = () => TABS.matches;
@@ -889,25 +879,35 @@
   function applyTabs() {
     const slots = [...document.querySelectorAll('.sec-slot')];
     if (!slots.length) return;
-    const start = tabMode() ? Math.max(0, slots.findIndex((slot) => slot.dataset.slot === startTab)) : 0;
-    slots.forEach((slot, i) => {
-      if (i >= start) slot.removeAttribute('hidden');
+    if (!tabMode()) {
+      slots.forEach((slot) => slot.removeAttribute('hidden'));
+      sectionsInView();
+      return;
+    }
+    if (!slots.some((slot) => slot.dataset.slot === activeTab)) activeTab = slots[0].dataset.slot;
+    slots.forEach((slot) => {
+      if (slot.dataset.slot === activeTab) slot.removeAttribute('hidden');
       else slot.setAttribute('hidden', 'until-found');
     });
-    lastActive = null;
-    sectionsInView();
+    const bar = document.querySelector('.chips');
+    bar.querySelectorAll('a[data-sec]').forEach((a) => a.setAttribute('aria-current', a.dataset.sec === activeTab ? 'true' : 'false'));
+    const chip = bar.querySelector('a[aria-current="true"]');
+    const barBox = bar.getBoundingClientRect();
+    const box = chip.getBoundingClientRect();
+    if (box.left < barBox.left + 8 || box.right > barBox.right - 8) {
+      bar.scrollBy({left: box.left - barBox.left - (barBox.width - box.width) / 2});
+    }
   }
 
   // Scrolls only when the chips are already pinned; near the top the content just swaps.
   function selectTab(id, toSection) {
     const bar = document.querySelector('.chips');
     const pinned = bar.getBoundingClientRect().top <= parseFloat(getComputedStyle(bar).top) + 1;
-    startTab = id;
+    activeTab = id;
     applyTabs();
     if (toSection && pinned) {
       const slot = document.querySelector(`.sec-slot[data-slot="${CSS.escape(id)}"]`);
       scrollTo(0, scrollY + slot.getBoundingClientRect().top - bar.getBoundingClientRect().bottom - 12);
-      sectionsInView();
     }
   }
 
@@ -921,29 +921,26 @@
     }
   }
 
-  // The chip row only moves when the current section changes, never per scroll event.
   function sectionsInView() {
-    const sections = [...document.querySelectorAll('.sec[data-sec]')].filter((sec) => !sec.closest('[hidden]'));
+    if (tabMode()) return;
+    const sections = [...document.querySelectorAll('.sec[data-sec]')];
     if (!sections.length) return;
     const line = (innerWidth >= 1280 ? 60 : 60 + 56) + 32;
     let active = sections[0].dataset.sec;
     sections.forEach((sec) => {
       if (sec.getBoundingClientRect().top - line <= 0) active = sec.dataset.sec;
     });
-    if (active === lastActive) return;
-    lastActive = active;
     document.querySelectorAll('.chips a[data-sec], .rail-nav a[data-sec]').forEach((a) => {
-      a.setAttribute('aria-current', a.dataset.sec === active ? 'true' : 'false');
+      const on = a.dataset.sec === active;
+      a.setAttribute('aria-current', on ? 'true' : 'false');
+      if (!on || !a.closest('.chips')) return;
+      const bar = a.closest('.chips');
+      const barBox = bar.getBoundingClientRect();
+      const box = a.getBoundingClientRect();
+      if (barBox.width && (box.left < barBox.left + 16 || box.right > barBox.right - 16)) {
+        bar.scrollBy({left: box.left - barBox.left - (barBox.width - box.width) / 2, behavior: 'auto'});
+      }
     });
-    const bar = document.querySelector('.chips');
-    const chip = bar && bar.querySelector('a[aria-current="true"]');
-    const barBox = bar && bar.getBoundingClientRect();
-    if (!chip || !barBox.width) return;
-    const box = chip.getBoundingClientRect();
-    if (box.left < barBox.left + 16 || box.right > barBox.right - 16) {
-      const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-      bar.scrollBy({left: box.left - barBox.left - (barBox.width - box.width) / 2, behavior: smooth ? 'smooth' : 'auto'});
-    }
   }
 
   // ------------------------------------------------------------------
@@ -999,7 +996,7 @@
     if (state[key] === value) return;
     state = {...state, [key]: value};
     saveState();
-    if (key !== 'theme') startTab = null;
+    if (key !== 'theme') activeTab = null;
     const keepScroll = key === 'theme';
     const y = scrollY;
     render();
@@ -1055,8 +1052,8 @@
     'beforematch',
     (event) => {
       const slot = event.target.closest('.sec-slot');
-      if (slot && tabMode() && slot.hasAttribute('hidden')) {
-        startTab = slot.dataset.slot;
+      if (slot && tabMode() && slot.dataset.slot !== activeTab) {
+        activeTab = slot.dataset.slot;
         applyTabs();
       }
       const overflow = event.target.closest('.overflow[id]');
