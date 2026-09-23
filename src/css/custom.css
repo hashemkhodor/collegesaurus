@@ -163,3 +163,9 @@ nav[aria-label="Blog recent posts navigation"] [role="group"] > h3,
   color: var(--ifm-color-warning-contrast-foreground);
   border-color: var(--ifm-color-warning-dark);
 }
+
+/* Keyboard focus scrolls a link above the fixed Ask AI and Apply Now pills
+   rather than under them. */
+html {
+  scroll-padding-bottom: 5rem;
+}

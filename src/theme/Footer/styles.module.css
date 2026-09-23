@@ -1,0 +1,218 @@
+.footer {
+  background: var(--cs-bg-soft);
+  border-top: 1px solid var(--cs-divider);
+  color: var(--cs-ink-muted);
+  font-size: var(--cs-text-sm);
+  line-height: 1.5;
+}
+
+.container {
+  max-width: var(--cs-container);
+  margin-inline: auto;
+  padding-inline: var(--cs-gutter);
+  /* The bottom keeps the last row clear of the fixed Ask AI and Apply Now pills. */
+  padding-block: clamp(2.5rem, 5vw, 3.5rem) 5rem;
+}
+
+.top {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 2rem clamp(1.5rem, 4vw, 3rem);
+}
+
+/* =====================================================
+   Brand block
+   ===================================================== */
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.home {
+  composes: focusable from '../../components/Homepage/ui/ui.module.css';
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-radius: var(--cs-radius-sm);
+  color: var(--cs-ink);
+}
+
+.home:hover {
+  color: var(--cs-ink);
+  text-decoration: none;
+}
+
+.wordmark {
+  font-family: var(--cs-font-display);
+  font-size: var(--cs-text-h3);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.tagline {
+  margin: 0;
+  max-width: 34ch;
+  line-height: 1.55;
+}
+
+.contacts {
+  list-style: none;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.contact {
+  composes: focusable from '../../components/Homepage/ui/ui.module.css';
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--cs-radius-pill);
+  background: var(--cs-surface);
+  box-shadow: 0 0 0 1px var(--cs-divider);
+  color: var(--cs-ink-muted);
+  transition:
+    background-color var(--ifm-transition-fast) var(--cs-ease),
+    color var(--ifm-transition-fast) var(--cs-ease);
+}
+
+.contact:hover {
+  background: var(--cs-green-soft);
+  color: var(--cs-brand-strong);
+}
+
+/* =====================================================
+   Link groups
+   ===================================================== */
+
+/* A 2rem line box centres the titles on the wordmark beside the 32px logo. */
+.title {
+  margin: 0 0 0.5rem;
+  font-family: var(--cs-font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 2rem;
+  color: var(--cs-ink);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.link {
+  composes: focusable from '../../components/Homepage/ui/ui.module.css';
+  display: inline-block;
+  padding-block: 0.25rem;
+  border-radius: 4px;
+  color: var(--cs-ink-muted);
+  font-weight: 500;
+}
+
+.link:hover {
+  color: var(--cs-brand-strong);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* With the no-break space before it, keeps the arrow on its label's last line. */
+.outbound {
+  white-space: nowrap;
+}
+
+.arrow {
+  vertical-align: -0.1em;
+}
+
+[dir='rtl'] .arrow {
+  transform: scaleX(-1);
+}
+
+/* =====================================================
+   Legal row
+   ===================================================== */
+
+.bottom {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.35rem 1.5rem;
+  margin-top: clamp(2rem, 4vw, 2.75rem);
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--cs-divider);
+  color: var(--cs-ink-subtle);
+}
+
+.legal {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 1.25rem;
+}
+
+.disclaimer {
+  grid-column: 1;
+  margin: 0;
+}
+
+.locales {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 1rem;
+}
+
+.locale {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+@media (max-width: 996px) {
+  .top {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Two columns where they fit, one where they don't. */
+  .top {
+    grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  }
+
+  .bottom {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .locales {
+    grid-column: 1;
+    grid-row: auto;
+    margin-top: 0.5rem;
+  }
+}
+
+@media print {
+  .footer {
+    display: none;
+  }
+}
