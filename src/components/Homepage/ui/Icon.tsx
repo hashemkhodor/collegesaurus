@@ -1,15 +1,21 @@
 import type {ReactNode} from 'react';
 
 /**
- * Hand-drawn icon set for the landing page: one 24x24 stroke grid, so the
- * glyphs stay consistent at chip sizes. Drawn here rather than pulled from an
- * icon package, which would mean a dependency in the shared node_modules.
+ * Hand-drawn icon set for the site: one 24x24 stroke grid, so the glyphs stay
+ * consistent at chip sizes. Drawn here rather than pulled from an icon package,
+ * which would mean a dependency in the shared node_modules.
  */
 const PATHS = {
   arrowRight: (
     <>
       <line x1="4" y1="12" x2="19" y2="12" />
       <polyline points="13,6 19,12 13,18" />
+    </>
+  ),
+  arrowUpRight: (
+    <>
+      <line x1="7" y1="17" x2="17" y2="7" />
+      <polyline points="8,7 17,7 17,16" />
     </>
   ),
   search: (
@@ -155,6 +161,25 @@ const PATHS = {
       <line x1="12" y1="5.5" x2="12" y2="20" />
       <line x1="8.5" y1="20" x2="15.5" y2="20" />
     </>
+  ),
+  mail: (
+    <>
+      <rect x="3.5" y="5.5" width="17" height="13" rx="2.5" />
+      <polyline points="4.5,7.5 12,13 19.5,7.5" />
+    </>
+  ),
+  rss: (
+    <>
+      <circle cx="5.5" cy="18.5" r="1" />
+      <path d="M5 11.5a7.5 7.5 0 0 1 7.5 7.5" />
+      <path d="M5 5a14 14 0 0 1 14 14" />
+    </>
+  ),
+  // GitHub's own mark, unmodified: Primer Octicons mark-github-24 (MIT, GitHub Inc.).
+  github: (
+    <g transform="translate(3 3) scale(0.75)" fill="currentColor" stroke="none">
+      <path d="M10.226 17.284c-2.965-.36-5.054-2.493-5.054-5.256 0-1.123.404-2.336 1.078-3.144-.292-.741-.247-2.314.09-2.965.898-.112 2.111.36 2.83 1.01.853-.269 1.752-.404 2.853-.404 1.1 0 1.999.135 2.807.382.696-.629 1.932-1.1 2.83-.988.315.606.36 2.179.067 2.942.72.854 1.101 2 1.101 3.167 0 2.763-2.089 4.852-5.098 5.234.763.494 1.28 1.572 1.28 2.807v2.336c0 .674.561 1.056 1.235.786 4.066-1.55 7.255-5.615 7.255-10.646C23.5 6.188 18.334 1 11.978 1 5.62 1 .5 6.188.5 12.545c0 4.986 3.167 9.12 7.435 10.669.606.225 1.19-.18 1.19-.786V20.63a2.9 2.9 0 0 1-1.078.224c-1.483 0-2.359-.808-2.987-2.313-.247-.607-.517-.966-1.034-1.033-.27-.023-.359-.135-.359-.27 0-.27.45-.471.898-.471.652 0 1.213.404 1.797 1.235.45.651.921.943 1.483.943.561 0 .92-.202 1.437-.719.382-.381.674-.718.944-.943" />
+    </g>
   ),
 } satisfies Record<string, ReactNode>;
 
