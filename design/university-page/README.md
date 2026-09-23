@@ -39,18 +39,18 @@ window or use the browser's device mode.
 
 These were measured on a 390×780 phone, counting screens from the top of the navbar.
 
-On a phone the section chips work as tabs. Each tab is the header and facts plus one
-section:
-
-| | Today (whole page) | Guidebook on a phone, per tab |
+| | Today | Guidebook |
 |---|---|---|
-| AUB | 45.0 screens | Programs 2.8 · Apply 3.5 · Tuition 2.8 · Scholarships 4.5 · Requirements 4.4 · Contact 2.9 |
-| AUST | 22.8 | 1.9 to 3.5 |
-| USJ | 53.5 | 3.3 to 6.6 (Tuition is the longest) |
+| AUB, whole page | 45.0 screens | 14.2 (26.3 with everything opened) |
+| AUB, the Application section starts on | screen 17.5 | screen 2.3, or one tap on its chip |
+| AUST, whole page | 22.8 | 9.2 (12.2 opened) |
+| USJ, whole page | 53.5 | 21.0 (32.1 opened) |
 
-From 761px up, the page is one scroll. At 390px, that full page would be 14.2 screens
-for AUB (26.3 with everything opened), 9.2 for AUST and 21.0 for USJ. On today's
-site, AUB's Application section starts on screen 17.5.
+On a phone a section chip also starts the page at its section. From there, each
+section by itself runs:
+- AUB: 2–4.5 screens.
+- AUST: 1.9–3.5 screens.
+- USJ: 3.3–6.6 screens.
 
 The application fee, the per-credit tuition range and an open application window
 now show on the first screen, as key facts.
@@ -73,19 +73,24 @@ now show on the first screen, as key facts.
 
 | Width | Layout |
 |---|---|
-| Up to 760px (phones) | navbar, header, 2×2 fact tiles, a pinned row of section chips ending in an Apply chip, then **one section at a time**. The chips act as tabs. |
+| Up to 760px (phones) | navbar, header, 2×2 fact tiles, a pinned row of section chips ending in an Apply chip, then the sections. A chip starts the page at its section (see below). |
 | 761–996px | the same column, with every section as a card in one scroll |
 | 997–1279px | the docs sidebar (14 universities), then the same column with the fact tiles in one row |
 | 1280px and up | sidebar, main column, and a sticky "At a glance" rail with Apply, the facts, links to each section with the current one marked, and "Suggest a correction". The rail replaces "On this page". |
 
-**Phone tabs.** Up to 760px wide, only the chosen section is shown under the pinned
-chips.
-- Tapping a chip swaps the section. If the chips are already pinned, the new
-  section starts right under them; near the top, the content swaps in place.
-- Scrolling up from any section leads straight back to the header and facts.
-- The other sections stay in the page as `hidden="until-found"`. Ctrl+F in Chrome
-  and Firefox can still find them and opens the matching tab.
-- Fact tiles, deep links and search results open the right tab.
+**Phone chips.** Up to 760px wide, the page opens as one continuous scroll, and a
+chip starts the page at its section.
+- Tapping a chip hides the sections *before* it, so scrolling up from there leads
+  straight back to the header and facts.
+- Scrolling down carries on into the following sections, and the pinned chips mark
+  the section you're in.
+- If the chips are already pinned, the chosen section starts right under them. Near
+  the top, the content changes in place.
+- Tapping an earlier chip brings its section, and everything after it, back.
+- The sections that step aside stay in the page as `hidden="until-found"`. Ctrl+F
+  in Chrome and Firefox can still find them, and a match starts the page at its
+  section.
+- Fact tiles, deep links and search results start the page at their section too.
 - Printing shows every section.
 - The chip bar is opaque. The earlier translucent blur is a known flicker source
   for sticky elements on iPhone Safari.
