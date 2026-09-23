@@ -642,9 +642,7 @@ button {
   margin: 20px calc(-1 * clamp(16px, 3vw, 40px)) 0;
   padding: 10px clamp(16px, 3vw, 40px);
   overflow-x: auto;
-  background: color-mix(in srgb, var(--page) 94%, transparent);
-  backdrop-filter: saturate(1.4) blur(8px);
-  -webkit-backdrop-filter: saturate(1.4) blur(8px);
+  background: var(--page);
   border-bottom: 1px solid var(--cs-divider);
   scrollbar-width: none;
 }

@@ -195,6 +195,9 @@
   let state = readState();
   let seq = 0;
   let explorers = {};
+  let activeTab = null;
+  let tabbed = null;
+  const TABS = matchMedia('(max-width: 760px)');
 
   const $ = (sel) => document.querySelector(sel);
   const S = () => STRINGS[state.lang];
@@ -837,6 +840,10 @@
   }
 
   function reveal(node) {
+    if (node.classList.contains('sec-slot')) {
+      selectTab(node.dataset.slot, false);
+      return;
+    }
     const explorer = node.closest('[data-px]');
     if (explorer) {
       const px = explorers[explorer.dataset.px];
@@ -863,7 +870,59 @@
     if (scroll) target.scrollIntoView({block: 'start'});
   }
 
+  // ------------------------------------------------------------------
+  // Phones: the section chips act as tabs, one section at a time
+  // ------------------------------------------------------------------
+
+  const tabMode = () => TABS.matches;
+
+  function applyTabs() {
+    const slots = [...document.querySelectorAll('.sec-slot')];
+    if (!slots.length) return;
+    if (!tabMode()) {
+      slots.forEach((slot) => slot.removeAttribute('hidden'));
+      sectionsInView();
+      return;
+    }
+    if (!slots.some((slot) => slot.dataset.slot === activeTab)) activeTab = slots[0].dataset.slot;
+    slots.forEach((slot) => {
+      if (slot.dataset.slot === activeTab) slot.removeAttribute('hidden');
+      else slot.setAttribute('hidden', 'until-found');
+    });
+    const bar = document.querySelector('.chips');
+    bar.querySelectorAll('a[data-sec]').forEach((a) => a.setAttribute('aria-current', a.dataset.sec === activeTab ? 'true' : 'false'));
+    const chip = bar.querySelector('a[aria-current="true"]');
+    const barBox = bar.getBoundingClientRect();
+    const box = chip.getBoundingClientRect();
+    if (box.left < barBox.left + 8 || box.right > barBox.right - 8) {
+      bar.scrollBy({left: box.left - barBox.left - (barBox.width - box.width) / 2});
+    }
+  }
+
+  // Scrolls only when the chips are already pinned; near the top the content just swaps.
+  function selectTab(id, toSection) {
+    const bar = document.querySelector('.chips');
+    const pinned = bar.getBoundingClientRect().top <= parseFloat(getComputedStyle(bar).top) + 1;
+    activeTab = id;
+    applyTabs();
+    if (toSection && pinned) {
+      const slot = document.querySelector(`.sec-slot[data-slot="${CSS.escape(id)}"]`);
+      scrollTo(0, scrollY + slot.getBoundingClientRect().top - bar.getBoundingClientRect().bottom - 12);
+    }
+  }
+
+  // iOS resizes the viewport as its toolbar hides, so act only when the mode flips.
+  function syncMode() {
+    if (tabMode() !== tabbed) {
+      tabbed = tabMode();
+      applyTabs();
+    } else {
+      sectionsInView();
+    }
+  }
+
   function sectionsInView() {
+    if (tabMode()) return;
     const sections = [...document.querySelectorAll('.sec[data-sec]')];
     if (!sections.length) return;
     const line = (innerWidth >= 1280 ? 60 : 60 + 56) + 32;
@@ -916,7 +975,10 @@
     const facts = buildFacts(d, s, new Date());
     const main = $('#main');
     main.innerHTML =
-      headerHtml(d, logo, s) + tilesHtml(facts) + chipsHtml(d, s) + d.sections.map((sec) => sectionHtml(d, sec, s)).join('');
+      headerHtml(d, logo, s) +
+      tilesHtml(facts) +
+      chipsHtml(d, s) +
+      d.sections.map((sec) => `<div class="sec-slot" data-slot="${esc(sec.id)}">${sectionHtml(d, sec, s)}</div>`).join('');
     $('#rail').innerHTML = railHtml(d, s, facts);
     $('#footer').innerHTML = `<p>${esc(s.footerTag)}</p><p>${esc(s.footerDisclaimer)}</p><p class="mock-foot">${esc(
       s.mockNote(DATA.snapshot.version, DATA.snapshot.synced),
@@ -926,13 +988,15 @@
     ai.title = s.aiTitle;
 
     bindExplorers(main);
-    sectionsInView();
+    tabbed = tabMode();
+    applyTabs();
   }
 
   function set(key, value) {
     if (state[key] === value) return;
     state = {...state, [key]: value};
     saveState();
+    if (key !== 'theme') activeTab = null;
     const keepScroll = key === 'theme';
     const y = scrollY;
     render();
@@ -959,6 +1023,23 @@
       drawerButton.setAttribute('aria-expanded', String(!drawer.hidden));
       return;
     }
+    const anchor = event.target.closest('a[href^="#"]');
+    if (anchor && tabMode()) {
+      const hash = anchor.getAttribute('href').slice(1);
+      const target = hash && document.getElementById(decodeURIComponent(hash));
+      const slot = target && target.closest('.sec-slot');
+      if (slot) {
+        event.preventDefault();
+        history.replaceState(null, '', `#${hash}`);
+        if (anchor.closest('.chips')) {
+          selectTab(slot.dataset.slot, true);
+        } else {
+          selectTab(slot.dataset.slot, false);
+          openTarget(target.id, true);
+        }
+        return;
+      }
+    }
     const more = event.target.closest('[data-more]');
     if (more) {
       const open = more.getAttribute('aria-expanded') !== 'true';
@@ -970,6 +1051,11 @@
   document.addEventListener(
     'beforematch',
     (event) => {
+      const slot = event.target.closest('.sec-slot');
+      if (slot && tabMode() && slot.dataset.slot !== activeTab) {
+        activeTab = slot.dataset.slot;
+        applyTabs();
+      }
       const overflow = event.target.closest('.overflow[id]');
       const button = overflow && document.querySelector(`[data-more="${overflow.id}"]`);
       if (button) setMore(button, true);
@@ -987,11 +1073,14 @@
   });
 
   addEventListener('scroll', sectionsInView, {passive: true});
-  addEventListener('resize', sectionsInView, {passive: true});
+  addEventListener('resize', syncMode, {passive: true});
   addEventListener('hashchange', () => openTarget(decodeURIComponent(location.hash.slice(1)), true));
   addEventListener('beforeprint', () => {
+    document.querySelectorAll('.sec-slot').forEach((slot) => slot.removeAttribute('hidden'));
     document.querySelectorAll('[hidden="until-found"], tr[data-overflow][hidden]').forEach((node) => reveal(node));
   });
+  addEventListener('afterprint', applyTabs);
+  TABS.addEventListener('change', syncMode);
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     if (state.theme === 'auto') render();
   });
