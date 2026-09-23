@@ -986,6 +986,12 @@ button {
   color: var(--cs-ink-muted);
 }
 
+.kv-row dt,
+.kv-row dd,
+.t-list li {
+  overflow-wrap: anywhere;
+}
+
 .kv-row dd {
   flex: 0 1 auto;
   margin: 0;
@@ -1074,6 +1080,7 @@ button {
     padding: 0;
     border: 0;
     min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   .t-wide td:first-child {
