@@ -33,6 +33,13 @@ PHONE = re.compile(r"\+\d{1,3}(?:[ -]?\d){6,14}")
 MONEY = re.compile(r"(?P<cur>\$|€|USD|EUR|LBP)\s?(?P<num>\d[\d,]*(?:\.\d+)?)|(?P<num2>\d[\d,]*(?:\.\d+)?)\s?(?P<cur2>\$|€|ل\.ل)")
 PER_CREDIT = r"per credit|credit hour|لكل ساعة|بالساعة|للساعة|سعر الساعة"
 FIELD = re.compile(r"(\w+):\s*('(?:[^'\\]|\\.)*'|-?\d+(?:\.\d+)?)")
+OPENS = re.compile(r"^(opens?|يفتح|تفتح|يُفتح|تُفتح)$", re.I)
+CLOSES = re.compile(r"^(closes?|يغلق|يُغلق|تقفل|تُقفل|يقفل)$|deadline|last day|الموعد النهائي|آخر يوم", re.I)
+EN_MONTHS = {m: i for i, m in enumerate(["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"], 1)}
+AR_MONTHS = {
+    "كانون الثاني": 1, "شباط": 2, "آذار": 3, "نيسان": 4, "أيار": 5, "حزيران": 6,
+    "تموز": 7, "آب": 8, "أيلول": 9, "تشرين الأول": 10, "تشرين الثاني": 11, "كانون الأول": 12,
+}
 
 
 def normalize(text: str) -> str:
@@ -156,15 +163,46 @@ def parse_table(lines: list[str]) -> dict:
         refs = [None] * len(body)
     keep = [i for i in range(width) if i != ref]
     shape = "list" if len(keep) == 1 else "kv" if len(keep) <= 3 else "wide"
+    plain_head = [plain(h) for h in head]
+    plain_rows = [[plain(c) for c in r] for r in body]
     return {
         "t": "table",
         "shape": shape,
+        "windows": windows(plain_head, plain_rows, keep) if len(keep) > 1 else None,
         "head": [plain(head[i]) for i in keep],
         "rows": [[inline(r[i]) for i in keep] for r in body],
         "cells": [[plain(r[i]) for i in keep] for r in body],
         "refs": refs,
         "sharedRef": shared,
         "raw": {"head": [plain(h) for h in head], "rows": [[plain(c) for c in r] for r in body]},
+    }
+
+
+def parse_date(text: str) -> str | None:
+    """A full calendar date, or None: "Oct 31, 2025", "1 Aug 2025", "31 تشرين الأول 2025"."""
+    t = re.sub(r"\s*\([^)]*\)\s*$", "", text.strip())
+    m = re.fullmatch(r"([A-Za-z]{3,9})\.?\s+(\d{1,2}),?\s+(\d{4})", t) or re.fullmatch(r"(\d{1,2})\s+([A-Za-z]{3,9})\.?,?\s+(\d{4})", t)
+    if m:
+        a, b, year = m.groups()
+        month, day = (a, b) if a[0].isalpha() else (b, a)
+        num = EN_MONTHS.get(month[:3].lower())
+        return f"{year}-{num:02d}-{int(day):02d}" if num and 1 <= int(day) <= 31 else None
+    m = re.fullmatch(r"(\d{1,2})\s+(.+?)(?:/\S+)?\s+(\d{4})", t)
+    if m and m.group(2) in AR_MONTHS:
+        return f"{m.group(3)}-{AR_MONTHS[m.group(2)]:02d}-{int(m.group(1)):02d}"
+    return None
+
+
+def windows(head: list[str], rows: list[list[str]], keep: list[int]) -> dict | None:
+    closes = next((i for i in keep if CLOSES.search(head[i].strip())), None)
+    if closes is None:
+        return None
+    opens = next((i for i in keep if OPENS.match(head[i].strip())), None)
+    return {
+        "title": keep.index(next(i for i in keep if i not in (opens, closes))),
+        "opens": keep.index(opens) if opens is not None else None,
+        "closes": keep.index(closes),
+        "dates": [{"opens": parse_date(r[opens]) if opens is not None else None, "closes": parse_date(r[closes])} for r in rows],
     }
 
 

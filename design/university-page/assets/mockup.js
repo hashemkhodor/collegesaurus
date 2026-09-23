@@ -107,6 +107,13 @@
       opensOn: (d) => `Opens ${d}`,
       ai: 'Ask AI',
       aiTitle: 'Opens the Collegesaurus chat on the live site',
+      showClosed: (n) => `Show ${n} closed ${n === 1 ? 'window' : 'windows'}`,
+      hideClosed: 'Hide closed windows',
+      language: 'العربية',
+      darkMode: 'Dark mode',
+      lightMode: 'Light mode',
+      mockNote: (v, d) => `Mockup of the Guidebook (option A), built from the ${v} Drive sync of ${d}. Not the live site.`,
+      readProposal: 'Read the proposal',
       footerTag: 'A free, student-built guide to universities and scholarships in Lebanon.',
       footerDisclaimer:
         'An independent student project, not affiliated with any university or scholarship provider.',
@@ -173,6 +180,13 @@
       opensOn: (d) => `يفتح في ${d}`,
       ai: 'اسأل الآن',
       aiTitle: 'يفتح محادثة Collegesaurus على الموقع الفعلي',
+      showClosed: (n) => `اعرض المواعيد المنتهية (${n})`,
+      hideClosed: 'أخفِ المواعيد المنتهية',
+      language: 'English',
+      darkMode: 'الوضع الداكن',
+      lightMode: 'الوضع الفاتح',
+      mockNote: (v, d) => `نموذج أولي لتصميم «الدليل» (الخيار A)، مبني على مزامنة Drive لعام ${v} بتاريخ ${d}. ليس الموقع الفعلي.`,
+      readProposal: 'اقرأ المقترح',
       footerTag: 'دليل مجاني إلى الجامعات والمنح الدراسية في لبنان، أعدّه طلاب.',
       footerDisclaimer: 'مشروع طلابي مستقل، غير تابع لأي جامعة أو جهة مانحة.',
     },
@@ -356,28 +370,6 @@
   // Page regions
   // ------------------------------------------------------------------
 
-  function mockbarHtml() {
-    const seg = (name, label, options) =>
-      `<span class="group">${label}<span class="seg" role="group" aria-label="${label}">${options
-        .map(
-          ([value, text]) =>
-            `<button type="button" data-set="${name}" data-value="${value}" aria-pressed="${state[name] === value}">${text}</button>`,
-        )
-        .join('')}</span></span>`;
-    return `<span class="mock-note"><strong>Mockup of option A, the Guidebook.</strong> Built from the ${esc(DATA.snapshot.version)} Drive sync of ${esc(DATA.snapshot.synced)}; nothing here is live. <a href="README.md">Read the proposal</a></span>${seg('u', 'University', [
-      ['aub', 'AUB'],
-      ['aust', 'AUST'],
-      ['usj', 'USJ'],
-    ])}${seg('lang', 'Language', [
-      ['en', 'English'],
-      ['ar', 'العربية'],
-    ])}${seg('theme', 'Theme', [
-      ['auto', 'Auto'],
-      ['light', 'Light'],
-      ['dark', 'Dark'],
-    ])}`;
-  }
-
   function navbarHtml(s) {
     return `<button class="icon-btn plain nav-menu" type="button" aria-label="${esc(s.menu)}" aria-expanded="false" data-drawer>${icon('menu', 24)}</button>
       <a class="brand" href="#top" data-inert><img src="../../static/img/logo.svg" alt="" width="32" height="32"><span>Collegesaurus</span></a>
@@ -513,11 +505,16 @@
         return `<p class="lead-in">${b.html}</p>`;
       case 'h': {
         const tag = b.level <= 3 ? 'h3' : b.level === 4 ? 'h4' : 'h5';
-        return `<${tag} id="${esc(b.id)}">${b.html}</${tag}>`;
+        return `<${tag} id="${esc(b.id)}">${isolateLatin(b.html)}</${tag}>`;
       }
       case 'ul':
-      case 'ol':
+      case 'ol': {
+        const pairs = b.items.map((item) => item.match(/^<strong>([\s\S]+?)<\/strong>\s*[—–:-]\s*([\s\S]+)$/));
+        if (b.items.length > 1 && pairs.every(Boolean)) {
+          return `<dl class="defs">${pairs.map((m) => `<div><dt>${m[1]}</dt><dd>${m[2]}</dd></div>`).join('')}</dl>`;
+        }
         return `<${b.t} class="prose">${b.items.map((item) => `<li>${item}</li>`).join('')}</${b.t}>`;
+      }
       case 'note':
         return `<aside class="note">${icon('info', 18)}<div>${b.paras.map((p) => `<p>${p}</p>`).join('')}</div></aside>`;
       case 'sources':
@@ -531,6 +528,11 @@
     }
   }
 
+  // An English aside in an Arabic heading otherwise loses its brackets when the line wraps.
+  function isolateLatin(html) {
+    return state.lang === 'ar' ? html.replace(/\(([A-Za-z][^()<>]*)\)/g, '<bdi dir="ltr">($1)</bdi>') : html;
+  }
+
   function sourcesHtml(links, s) {
     const label = links.length > 1 ? s.sources : s.source;
     return `<p class="src"><span>${esc(label)}:</span>${links
@@ -538,7 +540,66 @@
       .join('')}</p>`;
   }
 
+  function windowRow(b, item, s) {
+    const w = b.windows;
+    const {cells, i, status} = item;
+    const date = (j) => `<span class="nowrap">${cells[j]}</span>`;
+    const dates =
+      w.opens !== null
+        ? `${date(w.opens)}<span class="win-to" aria-hidden="true"> – </span>${date(w.closes)}`
+        : `<span class="win-lbl">${esc(b.head[w.closes])}:</span> ${date(w.closes)}`;
+    const extras = cells
+      .map((cell, j) => ({cell, j}))
+      .filter(({j}) => j !== w.title && j !== w.opens && j !== w.closes && !/^[—–-]?$/.test(b.cells[i][j] || ''));
+    const extra = extras.length
+      ? `<dl class="win-extra">${extras.map(({cell, j}) => `<div><dt>${esc(b.head[j])}</dt><dd>${cell}</dd></div>`).join('')}</dl>`
+      : '';
+    const kind = status ? status.kind : 'unknown';
+    const pill = status ? statusPill(status, w.dates[i], s) : '';
+    return `<li class="win win-${kind}"><span class="win-term">${cells[w.title]}${refExtra(b, i, s)}</span>${pill}<span class="win-dates">${dates}</span>${extra}</li>`;
+  }
+
+  function statusPill(status, dates, s) {
+    const pills = {
+      open: ['pill-open', s.open],
+      closing: ['pill-soon', s.closing(status.days)],
+      opening: ['pill-neutral', s.opening(status.days)],
+      closed: ['pill-neutral', s.closed],
+      date: ['pill-neutral', s.closes(fmtDate(dates.closes))],
+    };
+    const [cls, text] = pills[status.kind];
+    return `<span class="pill ${cls}">${esc(text)}</span>`;
+  }
+
+  // Status comes from the row's own dates, and only when they parse as full dates.
+  function windowsHtml(b, s) {
+    const now = new Date();
+    const items = b.rows.map((cells, i) => {
+      const d = b.windows.dates[i];
+      return {cells, i, status: d.closes ? deadlineStatus(d, now) : null};
+    });
+    const live = items
+      .filter((x) => x.status && x.status.kind !== 'closed')
+      .sort((a, c) => b.windows.dates[a.i].closes.localeCompare(b.windows.dates[c.i].closes));
+    const unknown = items.filter((x) => !x.status);
+    const closed = items.filter((x) => x.status && x.status.kind === 'closed');
+    const fold = live.length + unknown.length > 0 && closed.length > 1;
+    const row = (x) => windowRow(b, x, s);
+    const id = uid();
+    let html = `<ul class="wins">${[...live, ...unknown, ...(fold ? [] : closed)].map(row).join('')}</ul>`;
+    if (fold) {
+      html += `<ul class="wins overflow" id="${id}" hidden="until-found">${closed.map(row).join('')}</ul>${moreButton(
+        id,
+        s.showClosed(closed.length),
+        s.hideClosed,
+      )}`;
+    }
+    if (b.sharedRef) html += sourcesHtml([b.sharedRef], s);
+    return html;
+  }
+
   function tableHtml(b, s) {
+    if (b.windows) return windowsHtml(b, s);
     const n = b.rows.length;
     const split = n > ROWS_LIMIT ? ROWS_SHOWN : n;
     const id = uid();
@@ -555,34 +616,24 @@
     return ref.url ? refIcon(ref, s) : `<span class="kv-note">${ref.html}</span>`;
   }
 
-  // Both halves of a split table share one colgroup so their columns line up.
-  function colgroup(b) {
-    const weights = b.head.map((head, j) => {
-      const lengths = b.cells.map((row) => (row[j] || '').length);
-      const avg = lengths.reduce((a, v) => a + v, 0) / Math.max(1, lengths.length);
-      return Math.min(42, Math.max(8, avg, head.length * 0.8));
-    });
-    const total = weights.reduce((a, v) => a + v, 0);
-    return `<colgroup>${weights.map((w) => `<col style="width:${((w / total) * 100).toFixed(1)}%">`).join('')}</colgroup>`;
-  }
-
+  // Extra rows stay in the same table so the columns keep one set of widths.
   function wideHtml(b, split, id, s) {
-    const cols = colgroup(b);
     const head = `<thead><tr>${b.head.map((h) => `<th scope="col">${esc(h)}</th>`).join('')}</tr></thead>`;
     const row = (r, i) =>
-      `<tr>${r
+      `<tr${i >= split ? ' data-overflow hidden' : ''}>${r
         .map((cell, j) => {
           const text = b.cells[i][j] || '';
-          const cls = [/^[—–-]?$/.test(text) ? 'empty' : '', text.length > 42 ? 'wide-cell' : ''].filter(Boolean).join(' ');
+          const cls = [
+            /^[—–-]?$/.test(text) ? 'empty' : '',
+            text.length > 42 ? 'wide-cell' : '',
+            text.length <= 16 && /\d/.test(text) ? 'nowrap' : '',
+          ]
+            .filter(Boolean)
+            .join(' ');
           return `<td${cls ? ` class="${cls}"` : ''} data-label="${esc(b.head[j])}">${cell}${j === 0 ? refExtra(b, i, s) : ''}</td>`;
         })
         .join('')}</tr>`;
-    const rows = b.rows.map(row);
-    const table = (body, withHead) =>
-      `<table style="table-layout:fixed">${cols}${withHead ? head : ''}<tbody>${body}</tbody></table>`;
-    const first = `<div class="t-wide">${table(rows.slice(0, split).join(''), true)}</div>`;
-    if (split >= rows.length) return first;
-    return `${first}<div class="t-wide overflow" id="${id}" hidden="until-found">${table(rows.slice(split).join(''), false)}</div>`;
+    return `<div class="t-wide"><div class="t-frame"><table id="${id}">${head}<tbody>${b.rows.map(row).join('')}</tbody></table></div></div>`;
   }
 
   function kvHead(b) {
@@ -775,6 +826,16 @@
     button.querySelector('span').textContent = open ? button.dataset.fewerLabel : button.dataset.moreLabel;
   }
 
+  function toggleTarget(target, open) {
+    if (target.tagName === 'TABLE') {
+      target.querySelectorAll('tr[data-overflow]').forEach((tr) => (tr.hidden = !open));
+    } else if (open) {
+      target.removeAttribute('hidden');
+    } else {
+      target.setAttribute('hidden', 'until-found');
+    }
+  }
+
   function reveal(node) {
     const explorer = node.closest('[data-px]');
     if (explorer) {
@@ -784,8 +845,9 @@
       syncExplorer(explorer, px);
       return;
     }
-    node.removeAttribute('hidden');
-    const button = node.id && document.querySelector(`[data-more="${node.id}"]`);
+    const target = node.matches('tr[data-overflow]') ? node.closest('table') : node;
+    toggleTarget(target, true);
+    const button = target.id && document.querySelector(`[data-more="${target.id}"]`);
     if (button) setMore(button, true);
   }
 
@@ -841,21 +903,24 @@
     document.documentElement.dir = state.lang === 'ar' ? 'rtl' : 'ltr';
     document.title = `${d.shortName}: ${d.fullName} | Guidebook mockup`;
 
-    const bar = $('#mockbar');
-    bar.innerHTML = mockbarHtml();
-    bar.setAttribute('dir', 'ltr');
-    bar.setAttribute('lang', 'en');
     $('#navbar').innerHTML = navbarHtml(s);
     $('#sidebar').innerHTML = universityListHtml(s);
     $('#sidebar').setAttribute('aria-label', s.nav[0]);
-    $('#drawer').innerHTML = universityListHtml(s);
+    $('#drawer').innerHTML = `${universityListHtml(s)}<div class="drawer-controls"><button type="button" data-set="lang" data-value="${
+      state.lang === 'en' ? 'ar' : 'en'
+    }">${icon('globe', 18)} ${esc(s.language)}</button><button type="button" data-set="theme" data-value="${isDark() ? 'light' : 'dark'}">${icon(
+      isDark() ? 'sun' : 'moon',
+      18,
+    )} ${esc(isDark() ? s.lightMode : s.darkMode)}</button></div>`;
 
     const facts = buildFacts(d, s, new Date());
     const main = $('#main');
     main.innerHTML =
       headerHtml(d, logo, s) + tilesHtml(facts) + chipsHtml(d, s) + d.sections.map((sec) => sectionHtml(d, sec, s)).join('');
     $('#rail').innerHTML = railHtml(d, s, facts);
-    $('#footer').innerHTML = `<p>${esc(s.footerTag)}</p><p>${esc(s.footerDisclaimer)}</p>`;
+    $('#footer').innerHTML = `<p>${esc(s.footerTag)}</p><p>${esc(s.footerDisclaimer)}</p><p class="mock-foot">${esc(
+      s.mockNote(DATA.snapshot.version, DATA.snapshot.synced),
+    )} <a href="README.md">${esc(s.readProposal)}</a></p>`;
     const ai = $('#ai');
     ai.innerHTML = `<span aria-hidden="true">💬</span> ${esc(s.ai)}`;
     ai.title = s.aiTitle;
@@ -896,10 +961,8 @@
     }
     const more = event.target.closest('[data-more]');
     if (more) {
-      const target = document.getElementById(more.dataset.more);
       const open = more.getAttribute('aria-expanded') !== 'true';
-      if (open) target.removeAttribute('hidden');
-      else target.setAttribute('hidden', 'until-found');
+      toggleTarget(document.getElementById(more.dataset.more), open);
       setMore(more, open);
     }
   });
@@ -927,7 +990,7 @@
   addEventListener('resize', sectionsInView, {passive: true});
   addEventListener('hashchange', () => openTarget(decodeURIComponent(location.hash.slice(1)), true));
   addEventListener('beforeprint', () => {
-    document.querySelectorAll('[hidden="until-found"]').forEach((node) => reveal(node));
+    document.querySelectorAll('[hidden="until-found"], tr[data-overflow][hidden]').forEach((node) => reveal(node));
   });
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     if (state.theme === 'auto') render();

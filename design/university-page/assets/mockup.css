@@ -94,65 +94,6 @@ button {
 }
 
 /* =====================================================
-   Mockup controls: deliberately outside the site's look
-   ===================================================== */
-
-.mockbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 16px;
-  padding: 8px clamp(12px, 3vw, 24px);
-  background: #1d2433;
-  color: #dfe4ee;
-  font-size: 13px;
-  line-height: 1.3;
-}
-
-.mockbar strong {
-  color: #fff;
-  font-weight: 700;
-}
-
-.mock-note {
-  flex: 1 1 260px;
-  min-width: 0;
-}
-
-.mockbar .group {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.mockbar .seg {
-  display: inline-flex;
-  padding: 2px;
-  border-radius: 8px;
-  background: rgb(255 255 255 / 0.08);
-}
-
-.mockbar .seg button {
-  border: 0;
-  background: transparent;
-  color: #dfe4ee;
-  padding: 4px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 13px;
-}
-
-.mockbar .seg button[aria-pressed='true'] {
-  background: #fff;
-  color: #1d2433;
-  font-weight: 700;
-}
-
-.mockbar a {
-  color: #9fd8b5;
-}
-
-/* =====================================================
    Navbar and page frame
    ===================================================== */
 
@@ -367,6 +308,32 @@ button {
 
 .drawer[hidden] {
   display: none;
+}
+
+.drawer-controls {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--cs-divider);
+}
+
+.drawer-controls button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--cs-ink);
+  font-size: 15px;
+  text-align: start;
+  cursor: pointer;
+}
+
+.drawer-controls button:hover {
+  background: var(--cs-surface-muted);
 }
 
 .main {
@@ -916,14 +883,8 @@ button {
 }
 
 .t-kv.overflow,
-.t-list.overflow,
-.t-wide.overflow {
+.t-list.overflow {
   margin-top: 0;
-}
-
-.t-wide.overflow {
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
 }
 
 .kv-head {
@@ -987,16 +948,17 @@ button {
 }
 
 .kv-row dt,
-.kv-row dd,
 .t-list li {
   overflow-wrap: anywhere;
 }
 
 .kv-row dd {
   flex: 0 1 auto;
+  max-width: 60%;
   margin: 0;
   font-weight: 700;
   text-align: end;
+  overflow-wrap: break-word;
 }
 
 .kv-note {
@@ -1007,8 +969,14 @@ button {
   font-weight: 400;
 }
 
+/* Wide tables turn into stacked cards whenever their own box is narrow, which
+   covers phones and the three-column desktop layout alike. */
 .t-wide {
   margin: 14px 0 0;
+  container-type: inline-size;
+}
+
+.t-frame {
   overflow-x: auto;
   border-radius: 14px;
   box-shadow: inset 0 0 0 1px var(--cs-divider);
@@ -1027,27 +995,32 @@ button {
   color: var(--cs-ink-muted);
   font-size: 13px;
   font-weight: 600;
+  line-height: 1.35;
   text-align: start;
+  vertical-align: bottom;
+}
+
+.nowrap {
   white-space: nowrap;
+}
+
+.t-wide tr[hidden] {
+  display: none;
 }
 
 .t-wide td {
   padding: 11px 14px;
   border-top: 1px solid var(--cs-divider);
   vertical-align: top;
+  overflow-wrap: break-word;
 }
 
 .t-wide td:first-child {
   font-weight: 600;
-  min-width: 11rem;
 }
 
-.t-wide tbody[hidden] {
-  border: 0;
-}
-
-@media (max-width: 700px) {
-  .t-wide {
+@container (max-width: 700px) {
+  .t-frame {
     overflow: visible;
     border-radius: 0;
     box-shadow: none;
@@ -1076,6 +1049,10 @@ button {
     border-top: 1px solid var(--cs-divider);
   }
 
+  .t-wide tr[hidden] {
+    display: none;
+  }
+
   .t-wide td {
     padding: 0;
     border: 0;
@@ -1083,10 +1060,13 @@ button {
     overflow-wrap: anywhere;
   }
 
+  .t-wide td.nowrap {
+    white-space: normal;
+  }
+
   .t-wide td:first-child {
     grid-column: 1 / -1;
     font-size: 15.5px;
-    min-width: 0;
   }
 
   .t-wide td.wide-cell {
@@ -1103,6 +1083,140 @@ button {
     color: var(--cs-ink-subtle);
     font-size: 12.5px;
     font-weight: 500;
+  }
+}
+
+/* =====================================================
+   Application windows
+   ===================================================== */
+
+.wins {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wins.overflow {
+  margin-top: 10px;
+}
+
+.win {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 6px 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--cs-bg-soft);
+  box-shadow: inset 0 0 0 1px var(--cs-divider);
+}
+
+.win-open,
+.win-closing {
+  background: var(--cs-green-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--cs-brand) 40%, transparent);
+}
+
+.win-term {
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.win .pill {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.win-dates {
+  grid-column: 1 / -1;
+  color: var(--cs-ink);
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.win-lbl {
+  color: var(--cs-ink-muted);
+  font-weight: 500;
+}
+
+.win-to {
+  color: var(--cs-ink-subtle);
+}
+
+.win-extra {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 18px;
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.win-extra div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 6px;
+}
+
+.win-extra dt {
+  color: var(--cs-ink-subtle);
+}
+
+.win-extra dd {
+  margin: 0;
+  color: var(--cs-ink-muted);
+}
+
+.win-closed .win-term,
+.win-closed .win-dates {
+  color: var(--cs-ink-muted);
+}
+
+@media (min-width: 761px) {
+  .win {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .win-dates {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .win .pill {
+    grid-column: 3;
+  }
+}
+
+.defs {
+  display: grid;
+  gap: 14px;
+  margin: 12px 0 0;
+}
+
+.defs div {
+  display: grid;
+  gap: 2px;
+}
+
+.defs dt {
+  font-weight: 700;
+}
+
+.defs dd {
+  margin: 0;
+  color: var(--cs-ink-muted);
+  max-width: 68ch;
+}
+
+@media (min-width: 761px) {
+  .defs div {
+    grid-template-columns: 10rem minmax(0, 1fr);
+    gap: 18px;
   }
 }
 
@@ -1436,6 +1550,11 @@ button {
   color: var(--cs-ink-subtle);
 }
 
+.footer .mock-foot {
+  margin-top: 14px;
+  font-size: 13px;
+}
+
 .ai {
   position: fixed;
   bottom: 1.25rem;
@@ -1476,7 +1595,6 @@ button {
 }
 
 @media print {
-  .mockbar,
   .navbar,
   .sidebar,
   .rail,
