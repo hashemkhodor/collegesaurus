@@ -1,10 +1,11 @@
 /**
  * Floating chat bubble pinned bottom-right on every page. Click toggles a
- * panel that iframes the Collegesaurus AI Streamlit app in embed mode.
+ * panel that iframes the Collegesaurus AI chat page in embed mode.
  *
- * The iframe URL is read from `siteConfig.customFields.chatUrl` so the dev
- * value (localhost:8501) and the eventual Streamlit Cloud URL can be swapped
- * without touching this component.
+ * The iframe URL is read from `siteConfig.customFields.chatUrl` so a local
+ * chat server and the production one can be swapped without touching this
+ * component. The chat is told the site language, the page it was opened on
+ * (so "what's the tuition?" means this university) and the colour theme.
  */
 import {useEffect, useState, type ReactNode} from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
@@ -47,12 +48,19 @@ function Panel(): ReactNode {
 
   const label = LABELS[i18n.currentLocale] || DEFAULT_LABEL;
 
-  const embedUrl = chatUrl.includes('embed=')
-    ? chatUrl
-    : `${chatUrl}${chatUrl.includes('?') ? '&' : '?'}embed=true`;
+  // Captured once per opening: the bubble stays mounted while the visitor
+  // moves between pages, and a changing iframe URL would reload the chat.
+  const [opened, setOpened] = useState({page: '', theme: 'light'});
+  const embedUrl = chatEmbedUrl(chatUrl, {lang: i18n.currentLocale, ...opened});
 
   const handleToggle = () => {
     setAttention(false);
+    if (!open) {
+      setOpened({
+        page: window.location.pathname,
+        theme: document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light',
+      });
+    }
     setOpen((v) => !v);
   };
 
@@ -102,6 +110,27 @@ function Panel(): ReactNode {
       </button>
     </>
   );
+}
+
+function chatEmbedUrl(
+  chatUrl: string,
+  params: {lang: string; page: string; theme: string},
+): string {
+  let url: URL;
+  try {
+    url = new URL(chatUrl);
+  } catch {
+    return chatUrl;
+  }
+  if (!url.searchParams.has('embed')) {
+    url.searchParams.set('embed', 'true');
+  }
+  for (const [key, value] of Object.entries(params)) {
+    if (value) {
+      url.searchParams.set(key, value);
+    }
+  }
+  return url.toString();
 }
 
 export default function ChatBubble(): ReactNode {

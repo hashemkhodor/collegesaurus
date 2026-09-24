@@ -69,6 +69,9 @@ const config: Config = {
     // Path spelled out to the file: plugin paths go through require.resolve,
     // which would not find a directory holding only index.ts.
     './plugins/homepage-data/index.ts',
+    // Publishes /chatbot/corpus.json and /chatbot/version.json for the
+    // Collegesaurus AI chatbot (collegesaurus-ai repo).
+    './plugins/chatbot-corpus/index.ts',
     [
       require.resolve('@easyops-cn/docusaurus-search-local'),
       {
