@@ -1,15 +1,19 @@
 /**
- * Turns the MDX that drive_sync generates into plain markdown for the
- * Collegesaurus AI chatbot.
+ * Turns the MDX that drive_sync generates, and the Stories posts, into plain
+ * markdown for the Collegesaurus AI chatbot.
  *
  * It knows the few MDX forms drive_sync emits (scripts/drive_sync/emit/
  * format.py): <MajorsTable> blocks, alert <div>s, admonitions and the
- * backslash escapes of <, { and }. Anything else that looks like a component
+ * backslash escapes of <, { and }. It also drops comments, such as the
+ * truncate marker in Stories posts. Anything else that looks like a component
  * is passed to `onUnknown`, so a new component is noticed at build time
  * rather than reaching the chatbot as raw JSX.
  */
 
 const FRONTMATTER = /^---\n[\s\S]*?\n---\n/;
+// {/* MDX */} and <!-- HTML --> comments, with the spaces before them. An
+// escaped \{ is text, not the start of a comment.
+const COMMENT = /[ \t]*(?:(?<!\\)\{\/\*[\s\S]*?\*\/\}|<!--[\s\S]*?-->)/g;
 const MAJORS_TABLE = /<MajorsTable\b[\s\S]*?\/>/g;
 // One `key: value` of a MajorsTable row: single-quoted JSON-escaped string, number or boolean.
 const ROW_PROP = /(\w+):\s*('(?:[^'\\]|\\.)*'|-?\d+(?:\.\d+)?|true|false)/g;
@@ -28,7 +32,7 @@ const COLUMNS: [key: string, header: string][] = [
 ];
 
 export function mdxToMarkdown(mdx: string, onUnknown?: (component: string) => void): string {
-  let text = mdx.replace(/\r\n/g, '\n').replace(FRONTMATTER, '');
+  let text = mdx.replace(/\r\n/g, '\n').replace(FRONTMATTER, '').replace(COMMENT, '');
   text = text.replace(MAJORS_TABLE, majorsTable);
   text = text.replace(ALERT_WRAPPER, '');
   text = text.replace(ADMONITION, (_match, type: string, title: string | undefined, body: string) => {
