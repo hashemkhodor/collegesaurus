@@ -5,11 +5,11 @@ on:
     branches: [main]
   workflow_dispatch:
   schedule:
-    # Nightly resync from Drive — picks up edits made by admissions/volunteer
-    # editors without anyone needing to push or click "Run workflow". GitHub
-    # cron is UTC; 04:00 UTC ≈ 07:00 Beirut (EEST) / 06:00 (EET), pre-business
-    # hours so the latest content is live by the time anyone visits the site.
-    - cron: '0 4 * * *'
+    # Every 10 minutes: picks up edits made by admissions/volunteer editors in
+    # Drive without anyone needing to push or click "Run workflow". The
+    # check-drive job makes a run with no Drive changes stop after ~30 s.
+    # Off the hour (:03, :13, ...) because GitHub delays top-of-hour cron.
+    - cron: '3-59/10 * * * *'
 
 permissions:
   contents: read
@@ -21,8 +21,55 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  check-drive:
+    name: Check Drive for changes
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.check.outputs.changed }}
+      fingerprint: ${{ steps.check.outputs.fingerprint }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Compare the Drive fingerprint with the live site's
+        id: check
+        run: |
+          PYTHONPATH=scripts python -m drive_sync --fingerprint > fingerprint.json
+          python - <<'PY'
+          import json, os, time, urllib.request
+          from datetime import datetime, timezone
+
+          fp = json.load(open("fingerprint.json"))
+          try:
+              url = f"https://collegesaurus.org/chatbot/version.json?t={time.time_ns()}"
+              with urllib.request.urlopen(url, timeout=20) as response:
+                  live = json.load(response).get("drive_fingerprint")
+          except Exception as exc:  # first deploy, or the site is down: rebuild
+              print(f"live version.json unavailable ({exc})")
+              live = None
+          newest = fp["newest"]
+          edited = datetime.fromisoformat(newest.replace("Z", "+00:00")) if newest else None
+          quiet_for = (datetime.now(timezone.utc) - edited).total_seconds() if edited else 1e9
+          # Wait until edits have settled for 3 minutes, so a half-finished
+          # edit isn't published; the next run picks it up.
+          changed = fp["fingerprint"] != live and quiet_for > 180
+          print(f"drive={fp['fingerprint']} live={live} newest={newest} changed={changed}")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write(f"fingerprint={fp['fingerprint']}\n")
+              out.write(f"changed={'true' if changed else 'false'}\n")
+          PY
+        env:
+          GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
+          GDRIVE_CONTENT_ROOT_ID: ${{ secrets.GDRIVE_CONTENT_ROOT_ID }}
+
   build:
     name: Build
+    needs: check-drive
+    # Scheduled runs rebuild only when Drive changed; pushes and manual runs always do.
+    if: github.event_name != 'schedule' || needs.check-drive.outputs.changed == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,9 +84,9 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Sync content from Drive
         # Pulls info.docx + majors.xlsx for every slug under the Drive root,
-        # parses, and writes MDX into universities/ + scholarships/ (and the
-        # i18n/ar/ counterparts). The Docusaurus build below then consumes
-        # these regenerated files.
+        # parses, and writes year-versioned MDX into
+        # {universities,scholarships}_versioned_docs/ (and the i18n/ar/
+        # counterparts). The Docusaurus build below then consumes them.
         run: PYTHONPATH=scripts python -m drive_sync
         env:
           GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
@@ -47,14 +94,14 @@ jobs:
       - run: npm ci
       - run: npm run build
         env:
-          # URL of the Collegesaurus AI Streamlit app — the floating chat
-          # bubble iframes this. Set as a GitHub Actions *variable* (not
-          # secret; it's a public URL): Settings → Secrets and variables →
-          # Actions → Variables → New repository variable, name `CHAT_URL`,
-          # value e.g. `https://collegesaurus-ai.streamlit.app`. If unset,
-          # the bubble will 404 in production — unset is fine for now while
-          # the Streamlit app isn't deployed yet.
+          # URL of the Collegesaurus AI chat page; the floating chat bubble
+          # iframes it. A GitHub Actions *variable* (not a secret; it's a
+          # public URL): Settings → Secrets and variables → Actions →
+          # Variables → `CHAT_URL`.
           CHAT_URL: ${{ vars.CHAT_URL }}
+          # Published in /chatbot/version.json (plugins/chatbot-corpus), where
+          # check-drive and the chatbot look for changes.
+          DRIVE_FINGERPRINT: ${{ needs.check-drive.outputs.fingerprint }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: build
