@@ -8,7 +8,8 @@
   inset-inline-end: 1.25rem;
   z-index: 1000;
   border: none;
-  background: var(--ifm-color-primary);
+  /* The site's green for white text (5.45 light, 4.96 dark). */
+  background: var(--cs-brand-fill);
   color: #fff;
   cursor: pointer;
   display: inline-flex;
@@ -41,7 +42,7 @@
 .bubble:hover {
   transform: translateY(-2px) scale(1.03);
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.26);
-  background: var(--ifm-color-primary-dark);
+  background: var(--cs-brand-fill-hover);
 }
 
 .bubble:focus-visible {
@@ -103,8 +104,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.6rem 0.75rem 0.6rem 1rem;
-  background: var(--ifm-color-primary);
+  padding-block: 0.6rem;
+  padding-inline: 1rem 0.75rem;
+  background: var(--cs-brand-fill);
   color: #fff;
   font-size: 0.95rem;
   font-weight: 600;
@@ -112,7 +114,19 @@
 }
 
 .panelTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
   letter-spacing: 0.01em;
+}
+
+/* The logo is the brand green, so it sits on a white disc on the green bar. */
+.panelLogo {
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 2px;
+  border-radius: 50%;
+  background: #fff;
 }
 
 .closeButton {
@@ -139,7 +153,8 @@
   flex: 1;
   width: 100%;
   border: none;
-  background: #fff;
+  /* The theme's colour, not white: no flash while a dark chat loads. */
+  background: var(--ifm-background-surface-color);
 }
 
 @keyframes slideUp {
@@ -153,8 +168,9 @@
   }
 }
 
-/* Mobile: slim the pill, expand the panel to full screen. */
-@media (max-width: 640px) {
+/* Phones (and landscape phones): slim the pill, expand the panel to full
+   screen. Keep in step with PHONE in index.tsx. */
+@media (max-width: 640px), (max-height: 500px) {
   /* Truly full screen; on open, index.tsx also fits it to the visible area
      (keyboard included) and locks the page behind it. */
   .panel {
@@ -178,5 +194,16 @@
     height: 2.75rem;
     padding: 0 1rem;
     font-size: 0.9rem;
+  }
+  /* A full-size target for fingers, in a slimmer bar. */
+  .panelHeader {
+    padding-block: 0.25rem;
+    padding-inline: 0.75rem 0.25rem;
+  }
+  .closeButton {
+    width: 2.75rem;
+    height: 2.75rem;
+    background: transparent;
+    font-size: 1.75rem;
   }
 }
