@@ -87,6 +87,8 @@
   z-index: 999;
   width: min(400px, calc(100vw - 2rem));
   height: min(600px, calc(100vh - 7rem));
+  /* dvh: the height the browser actually shows (mobile toolbars excluded). */
+  height: min(600px, calc(100dvh - 7rem));
   background: var(--ifm-background-surface-color);
   border: 1px solid var(--ifm-color-emphasis-300);
   border-radius: 14px;
@@ -153,17 +155,24 @@
 
 /* Mobile: slim the pill, expand the panel to full screen. */
 @media (max-width: 640px) {
+  /* Truly full screen; on open, index.tsx also fits it to the visible area
+     (keyboard included) and locks the page behind it. */
   .panel {
-    bottom: 0;
-    inset-inline-end: 0;
-    inset-inline-start: 0;
-    width: 100vw;
-    height: calc(100vh - 4rem);
-    border-radius: 14px 14px 0 0;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    border: 0;
+    border-radius: 0;
   }
   .bubble {
     bottom: 0.75rem;
     inset-inline-end: 0.75rem;
+  }
+  /* The full-screen panel has its own × in the header; the round × would be a
+     second one, sitting on top of the chat's send button. */
+  .bubbleOpen {
+    display: none;
   }
   .bubbleClosed {
     height: 2.75rem;

@@ -7,7 +7,7 @@
  * component. The chat is told the site language, the page it was opened on
  * (so "what's the tuition?" means this university) and the colour theme.
  */
-import {useEffect, useState, type ReactNode} from 'react';
+import {useEffect, useRef, useState, type ReactNode} from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import clsx from 'clsx';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
@@ -21,6 +21,8 @@ const LABELS: Record<string, string> = {
   ar: 'اسأل الآن',
 };
 const DEFAULT_LABEL = 'Ask AI';
+// Matches the full-screen breakpoint in styles.module.css.
+const PHONE = '(max-width: 640px)';
 
 function Panel(): ReactNode {
   const {siteConfig, i18n} = useDocusaurusContext();
@@ -29,6 +31,7 @@ function Panel(): ReactNode {
     'https://collegesaurus-ai.streamlit.app';
   const [open, setOpen] = useState(false);
   const [attention, setAttention] = useState(true);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -37,6 +40,33 @@ function Panel(): ReactNode {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
+
+  // Phones: the panel is full screen. Lock the page behind it so scrolling
+  // the chat never scrolls the site, and keep the panel exactly the size of
+  // the visible area so the keyboard can't slide the page around beneath it.
+  useEffect(() => {
+    if (!open || !window.matchMedia(PHONE).matches) return;
+    const root = document.documentElement;
+    const saved = [root.style.overflow, root.style.overscrollBehavior, document.body.style.overflow];
+    root.style.overflow = 'hidden';
+    root.style.overscrollBehavior = 'none';
+    document.body.style.overflow = 'hidden';
+    const viewport = window.visualViewport;
+    const fit = () => {
+      const panel = panelRef.current;
+      if (!panel || !viewport) return;
+      panel.style.top = `${viewport.offsetTop}px`;
+      panel.style.height = `${viewport.height}px`;
+    };
+    fit();
+    viewport?.addEventListener('resize', fit);
+    viewport?.addEventListener('scroll', fit);
+    return () => {
+      [root.style.overflow, root.style.overscrollBehavior, document.body.style.overflow] = saved;
+      viewport?.removeEventListener('resize', fit);
+      viewport?.removeEventListener('scroll', fit);
+    };
   }, [open]);
 
   // Pulse for the first 8 seconds so visitors notice the button exists,
@@ -68,6 +98,7 @@ function Panel(): ReactNode {
     <>
       {open && (
         <div
+          ref={panelRef}
           className={styles.panel}
           role="dialog"
           aria-label="Collegesaurus AI chat">
