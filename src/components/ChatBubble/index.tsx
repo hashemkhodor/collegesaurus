@@ -10,6 +10,7 @@
 import {useEffect, useRef, useState, type ReactNode} from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import clsx from 'clsx';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './styles.module.css';
 
@@ -21,8 +22,9 @@ const LABELS: Record<string, string> = {
   ar: 'اسأل الآن',
 };
 const DEFAULT_LABEL = 'Ask AI';
-// Matches the full-screen breakpoint in styles.module.css.
-const PHONE = '(max-width: 640px)';
+// Matches the full-screen breakpoint in styles.module.css: phones, held
+// either way up.
+const PHONE = '(max-width: 640px), (max-height: 500px)';
 
 function Panel(): ReactNode {
   const {siteConfig, i18n} = useDocusaurusContext();
@@ -32,6 +34,7 @@ function Panel(): ReactNode {
   const [open, setOpen] = useState(false);
   const [attention, setAttention] = useState(true);
   const panelRef = useRef<HTMLDivElement>(null);
+  const logo = useBaseUrl('/img/logo.svg');
 
   useEffect(() => {
     if (!open) return;
@@ -103,7 +106,10 @@ function Panel(): ReactNode {
           role="dialog"
           aria-label="Collegesaurus AI chat">
           <div className={styles.panelHeader}>
-            <span className={styles.panelTitle}>Collegesaurus AI</span>
+            <span className={styles.panelTitle}>
+              <img className={styles.panelLogo} src={logo} alt="" width={28} height={28} />
+              Collegesaurus AI
+            </span>
             <button
               className={styles.closeButton}
               onClick={() => setOpen(false)}
