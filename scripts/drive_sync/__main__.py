@@ -8,6 +8,8 @@ Flags:
     --only <slug>             Process only one slug (e.g. `aub`).
     --validate                Structural check only: walk the tree and report.
                               Downloads nothing, parses nothing, writes nothing.
+    --fingerprint             Print {"fingerprint", "newest"} JSON for the tree
+                              (what deploy.yml compares); downloads nothing.
     --dry-run                 Parse + validate, do not write MDX.
     --cache-dir <path>        Override default `.drive-cache/`.
     --out-prefix <path>       Write output under <path>/ (round-trip / dev only).
@@ -21,6 +23,7 @@ Env vars (Drive mode):
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
 import time
@@ -46,6 +49,7 @@ from drive_sync.fetch import (
     fetch_content_tree,
     preflight_check,
 )
+from drive_sync.fingerprint import fingerprint
 from drive_sync.parse.assemble import (
     AssembleContext,
     assemble_scholarship,
@@ -85,6 +89,7 @@ class Args:
     year: str | None
     only: str | None
     validate: bool
+    fingerprint: bool
     dry_run: bool
     cache_dir: str
     out_prefix: str
@@ -106,6 +111,11 @@ def _parse_args(argv: list[str]) -> Args:
         action="store_true",
         help="structural + schema check only; downloads nothing, writes nothing",
     )
+    p.add_argument(
+        "--fingerprint",
+        action="store_true",
+        help="print the content fingerprint as JSON; downloads nothing, writes nothing",
+    )
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--cache-dir", default=".drive-cache")
     p.add_argument("--out-prefix", default="")
@@ -117,6 +127,7 @@ def _parse_args(argv: list[str]) -> Args:
         year=ns.year,
         only=ns.only,
         validate=ns.validate,
+        fingerprint=ns.fingerprint,
         dry_run=ns.dry_run,
         cache_dir=ns.cache_dir,
         out_prefix=ns.out_prefix,
@@ -165,6 +176,9 @@ def main(argv: list[str] | None = None) -> int:
 
     logger.info("Stage 1/4: building content tree")
     tree = _build_tree(args, report)
+    if args.fingerprint:
+        print(json.dumps(fingerprint(tree)))
+        return 0
     logger.info(
         "Found {} slug(s) across years: {}",
         tree.count(),
@@ -202,7 +216,7 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def _build_tree(args: Args, report: ParseReport) -> ContentTree:
-    if args.validate:
+    if args.validate or args.fingerprint:
         if not args.content_root:
             from drive_sync.fetch import DriveSource, auth_drive, _normalize_folder_id
 
@@ -210,8 +224,8 @@ def _build_tree(args: Args, report: ParseReport) -> ContentTree:
             root_id = os.environ.get("GDRIVE_CONTENT_ROOT_ID")
             if not key or not root_id:
                 raise RuntimeError(
-                    "--validate against Drive needs GDRIVE_CONTENT_ROOT_ID and a "
-                    "service-account key (GDRIVE_SERVICE_ACCOUNT_JSON[_FILE])"
+                    "--validate/--fingerprint against Drive needs GDRIVE_CONTENT_ROOT_ID "
+                    "and a service-account key (GDRIVE_SERVICE_ACCOUNT_JSON[_FILE])"
                 )
             source = DriveSource(auth_drive(key), _normalize_folder_id(root_id))
         else:
