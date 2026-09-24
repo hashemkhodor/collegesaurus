@@ -129,10 +129,11 @@ const config: Config = {
   ],
 
   customFields: {
-    // URL of the Collegesaurus AI Streamlit app that the floating chat
-    // bubble iframes in. Defaults to the live Streamlit Cloud deployment so
-    // a plain `npm start` already embeds the real chatbot. Override with
-    // CHAT_URL=http://localhost:8501 when iterating on the chatbot locally.
+    // URL of the Collegesaurus AI chat page that the floating chat bubble
+    // iframes in. Production sets it through the CHAT_URL Actions variable;
+    // the default is the Streamlit app until the new chatbot replaces it.
+    // Locally: CHAT_URL=http://localhost:8000 (see collegesaurus-ai's
+    // chatbot/README.md).
     chatUrl:
       process.env.CHAT_URL || 'https://collegesaurus-ai.streamlit.app',
   },

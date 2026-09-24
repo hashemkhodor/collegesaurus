@@ -34,33 +34,14 @@ jobs:
           python-version: "3.11"
           cache: pip
       - run: pip install -r requirements.txt
-      - name: Compare the Drive fingerprint with the live site's
+      - name: Compare the Drive fingerprint and commit with the live site's
         id: check
+        # drive_sync.check: rebuild when the live site came from another commit
+        # (a cancelled or failed push run) or when Drive changed and edits have
+        # settled for 3 minutes. Tested in scripts/drive_sync/tests/test_check.py.
         run: |
           PYTHONPATH=scripts python -m drive_sync --fingerprint > fingerprint.json
-          python - <<'PY'
-          import json, os, time, urllib.request
-          from datetime import datetime, timezone
-
-          fp = json.load(open("fingerprint.json"))
-          try:
-              url = f"https://collegesaurus.org/chatbot/version.json?t={time.time_ns()}"
-              with urllib.request.urlopen(url, timeout=20) as response:
-                  live = json.load(response).get("drive_fingerprint")
-          except Exception as exc:  # first deploy, or the site is down: rebuild
-              print(f"live version.json unavailable ({exc})")
-              live = None
-          newest = fp["newest"]
-          edited = datetime.fromisoformat(newest.replace("Z", "+00:00")) if newest else None
-          quiet_for = (datetime.now(timezone.utc) - edited).total_seconds() if edited else 1e9
-          # Wait until edits have settled for 3 minutes, so a half-finished
-          # edit isn't published; the next run picks it up.
-          changed = fp["fingerprint"] != live and quiet_for > 180
-          print(f"drive={fp['fingerprint']} live={live} newest={newest} changed={changed}")
-          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
-              out.write(f"fingerprint={fp['fingerprint']}\n")
-              out.write(f"changed={'true' if changed else 'false'}\n")
-          PY
+          PYTHONPATH=scripts python -m drive_sync.check fingerprint.json
         env:
           GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
           GDRIVE_CONTENT_ROOT_ID: ${{ secrets.GDRIVE_CONTENT_ROOT_ID }}
