@@ -78,3 +78,10 @@ test('reports components it does not know how to convert', () => {
   assert.deepEqual(unknown, ['TuitionTable']);
   assert.match(out, /<TuitionTable/);
 });
+
+test('drops MDX and HTML comments, such as the Stories truncate marker', () => {
+  const out = mdxToMarkdown('Intro.\n\n{/* truncate */}\n\nMore. <!-- a note -->\n<!-- truncate -->\nEnd.');
+
+  assert.equal(out, 'Intro.\n\nMore.\n\nEnd.');
+  assert.equal(mdxToMarkdown('Type \\{/* this */} as is'), 'Type {/* this */} as is');
+});
