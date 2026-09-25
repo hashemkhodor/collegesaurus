@@ -887,11 +887,27 @@ main:has(.guidebook) {
   margin-top: 10px;
 }
 
+.guidebook .wins-group {
+  margin-top: 18px;
+}
+
+.guidebook .wins-group h4 {
+  margin: 0 0 2px;
+  color: var(--cs-ink-muted);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.guidebook .wins-group .wins {
+  margin-top: 8px;
+}
+
 .guidebook .win {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: start;
-  gap: 6px 12px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px 16px;
   padding: 14px 16px;
   border-radius: 14px;
   background: var(--cs-bg-soft);
@@ -904,76 +920,192 @@ main:has(.guidebook) {
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--cs-brand) 40%, transparent);
 }
 
+.guidebook .win-main {
+  display: grid;
+  gap: 2px;
+  align-content: start;
+}
+
 .guidebook .win-term {
   font-weight: 700;
   line-height: 1.4;
 }
 
-.guidebook .win .pill {
-  grid-column: 2;
-  grid-row: 1;
+.guidebook .win-sub {
+  color: var(--cs-ink-muted);
+  font-size: 13.5px;
 }
 
-.guidebook .win-dates {
-  grid-column: 1 / -1;
-  color: var(--cs-ink);
-  font-size: 15px;
-  font-weight: 600;
+.guidebook .win-when {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+}
+
+.guidebook .win-by {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 8px;
   font-variant-numeric: tabular-nums;
+}
+
+.guidebook .win-by strong {
+  font-size: 17px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .guidebook .win-lbl {
   color: var(--cs-ink-muted);
+  font-size: 13px;
   font-weight: 500;
 }
 
-.guidebook .win-to {
-  color: var(--cs-ink-subtle);
+.guidebook .win-tba {
+  color: var(--cs-ink-muted);
+  font-size: 14px;
+}
+
+.guidebook .win-opens {
+  color: var(--cs-ink-muted);
+  font-size: 13px;
+}
+
+.guidebook .win-note {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--cs-ink-muted);
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 .guidebook .win-extra {
   grid-column: 1 / -1;
   display: flex;
   flex-wrap: wrap;
-  gap: 2px 18px;
+  gap: 6px;
   margin: 0;
   font-size: 13.5px;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 .guidebook .win-extra div {
   display: flex;
   flex-wrap: wrap;
   gap: 0 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cs-ink) 6%, transparent);
 }
 
 .guidebook .win-extra dt {
-  color: var(--cs-ink-subtle);
+  color: var(--cs-ink-muted);
 }
 
 .guidebook .win-extra dd {
   margin: 0;
-  color: var(--cs-ink-muted);
+  color: var(--cs-ink);
+  font-weight: 600;
+}
+
+.guidebook .win {
+  position: relative;
+}
+
+.guidebook .win-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* The whole card is the click target; links inside it (references, notes) sit above this layer. */
+.guidebook .win-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.guidebook .win-linked .ref,
+.guidebook .win-linked .win-note a,
+.guidebook .win-linked .kv-note a {
+  position: relative;
+  z-index: 1;
+}
+
+.guidebook .win-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-inline-start: 10px;
+  color: var(--cs-brand);
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateX(-4px);
+}
+
+.guidebook .win-linked {
+  transition: background-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
+}
+
+.guidebook .win-linked:hover,
+.guidebook .win-linked:has(.win-link:focus-visible) {
+  background: color-mix(in srgb, var(--cs-brand) 14%, var(--cs-bg-soft));
+  box-shadow: inset 0 0 0 1.5px var(--cs-brand), 0 6px 18px color-mix(in srgb, var(--cs-brand) 14%, transparent);
+  transform: translateY(-1px);
+}
+
+.guidebook .win-linked:hover .win-go,
+.guidebook .win-linked:has(.win-link:focus-visible) .win-go {
+  opacity: 1;
+  transform: none;
+}
+
+.guidebook .win-go {
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.guidebook .win-link:focus-visible {
+  outline: none;
+}
+
+@media (hover: none) {
+  .guidebook .win-go {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guidebook .win-linked,
+  .guidebook .win-go {
+    transition: none;
+  }
+
+  .guidebook .win-linked:hover {
+    transform: none;
+  }
 }
 
 .guidebook .win-closed .win-term,
-.guidebook .win-closed .win-dates {
+.guidebook .win-closed .win-by strong {
   color: var(--cs-ink-muted);
 }
 
 @media (min-width: 761px) {
   .guidebook .win {
-    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) auto;
-    align-items: center;
+    grid-template-columns: minmax(0, 1fr) 210px;
+    align-items: start;
   }
 
-  .guidebook .win-dates {
-    grid-column: 2;
-    grid-row: 1;
+  .guidebook .win-when {
+    justify-items: end;
+    text-align: end;
   }
 
-  .guidebook .win .pill {
-    grid-column: 3;
+  .guidebook .win-by {
+    justify-content: flex-end;
   }
 }
 

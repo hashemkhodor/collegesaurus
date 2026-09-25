@@ -1,8 +1,8 @@
-import {Children, isValidElement, useCallback, useId, useRef, useState, type ReactElement, type ReactNode, type RefObject} from 'react';
+import {Children, isValidElement, useCallback, useContext, useId, useRef, useState, type ReactElement, type ReactNode, type RefObject} from 'react';
 import {CLOSING_SOON_DAYS, daysUntil, deadlineStatus, type DeadlineStatus} from '@site/src/components/Homepage/UpcomingDeadlines/status';
 import type {Deadline} from '@site/src/data/homepage/types';
-import {useGuide, type GuideStrings} from './strings';
-import {Ext, ExtLink, MoreButton, StatusPill, useCollapsible, useNow, useRevealListener} from './parts';
+import {formatDateFull, useGuide, type GuideStrings} from './strings';
+import {ApplyUrlContext, Ext, ExtLink, MoreButton, StatusPill, useCollapsible, useNow, useRevealListener} from './parts';
 
 const ROWS_LIMIT = 8;
 const ROWS_SHOWN = 6;
@@ -295,6 +295,7 @@ type WindowProps = {
 // Status comes from the row's own dates, and only when they parse as full dates.
 function WindowList({rows, head, texts, refs, windows: w, sharedRef, s, locale}: WindowProps): ReactNode {
   const now = useNow();
+  const applyUrl = useContext(ApplyUrlContext);
   const id = useId();
   const [expanded, setExpanded] = useState(false);
   const open = useCallback(() => setExpanded(true), []);
@@ -314,35 +315,77 @@ function WindowList({rows, head, texts, refs, windows: w, sharedRef, s, locale}:
   const fold = live.length + unknown.length > 0 && closed.length > 1;
   useCollapsible(overflow, fold && !expanded, open);
 
-  const date = (i: number, j: number, cell: ReactNode) =>
-    (texts[i]?.[j] ?? '').length <= 20 ? <span className="nowrap">{cell}</span> : cell;
+  const TERM = /(Fall|Spring|Summer|Winter)\s+\d{4}(?:-\d{2,4})?/i;
+  const NOTE = /^(notes?|ملاحظات)$/i;
 
-  const item = ({row, i, status}: (typeof items)[number]) => {
-    const extras = row.cells
+  // "Freshman - Early Merit (Fall 2027-28)" becomes a title plus a term, so cards can be grouped by term.
+  const split = (i: number): {main: string | null; term: string | null} => {
+    const text = texts[i]?.[w.title] ?? '';
+    const m = TERM.exec(text);
+    if (!m) return {main: null, term: null};
+    const rest = (text.slice(0, m.index) + text.slice(m.index + m[0].length))
+      .replace(/\(\s*\)/g, '')
+      .replace(/^[\s\-–,:]+|[\s\-–,:]+$/g, '')
+      .replace(/^,\s*/, '');
+    return {main: rest || null, term: m[0]};
+  };
+  const visible = [...live, ...unknown];
+  const terms = visible.map((x) => split(x.i).term);
+  const grouped = visible.length > 4 && terms.every(Boolean) && new Set(terms).size > 1;
+
+  const dateText = (i: number, j: number | null, iso: string | null | undefined): string | null => {
+    if (iso) return formatDateFull(iso, locale);
+    const raw = j === null ? '' : (texts[i]?.[j] ?? '').trim();
+    return EMPTY.test(raw) || /^(tba|tbd|to be announced)/i.test(raw) ? null : raw;
+  };
+
+  const item = ({row, i, status}: (typeof items)[number], hideTerm: boolean) => {
+    const {main, term} = split(i);
+    const title = main ?? (term && hideTerm ? term : row.cells[w.title]);
+    const closesText = dateText(i, w.closes, w.dates[i]?.closes);
+    const opensText = w.opens !== null ? dateText(i, w.opens, w.dates[i]?.opens) : null;
+    const showOpens = opensText && (!status || status.kind === 'opening');
+    const noteCols = row.cells
       .map((cell, j) => ({cell, j}))
       .filter(({j}) => j !== w.title && j !== w.opens && j !== w.closes && !EMPTY.test(texts[i]?.[j] ?? ''));
+    const notes = noteCols.filter(({j}) => NOTE.test(head[j]));
+    const extras = noteCols.filter(({j}) => !NOTE.test(head[j]));
     return (
-      <li key={i} className={`win win-${status ? status.kind : 'unknown'}`}>
-        <span className="win-term">
-          {row.cells[w.title]}
-          <RefExtra value={refs[i]} note={row.note} s={s} />
-        </span>
-        {status ? <StatusPill status={status} closes={w.dates[i].closes ?? ''} s={s} locale={locale} /> : null}
-        <span className="win-dates">
-          {w.opens !== null ? (
-            <>
-              {date(i, w.opens, row.cells[w.opens])}
-              <span className="win-to" aria-hidden="true">
-                {' – '}
-              </span>
-              {date(i, w.closes, row.cells[w.closes])}
-            </>
+      <li key={i} className={`win win-${status ? status.kind : 'unknown'}${applyUrl && status?.kind !== 'closed' ? ' win-linked' : ''}`}>
+        <div className="win-main">
+          <span className="win-term">
+            {applyUrl && status?.kind !== 'closed' ? (
+              <ExtLink href={applyUrl} className="win-link">
+                {title}
+                <span className="win-go" aria-hidden="true">
+                  {s.applyShort}
+                  <Ext size={14} />
+                </span>
+              </ExtLink>
+            ) : (
+              title
+            )}
+            <RefExtra value={refs[i]} note={row.note} s={s} />
+          </span>
+          {term && main && !hideTerm ? <span className="win-sub">{term}</span> : null}
+        </div>
+        <div className="win-when">
+          {status ? <StatusPill status={status} closes={w.dates[i].closes ?? ''} s={s} locale={locale} /> : null}
+          {closesText ? (
+            <span className="win-by">
+              <span className="win-lbl">{s.applyBy}</span>
+              <strong>{closesText}</strong>
+            </span>
           ) : (
-            <>
-              <span className="win-lbl">{head[w.closes]}:</span> {date(i, w.closes, row.cells[w.closes])}
-            </>
+            <span className="win-by win-tba">{s.closesTba}</span>
           )}
-        </span>
+          {showOpens ? <span className="win-opens">{s.opensOn(opensText)}</span> : null}
+        </div>
+        {notes.map(({cell, j}) => (
+          <p className="win-note" key={j}>
+            {cell}
+          </p>
+        ))}
         {extras.length ? (
           <dl className="win-extra">
             {extras.map(({cell, j}) => (
@@ -357,13 +400,33 @@ function WindowList({rows, head, texts, refs, windows: w, sharedRef, s, locale}:
     );
   };
 
+  const groups: {term: string; entries: typeof visible}[] = [];
+  if (grouped) {
+    for (const x of visible) {
+      const term = split(x.i).term as string;
+      const g = groups.find((y) => y.term === term);
+      if (g) g.entries.push(x);
+      else groups.push({term, entries: [x]});
+    }
+  }
+
   return (
     <>
-      <ul className="wins">{[...live, ...unknown, ...(fold ? [] : closed)].map(item)}</ul>
+      {grouped ? (
+        groups.map((g) => (
+          <section className="wins-group" key={g.term}>
+            <h4>{g.term}</h4>
+            <ul className="wins">{g.entries.map((x) => item(x, true))}</ul>
+          </section>
+        ))
+      ) : (
+        <ul className="wins">{visible.map((x) => item(x, false))}</ul>
+      )}
+      {!fold && closed.length ? <ul className="wins">{closed.map((x) => item(x, false))}</ul> : null}
       {fold ? (
         <>
           <ul className="wins overflow" id={id} ref={overflow} hidden={!expanded}>
-            {closed.map(item)}
+            {closed.map((x) => item(x, false))}
           </ul>
           <MoreButton expanded={expanded} onClick={() => setExpanded(!expanded)} more={s.showClosed(closed.length)} fewer={s.hideClosed} controls={id} />
         </>

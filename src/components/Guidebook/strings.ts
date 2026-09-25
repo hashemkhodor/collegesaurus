@@ -67,6 +67,8 @@ const en = {
   closed: 'Closed',
   closes: (d: string) => `Closes ${d}`,
   opensOn: (d: string) => `Opens ${d}`,
+  applyBy: 'Apply by',
+  closesTba: 'Closing date to be announced',
   showClosed: (n: number) => `Show ${n} closed ${n === 1 ? 'window' : 'windows'}`,
   hideClosed: 'Hide closed windows',
 };
@@ -140,6 +142,8 @@ const arStrings: GuideStrings = {
   closed: 'أُغلق',
   closes: (d) => `يُغلق في ${d}`,
   opensOn: (d) => `يفتح في ${d}`,
+  applyBy: 'آخر موعد للتقديم',
+  closesTba: 'موعد الإغلاق لم يُعلَن بعد',
   showClosed: (n) => `اعرض المواعيد المنتهية (${n})`,
   hideClosed: 'أخفِ المواعيد المنتهية',
 };
@@ -156,6 +160,16 @@ export function formatDate(iso: string, locale: string): string {
   return new Intl.DateTimeFormat(locale === 'ar' ? 'ar-LB' : locale, {
     day: 'numeric',
     month: 'short',
+    numberingSystem: 'latn',
+    timeZone: 'UTC',
+  }).format(new Date(`${iso}T00:00:00Z`));
+}
+
+export function formatDateFull(iso: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale === 'ar' ? 'ar-LB' : locale, {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
     numberingSystem: 'latn',
     timeZone: 'UTC',
   }).format(new Date(`${iso}T00:00:00Z`));

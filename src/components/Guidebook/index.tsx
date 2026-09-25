@@ -12,7 +12,7 @@ import {deadlineStatus} from '@site/src/components/Homepage/UpcomingDeadlines/st
 import type {Deadline} from '@site/src/data/homepage/types';
 import Icon, {type IconName} from '@site/src/components/Homepage/ui/Icon';
 import {formatDate, useGuide, type GuideStrings} from './strings';
-import {Chip, Ext, ExtLink, REVEAL, SECTION_LOOK, StatusPill, fill, useNow} from './parts';
+import {ApplyUrlContext, Chip, Ext, ExtLink, REVEAL, SECTION_LOOK, StatusPill, fill, useNow} from './parts';
 import './guidebook.css';
 
 const FORM =
@@ -459,7 +459,7 @@ export default function Guidebook({data, children}: {data: string; children: Rea
             </ExtLink>
           ) : null}
         </nav>
-        {children}
+        <ApplyUrlContext.Provider value={d.applyUrl}>{children}</ApplyUrlContext.Provider>
       </div>
       <aside className="gb-rail">
         <Rail d={d} s={s} facts={facts} label={label} />
