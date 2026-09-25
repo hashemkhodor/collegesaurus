@@ -33,7 +33,7 @@ function Panel(): ReactNode {
   const [open, setOpen] = useState(false);
   const [attention, setAttention] = useState(true);
   const panelRef = useRef<HTMLDivElement>(null);
-  const logo = useBaseUrl('/img/logo.svg');
+  const logo = useBaseUrl('/img/brand/logo-badge.svg');
 
   useEffect(() => {
     if (!open) return;
