@@ -19,15 +19,15 @@ import fs from 'node:fs';
 
 const MAPPING = new URL('../../scripts/drive_sync/mapping.toml', import.meta.url);
 
-const REF_HEADERS = ['reference', 'source', 'link', 'references', 'المرجع', 'المصدر', 'الرابط'];
+export const REF_HEADERS = ['reference', 'source', 'link', 'references', 'المرجع', 'المصدر', 'الرابط'];
 const SOURCES_LINE = /^(?:Reference|References|Source|Sources|المرجع|المراجع|المصدر)\s*:\s*/;
 const EMAIL = /[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g;
 const PHONE = /\+\d{1,3}(?:[ -]?\d){6,14}/g;
 const MONEY =
   /(?<cur>\$|€|USD|EUR|LBP)\s?(?<num>\d[\d,]*(?:\.\d+)?)|(?<num2>\d[\d,]*(?:\.\d+)?)\s?(?<cur2>\$|€|ل\.ل)/;
 const PER_CREDIT = /per credit|credit hour|لكل ساعة|بالساعة|للساعة|سعر الساعة/i;
-const OPENS = /^(opens?|يفتح|تفتح|يُفتح|تُفتح)$/i;
-const CLOSES = /^(closes?|يغلق|يُغلق|تقفل|تُقفل|يقفل)$|deadline|last day|الموعد النهائي|آخر يوم/i;
+export const OPENS = /^(opens?|يفتح|تفتح|يُفتح|تُفتح)$/i;
+export const CLOSES = /^(closes?|يغلق|يُغلق|تقفل|تُقفل|يقفل)$|deadline|last day|الموعد النهائي|آخر يوم/i;
 const EN_MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
 const AR_MONTHS = {
   'كانون الثاني': 1,
@@ -43,7 +43,7 @@ const AR_MONTHS = {
   'تشرين الثاني': 11,
   'كانون الأول': 12,
 };
-const DATE_HEADER = /\bdate\b|تاريخ|التاريخ|الموعد/i;
+export const DATE_HEADER = /\bdate\b|تاريخ|التاريخ|الموعد/i;
 const SECTION_HEADINGS_SHOWN = 3;
 const SECTION_ROWS_LIMIT = 14;
 const EMPTY = /^[—–-]?$/;
@@ -83,10 +83,10 @@ function loadSectionRules(kind) {
   return rules;
 }
 
-const normalize = (text) => text.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
+export const normalize = (text) => text.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
 const REF_NORMALIZED = new Set(REF_HEADERS.map(normalize));
 
-function sectionKey(title, kind) {
+export function sectionKey(title, kind) {
   const text = title.replace(/\s*\((?:AY|للعام)\s[^)]*\)\s*$/, '').trim();
   const rules = loadSectionRules(kind);
   const exact = rules.find((rule) => Object.values(rule.labels).includes(text));
@@ -131,7 +131,7 @@ function jsx(name, props = {}, children = [], kind = 'mdxJsxFlowElement') {
 const isBlank = (node) => node.type === 'text' && !node.value.trim();
 const headingId = (node) => node.data?.id ?? node.data?.hProperties?.id;
 
-function parseDate(value) {
+export function parseDate(value) {
   const t = value.trim().replace(/\s*\([^)]*\)\s*$/, '');
   const pad = (n) => String(n).padStart(2, '0');
   const m =

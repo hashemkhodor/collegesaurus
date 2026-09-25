@@ -8,6 +8,7 @@ const NO_DATA: HomepageData = {
   generatedAt: '1970-01-01T00:00:00.000Z',
   universities: [],
   scholarships: [],
+  deadlines: [],
   totals: {universities: 0, scholarships: 0, programs: null},
 };
 
