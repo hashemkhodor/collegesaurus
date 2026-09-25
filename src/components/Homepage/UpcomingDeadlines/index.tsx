@@ -37,6 +37,13 @@ function Pill({deadline, now}: {deadline: Deadline; now: Date | null}) {
       </span>
     );
   }
+  if (status.kind === 'closing' && status.days === 0) {
+    return (
+      <span className={clsx(styles.pill, styles.pillSoon)}>
+        <Translate id="homepage.deadlines.closesToday">Closes today</Translate>
+      </span>
+    );
+  }
   if (status.kind === 'closing') {
     return (
       <span className={clsx(styles.pill, styles.pillSoon)}>
