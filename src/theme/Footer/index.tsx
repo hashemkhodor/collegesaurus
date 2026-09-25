@@ -10,6 +10,7 @@ import Translate, {translate} from '@docusaurus/Translate';
 import isInternalUrl from '@docusaurus/isInternalUrl';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import ThemedImage from '@theme/ThemedImage';
 import {ThemeClassNames} from '@docusaurus/theme-common';
 import {useAlternatePageUtils} from '@docusaurus/theme-common/internal';
 import {Icon, type IconName} from '@site/src/components/Homepage/ui';
@@ -155,7 +156,10 @@ export default function Footer(): ReactNode {
   const scholarships = useDocsEntry('scholarships');
   // Build time, not the reader's clock, so server and client render one year.
   const year = new Date(useHomepageData().generatedAt).getUTCFullYear();
-  const logo = useBaseUrl('/img/logo.svg');
+  const logo = {
+    light: useBaseUrl('/img/brand/logo-lockup.svg'),
+    dark: useBaseUrl('/img/brand/logo-lockup-dark.svg'),
+  };
   const feed = useBaseUrl('/stories/rss.xml');
 
   const explore: FooterLink[] = [
@@ -215,8 +219,12 @@ export default function Footer(): ReactNode {
         <div className={styles.top}>
           <div className={styles.brand}>
             <Link to="/" className={styles.home}>
-              <img src={logo} alt="" width={32} height={32} />
-              <span className={styles.wordmark}>{siteConfig.title}</span>
+              <ThemedImage
+                sources={logo}
+                alt={siteConfig.title}
+                width={152}
+                height={32}
+              />
             </Link>
             <p className={styles.tagline}>
               <Translate id="footer.tagline">

@@ -120,13 +120,9 @@
   letter-spacing: 0.01em;
 }
 
-/* The logo is the brand green, so it sits on a white disc on the green bar. */
 .panelLogo {
   width: 1.75rem;
   height: 1.75rem;
-  padding: 2px;
-  border-radius: 50%;
-  background: #fff;
 }
 
 .closeButton {

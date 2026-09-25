@@ -377,7 +377,7 @@
 
   function navbarHtml(s) {
     return `<button class="icon-btn plain nav-menu" type="button" aria-label="${esc(s.menu)}" aria-expanded="false" data-drawer>${icon('menu', 24)}</button>
-      <a class="brand" href="#top" data-inert><img src="../../static/img/logo.svg" alt="" width="32" height="32"><span>Collegesaurus</span></a>
+      <a class="brand" href="#top" data-inert><img src="../../static/img/brand/logo-icon.svg" alt="" width="32" height="32"><span>Collegesaurus</span></a>
       <ul class="nav-links">${s.nav
         .map((label, i) => `<li><a href="#" data-inert${i === 0 ? ' aria-current="page"' : ''}>${esc(label)}</a></li>`)
         .join('')}</ul>

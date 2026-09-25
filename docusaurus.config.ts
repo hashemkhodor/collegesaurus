@@ -10,7 +10,17 @@ import remarkGuidebook from './src/remark/remarkGuidebook.mjs';
 const config: Config = {
   title: 'Collegesaurus',
   tagline: 'Your guide to universities and scholarships in Lebanon',
-  favicon: 'img/logo.svg',
+  favicon: 'img/favicon.ico',
+  headTags: [
+    {
+      tagName: 'link',
+      attributes: {rel: 'icon', type: 'image/svg+xml', href: '/img/brand/favicon.svg'},
+    },
+    {
+      tagName: 'link',
+      attributes: {rel: 'apple-touch-icon', href: '/img/brand/apple-touch-icon.png'},
+    },
+  ],
 
   future: {
     v4: true,
@@ -138,7 +148,7 @@ const config: Config = {
   },
 
   themeConfig: {
-    // image: 'img/social-card.jpg', // TODO: add a custom social card
+    image: 'img/brand/social-card.png',
     colorMode: {
       respectPrefersColorScheme: true,
     },
@@ -149,10 +159,10 @@ const config: Config = {
       },
     },
     navbar: {
-      title: 'Collegesaurus',
       logo: {
-        alt: 'Collegesaurus logo',
-        src: 'img/logo.svg',
+        alt: 'Collegesaurus',
+        src: 'img/brand/logo-lockup.svg',
+        srcDark: 'img/brand/logo-lockup-dark.svg',
       },
       items: [
         {
