@@ -11,6 +11,7 @@ import type {Deadline} from '@site/src/data/homepage/types';
 import {IconChip} from '../ui';
 import ui from '../ui/ui.module.css';
 import {findDoc, useDocsEntry, useHomepageData, useNow} from '../hooks';
+import {dayFormatter} from './dates';
 import {daysUntil, deadlineStatus} from './status';
 import styles from './styles.module.css';
 
@@ -18,15 +19,7 @@ const MAX_ROWS = 4;
 
 function useDateFormat() {
   const {i18n} = useDocusaurusContext();
-  // Arabic pages use Levantine month names, which ar-LB gives; Latin digits
-  // keep the pill consistent with the tables on the content pages.
-  const locale = i18n.currentLocale === 'ar' ? 'ar-LB' : i18n.currentLocale;
-  const format = new Intl.DateTimeFormat(locale, {
-    day: 'numeric',
-    month: 'short',
-    numberingSystem: 'latn',
-  });
-  return (iso: string) => format.format(new Date(`${iso}T00:00:00Z`));
+  return dayFormatter(i18n.currentLocale, {day: 'numeric', month: 'short'});
 }
 
 function Pill({deadline, now}: {deadline: Deadline; now: Date | null}) {
