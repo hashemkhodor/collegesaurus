@@ -131,11 +131,10 @@ const config: Config = {
   customFields: {
     // URL of the Collegesaurus AI chat page that the floating chat bubble
     // iframes in. Production sets it through the CHAT_URL Actions variable;
-    // the default is the Streamlit app until the new chatbot replaces it.
+    // the default is the same Fly.io app, so an unset variable still opens it.
     // Locally: CHAT_URL=http://localhost:8000 (see collegesaurus-ai's
     // chatbot/README.md).
-    chatUrl:
-      process.env.CHAT_URL || 'https://collegesaurus-ai.streamlit.app',
+    chatUrl: process.env.CHAT_URL || 'https://collegesaurus-ai.fly.dev',
   },
 
   themeConfig: {

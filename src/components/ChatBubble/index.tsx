@@ -29,8 +29,7 @@ const PHONE = '(max-width: 640px), (max-height: 500px)';
 function Panel(): ReactNode {
   const {siteConfig, i18n} = useDocusaurusContext();
   const chatUrl =
-    (siteConfig.customFields as CustomFields)?.chatUrl ||
-    'https://collegesaurus-ai.streamlit.app';
+    (siteConfig.customFields as CustomFields)?.chatUrl || 'https://collegesaurus-ai.fly.dev';
   const [open, setOpen] = useState(false);
   const [attention, setAttention] = useState(true);
   const panelRef = useRef<HTMLDivElement>(null);
