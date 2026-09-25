@@ -48,8 +48,9 @@ jobs:
       - run: pytest
 
   plugin-tests:
-    # Unit tests for the chatbot-corpus plugin: the MDX cleanup and what it
-    # publishes. Node 24 runs TypeScript directly, so no install step is needed.
+    # Unit tests for the build plugins (the chatbot corpus, and the deadlines
+    # homepage-data reads from the pages) and for the landing page's date
+    # rules. Node 24 runs TypeScript directly, so no install step is needed.
     name: Plugin tests
     runs-on: ubuntu-latest
     steps:
@@ -57,4 +58,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - run: node --test --disable-warning=MODULE_TYPELESS_PACKAGE_JSON plugins/chatbot-corpus/*.test.ts
+      - run: node --test --disable-warning=MODULE_TYPELESS_PACKAGE_JSON plugins/*/*.test.ts src/components/Homepage/UpcomingDeadlines/*.test.ts
