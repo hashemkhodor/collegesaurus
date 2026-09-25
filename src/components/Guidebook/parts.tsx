@@ -1,7 +1,10 @@
-import {useLayoutEffect, useEffect, useState, type ReactNode, type RefObject} from 'react';
+import {createContext, useLayoutEffect, useEffect, useState, type ReactNode, type RefObject} from 'react';
 import Icon, {type IconName} from '@site/src/components/Homepage/ui/Icon';
 import type {DeadlineStatus} from '@site/src/components/Homepage/UpcomingDeadlines/status';
 import {formatDate, type GuideStrings} from './strings';
+
+/** The page's apply portal, so deadline cards can link to it. */
+export const ApplyUrlContext = createContext<string | null>(null);
 
 export const SECTION_LOOK: Record<string, [IconName, string]> = {
   faculty: ['cap', 'green'],
