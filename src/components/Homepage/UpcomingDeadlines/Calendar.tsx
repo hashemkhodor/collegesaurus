@@ -13,12 +13,14 @@ import Translate, {translate} from '@docusaurus/Translate';
 import {usePluralForm} from '@docusaurus/theme-common';
 import Heading from '@theme/Heading';
 import ui from '../ui/ui.module.css';
+import {AddButton, CalendarOptions, useDisclosure} from './AddToCalendar';
 import DatePage from './DatePage';
 import MonthGrid, {type DayMark} from './MonthGrid';
 import Pill from './Pill';
 import {clampMonth, monthOf} from './dates';
-import type {Kind} from './entries';
+import {entrySlug, type Kind} from './entries';
 import {useDateFormats, type DateFormats} from './formats';
+import {useCalendarLinks, type CalendarLinks} from './useCalendarLinks';
 import {useDeadlines, type DeadlineRow} from './useDeadlines';
 import styles from './Calendar.module.css';
 
@@ -28,55 +30,88 @@ function Card({
   row,
   now,
   formats,
+  links,
   onPoint,
 }: {
   row: DeadlineRow;
   now: Date | null;
   formats: DateFormats;
+  links: CalendarLinks;
   onPoint: (day: string | null) => void;
 }) {
   const {selectMessage} = usePluralForm();
+  const add = useDisclosure();
   const {entry, doc} = row;
   const shown = entry.rounds.slice(0, 2);
   const more = entry.rounds.length - shown.length;
   return (
-    <li>
-      <Link
-        to={doc.permalink}
-        className={styles.card}
-        onPointerEnter={() => onPoint(entry.closes)}
-        onPointerLeave={() => onPoint(null)}
-        onFocus={() => onPoint(entry.closes)}
-        onBlur={() => onPoint(null)}>
-        <DatePage iso={entry.closes} kinds={entry.kinds} month={formats.band(entry.closes)} />
-        <span className={styles.text}>
-          <span className={styles.name}>{doc.shortName}</span>
-          {shown.map((round, index) => (
-            <span key={index} className={styles.round}>
-              {round}
-            </span>
-          ))}
-          {more > 0 ? (
-            <span className={styles.round}>
-              {selectMessage(
-                more,
-                translate(
-                  {
-                    id: 'homepage.deadlines.moreRounds',
-                    message: 'and {count} more|and {count} more',
-                    description:
-                      'Under the first rounds that close on the same day, by plural form',
-                  },
-                  {count: more},
-                ),
-              )}
-            </span>
-          ) : null}
-        </span>
-        <span className={styles.when}>
-          <Pill entry={entry} now={now} formats={formats} />
-        </span>
-      </Link>
+    <li
+      className={styles.card}
+      onPointerEnter={() => onPoint(entry.closes)}
+      onPointerLeave={() => onPoint(null)}
+      onFocus={() => onPoint(entry.closes)}
+      onBlur={() => onPoint(null)}>
+      <DatePage iso={entry.closes} kinds={entry.kinds} month={formats.band(entry.closes)} />
+      <div className={styles.text}>
+        <Link to={doc.permalink} className={styles.name}>
+          {doc.shortName}
+        </Link>
+        {shown.map((round, index) => (
+          <span key={index} className={styles.round}>
+            {round}
+          </span>
+        ))}
+        {more > 0 ? (
+          <span className={styles.round}>
+            {selectMessage(
+              more,
+              translate(
+                {
+                  id: 'homepage.deadlines.moreRounds',
+                  message: 'and {count} more|and {count} more',
+                  description:
+                    'Under the first rounds that close on the same day, by plural form',
+                },
+                {count: more},
+              ),
+            )}
+          </span>
+        ) : null}
+      </div>
+      <div className={styles.when}>
+        <Pill entry={entry} now={now} formats={formats} />
+        <AddButton
+          {...add.button}
+          compact
+          className={styles.above}
+          label={translate({
+            id: 'homepage.deadlines.addOne',
+            message: 'Add',
+            description: "On a deadline's card: opens the ways to add it to a calendar",
+          })}
+          aria-label={translate(
+            {
+              id: 'homepage.deadlines.addOneLabel',
+              message: 'Add {name} to my calendar',
+              description: "The card's Add button, for screen readers",
+            },
+            {name: doc.shortName},
+          )}
+        />
+      </div>
+      {add.open ? (
+        <CalendarOptions
+          {...add.panel}
+          compact
+          className={clsx(styles.above, styles.cardOptions)}
+          options={links.event(row)}
+          note={translate({
+            id: 'homepage.deadlines.addOneNote',
+            message: "A one-time copy: it won't change if the date does.",
+            description: 'Under the ways to add one deadline to a calendar',
+          })}
+        />
+      ) : null}
     </li>
   );
 }
@@ -89,6 +124,8 @@ function Card({
 export default function DeadlinesCalendar(): ReactNode {
   const {now, today, anchor, upcoming, anythingAtBuild} = useDeadlines();
   const formats = useDateFormats();
+  const links = useCalendarLinks();
+  const subscribe = useDisclosure();
   const {selectMessage} = usePluralForm();
   const [picked, setPicked] = useState<string | null>(null);
   const [slide, setSlide] = useState<1 | -1 | 0>(0);
@@ -227,6 +264,28 @@ export default function DeadlinesCalendar(): ReactNode {
             dayId={dayId}
             formats={formats}
           />
+          <div className={styles.subscribe}>
+            <AddButton
+              {...subscribe.button}
+              className={styles.subscribeButton}
+              label={translate({
+                id: 'homepage.deadlines.addAll',
+                message: 'Add all to my calendar',
+                description: 'Under the calendar: opens the ways to subscribe to every deadline',
+              })}
+            />
+            {subscribe.open ? (
+              <CalendarOptions
+                {...subscribe.panel}
+                options={links.feed()}
+                intro={translate({
+                  id: 'homepage.deadlines.addAllIntro',
+                  message: 'New and changed deadlines show up on their own.',
+                  description: 'Over the ways to subscribe to every deadline',
+                })}
+              />
+            ) : null}
+          </div>
         </div>
 
         <div ref={pane} className={styles.listPane}>
@@ -268,10 +327,11 @@ export default function DeadlinesCalendar(): ReactNode {
             <ul id={listId} className={styles.cards}>
               {listed.map((row) => (
                 <Card
-                  key={`${row.entry.ref.plugin}-${row.entry.ref.id}-${row.entry.closes}`}
+                  key={entrySlug(row.entry)}
                   row={row}
                   now={now}
                   formats={formats}
+                  links={links}
                   onPoint={setHighlighted}
                 />
               ))}
