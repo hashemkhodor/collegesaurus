@@ -904,5 +904,20 @@
   },
   "contribute.hero.accent": {
     "message": "دقيقًا"
+  },
+  "stories.tag.eyebrow": {
+    "message": "موضوع"
+  },
+  "stories.tag.all": {
+    "message": "كل المواضيع"
+  },
+  "stories.author.eyebrow": {
+    "message": "كاتب"
+  },
+  "stories.author.all": {
+    "message": "كل الكتّاب"
+  },
+  "stories.author.count": {
+    "message": "القصص: {count}"
   }
 }

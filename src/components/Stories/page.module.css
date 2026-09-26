@@ -106,3 +106,147 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* ---------- Shared by the topic, author and archive pages ---------- */
+
+.chipCount {
+  margin-inline-start: 0.4rem;
+  color: var(--cs-ink-subtle);
+  font-weight: 500;
+}
+
+.back {
+  margin: 0;
+}
+
+.empty {
+  margin: 0;
+  color: var(--cs-ink-muted);
+}
+
+.authorLine {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.avatar {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: var(--cs-radius-pill);
+  object-fit: cover;
+  background: var(--cs-surface-muted);
+}
+
+.role {
+  margin: 0;
+  color: var(--cs-ink-muted);
+}
+
+.people {
+  composes: grid;
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  position: relative;
+}
+
+.personName {
+  margin: 0;
+  font-size: var(--cs-text-h3);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--cs-ink);
+}
+
+.personLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.personLink::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--cs-radius-lg);
+}
+
+.personLink:hover {
+  color: var(--cs-brand-strong);
+  text-decoration: none;
+}
+
+.personLink:focus-visible {
+  outline: none;
+}
+
+.personLink:focus-visible::after {
+  outline: 2px solid var(--cs-focus-ring);
+  outline-offset: 3px;
+}
+
+.personMeta {
+  margin: 0;
+  font-size: var(--cs-text-sm);
+  color: var(--cs-ink-muted);
+}
+
+.years {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-gap);
+}
+
+.yearTitle {
+  margin: 0 0 1rem;
+  font-family: var(--cs-font-display);
+  font-size: var(--cs-text-h2);
+  font-weight: 700;
+  color: var(--cs-ink);
+}
+
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.row {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding-block: 0.65rem;
+  border-top: 1px solid var(--cs-divider);
+}
+
+.row:first-child {
+  border-top: 0;
+}
+
+.rowDate {
+  flex: none;
+  min-width: 6.5rem;
+  font-size: var(--cs-text-sm);
+  color: var(--cs-ink-subtle);
+}
+
+.rowLink {
+  font-weight: 600;
+  color: var(--cs-ink);
+  text-decoration: none;
+}
+
+.rowLink:hover {
+  color: var(--cs-brand-strong);
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .row {
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+}
