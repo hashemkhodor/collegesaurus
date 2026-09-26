@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 
 import type {HomeDeadline} from '@site/plugins/homepage-data/types';
 import type {Deadline} from '@site/src/data/homepage/types';
-import {calendarEntries} from './entries.ts';
+import {calendarEntries, entrySlug} from './entries.ts';
 
 const AUB = {plugin: 'universities' as const, id: 'aub'};
 const LAU = {plugin: 'universities' as const, id: 'lau'};
@@ -84,4 +84,10 @@ test('entries come soonest first, universities before scholarships on the same d
     '2027-01-15 mepi-tl',
     '2027-01-31 lau',
   ]);
+});
+
+test("an entry's slug names its calendar file: section, page and day", () => {
+  const [entry] = calendarEntries([row(AUB, 'Transfer', '2026-09-01', '2026-10-31')], []);
+
+  assert.equal(entrySlug(entry!), 'universities-aub-2026-10-31');
 });

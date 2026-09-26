@@ -68,3 +68,8 @@ export function calendarEntries(
     })
     .sort((a, b) => order(a).localeCompare(order(b)));
 }
+
+/** Names a deadline's own calendar file and its UID: section, page and day. */
+export function entrySlug(entry: CalendarEntry): string {
+  return `${entry.ref.plugin}-${entry.ref.id}-${entry.closes}`;
+}
