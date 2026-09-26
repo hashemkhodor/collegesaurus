@@ -901,5 +901,8 @@
   },
   "stories.readingTime": {
     "message": "قراءة {minutes} د"
+  },
+  "contribute.hero.accent": {
+    "message": "دقيقًا"
   }
 }
