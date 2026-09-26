@@ -1,5 +1,5 @@
 // Run: node --test --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/components/Search/*.test.ts
-import {test} from 'node:test';
+import {after, test} from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import fs from 'node:fs';
@@ -39,9 +39,13 @@ function hashEmbed(dims = 256) {
     });
 }
 
+const made: string[] = [];
+after(() => made.forEach((dir) => fs.rmSync(dir, {recursive: true, force: true})));
+
 /** Files the build wrote, in a temporary directory. */
 async function written(dims = 256): Promise<string> {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'semantic-search-engine-'));
+  made.push(dir);
   const index = await buildIndex(DOCS, {embed: hashEmbed(dims), words: ['university'], phrases: []});
   writeIndex(dir, index, {model: 'hash', dims, shards: 16});
   return dir;

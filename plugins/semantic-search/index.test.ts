@@ -1,5 +1,5 @@
 // Run: node --test --disable-warning=MODULE_TYPELESS_PACKAGE_JSON plugins/semantic-search/*.test.ts
-import {test} from 'node:test';
+import {after, test} from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -30,9 +30,18 @@ const CONTENT = {
   },
 };
 
+const made: string[] = [];
+after(() => made.forEach((dir) => fs.rmSync(dir, {recursive: true, force: true})));
+
+function temporary(prefix: string): string {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
+  made.push(dir);
+  return dir;
+}
+
 /** A site holding one story and the plugin's own word lists. */
 function site(): LoadContext {
-  const siteDir = fs.mkdtempSync(path.join(os.tmpdir(), 'semantic-search-site-'));
+  const siteDir = temporary('semantic-search-site-');
   const files: Record<string, string> = {
     'stories/hungary.md': STORY,
     'plugins/semantic-search/words/en.txt': 'coding\n',
@@ -67,7 +76,7 @@ function gemini(status = 200) {
 async function build(context: LoadContext, key?: string, fetch?: typeof globalThis.fetch): Promise<string> {
   const plugin = semanticSearch(context);
   await plugin.allContentLoaded!({allContent: CONTENT} as never);
-  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'semantic-search-out-'));
+  const outDir = temporary('semantic-search-out-');
   const saved = {key: process.env.GEMINI_API_KEY, fetch: globalThis.fetch};
   if (key) {
     process.env.GEMINI_API_KEY = key;
@@ -78,7 +87,11 @@ async function build(context: LoadContext, key?: string, fetch?: typeof globalTh
   try {
     await plugin.postBuild!({outDir} as never);
   } finally {
-    process.env.GEMINI_API_KEY = saved.key;
+    if (saved.key === undefined) {
+      delete process.env.GEMINI_API_KEY;
+    } else {
+      process.env.GEMINI_API_KEY = saved.key;
+    }
     globalThis.fetch = saved.fetch;
   }
   return outDir;
