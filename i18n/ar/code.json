@@ -883,5 +883,23 @@
   },
   "contribute.thanks": {
     "message": "شكرًا لك. كل تصحيح، مهما صغر، يساعد طالبًا على اتخاذ قرار أفضل."
+  },
+  "stories.hero.eyebrow": {
+    "message": "قصص"
+  },
+  "stories.hero.lead": {
+    "message": "تجارب حقيقية لطلاب خاضوا مرحلة القبول والمنح والدراسات العليا في لبنان وخارجه."
+  },
+  "stories.topics.label": {
+    "message": "تصفّح القصص حسب الموضوع"
+  },
+  "stories.kind.contributor": {
+    "message": "مساهم"
+  },
+  "stories.kind.awardee": {
+    "message": "حائز على منحة"
+  },
+  "stories.readingTime": {
+    "message": "قراءة {minutes} د"
   }
 }

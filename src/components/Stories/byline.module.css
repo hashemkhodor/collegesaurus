@@ -1,0 +1,30 @@
+.byline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  font-size: var(--cs-text-sm);
+  color: var(--cs-ink-subtle);
+}
+
+.authors {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--cs-ink);
+  font-weight: 600;
+}
+
+.avatar {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--cs-radius-pill);
+  object-fit: cover;
+  background: var(--cs-surface-muted);
+}
+
+.meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}

@@ -1,0 +1,75 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--cs-divider);
+}
+
+.header h1,
+.header h2 {
+  margin: 0;
+  font-family: var(--cs-font-display);
+  font-size: clamp(2rem, 1.4rem + 2.2vw, 2.75rem);
+  font-weight: 800;
+  line-height: var(--cs-lh-display);
+  letter-spacing: var(--cs-tracking-display);
+  color: var(--cs-ink);
+}
+
+.kind {
+  background: var(--cs-green-soft);
+  border-radius: var(--cs-radius-pill);
+  padding: 0.25rem 0.75rem;
+}
+
+.authors {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+}
+
+.author {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--cs-radius-pill);
+  object-fit: cover;
+  background: var(--cs-surface-muted);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.name {
+  font-weight: 700;
+  color: var(--cs-ink);
+}
+
+.name a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.name a:hover {
+  color: var(--cs-brand-strong);
+  text-decoration: underline;
+}
+
+.role {
+  font-size: var(--cs-text-sm);
+  color: var(--cs-ink-muted);
+}

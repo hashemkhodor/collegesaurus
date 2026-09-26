@@ -72,7 +72,7 @@ const config: Config = {
           rehypePlugins: [rehypeTableDataLabels],
         },
         theme: {
-          customCss: ['./src/css/custom.css', './src/css/tokens.css', './src/css/sidebar.css'],
+          customCss: ['./src/css/custom.css', './src/css/tokens.css', './src/css/sidebar.css', './src/css/stories.css'],
         },
       } satisfies Preset.Options,
     ],
