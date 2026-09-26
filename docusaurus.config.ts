@@ -85,6 +85,9 @@ const config: Config = {
     // Publishes /chatbot/corpus.json and /chatbot/version.json for the
     // Collegesaurus AI chatbot (collegesaurus-ai repo).
     './plugins/chatbot-corpus/index.ts',
+    // Writes /semantic-search/ for the search box; needs GEMINI_API_KEY at
+    // build time, and without it search keeps to keywords.
+    './plugins/semantic-search/index.ts',
     [
       require.resolve('@easyops-cn/docusaurus-search-local'),
       {
