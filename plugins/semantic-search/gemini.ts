@@ -56,6 +56,7 @@ async function embedBatch(texts: string[], options: EmbedOptions): Promise<Float
   for (let attempt = 1; ; attempt += 1) {
     let response: Response | undefined;
     let failure: string;
+    let asked = 0;
     try {
       response = await send(`${ENDPOINT}/${model}:batchEmbedContents`, {
         method: 'POST',
@@ -65,7 +66,9 @@ async function embedBatch(texts: string[], options: EmbedOptions): Promise<Float
       if (response.ok) {
         return vectors(await response.json(), texts.length, dims);
       }
-      failure = `HTTP ${response.status}: ${await reason(response)}`;
+      const {message, delay} = await reason(response);
+      failure = `HTTP ${response.status}: ${message}`;
+      asked = delay;
     } catch (error) {
       if (error instanceof GeminiError) {
         throw error;
@@ -76,7 +79,7 @@ async function embedBatch(texts: string[], options: EmbedOptions): Promise<Float
     if (!retry || attempt >= attempts) {
       throw new GeminiError(`Gemini embeddings failed after ${attempt} attempt(s): ${failure}`);
     }
-    await sleep(1000 * 2 ** (attempt - 1));
+    await sleep(Math.max(1000 * 2 ** (attempt - 1), asked));
   }
 }
 
@@ -93,12 +96,18 @@ function vectors(data: {embeddings?: {values?: number[]}[]}, count: number, dims
   });
 }
 
-async function reason(response: Response): Promise<string> {
+type ApiError = {message?: string; details?: {'@type'?: string; retryDelay?: string}[]};
+
+/** The API's own message, and how long a rate-limit answer asks us to wait (RetryInfo), in ms. */
+async function reason(response: Response): Promise<{message: string; delay: number}> {
   const text = await response.text();
   try {
-    return JSON.parse(text).error?.message ?? text.slice(0, 200);
+    const error: ApiError = JSON.parse(text).error ?? {};
+    const retry = error.details?.find((detail) => detail['@type']?.endsWith('RetryInfo'));
+    const seconds = parseFloat(retry?.retryDelay ?? '');
+    return {message: error.message ?? text.slice(0, 200), delay: Number.isFinite(seconds) ? seconds * 1000 : 0};
   } catch {
-    return text.slice(0, 200);
+    return {message: text.slice(0, 200), delay: 0};
   }
 }
 

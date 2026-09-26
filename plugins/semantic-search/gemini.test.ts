@@ -76,6 +76,24 @@ test('waits and retries when the API is busy or rate limited', async () => {
   assert.deepEqual(waits, [1000, 2000]);
 });
 
+test('waits as long as a rate-limit answer asks before retrying', async () => {
+  let calls = 0;
+  const fetch = (async (_url: string, init?: RequestInit) => {
+    calls += 1;
+    if (calls === 1) {
+      const details = [{'@type': 'type.googleapis.com/google.rpc.RetryInfo', retryDelay: '38s'}];
+      return new Response(JSON.stringify({error: {code: 429, message: 'Quota exceeded', details}}), {status: 429});
+    }
+    const {requests} = JSON.parse(String(init?.body));
+    return new Response(JSON.stringify({embeddings: requests.map(() => ({values: [1, 0]}))}), {status: 200});
+  }) as typeof globalThis.fetch;
+  const waits: number[] = [];
+
+  await embedTexts(['AUB'], options({fetch, calls: []}, {sleep: async (ms) => void waits.push(ms)}));
+
+  assert.deepEqual(waits, [38000]);
+});
+
 test('gives up after the last attempt, saying what the API answered', async () => {
   const fake = gemini([503, 503, 503]);
 
