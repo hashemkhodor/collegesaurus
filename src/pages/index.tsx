@@ -30,8 +30,8 @@ export default function Home(): ReactNode {
           <div className={styles.row}>
             <StatsCard />
             <PopularUniversities />
-            <UpcomingDeadlines />
           </div>
+          <UpcomingDeadlines />
           <Benefits />
           <ExploreByMajor />
         </div>
