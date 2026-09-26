@@ -1,0 +1,70 @@
+.page {
+  display: inline-grid;
+  grid-template-rows: auto auto;
+  flex: none;
+  /* Arabic has no short month names, so the page widens to its band. */
+  min-inline-size: 3.5rem;
+  border-radius: var(--cs-radius-sm);
+  background: var(--cs-surface);
+  box-shadow:
+    0 0 0 1px var(--cs-divider),
+    0 6px 14px -8px rgb(16 24 40 / 0.35);
+  overflow: hidden;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.band {
+  position: relative;
+  padding: 0.3rem 0.9rem 0.25rem;
+  background: var(--cs-page-application);
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: var(--cs-tracking-caps);
+  text-transform: var(--cs-transform-caps);
+  white-space: nowrap;
+}
+
+/* The two holes the page hung from. */
+.band::before,
+.band::after {
+  content: '';
+  position: absolute;
+  top: 0.3rem;
+  inline-size: 0.3rem;
+  block-size: 0.3rem;
+  border-radius: 50%;
+  background: var(--cs-surface);
+  opacity: 0.9;
+}
+
+.band::before {
+  inset-inline-start: 0.35rem;
+}
+
+.band::after {
+  inset-inline-end: 0.35rem;
+}
+
+.day {
+  padding: 0.1rem 0.5rem 0.3rem;
+  font-family: var(--cs-font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--cs-ink);
+}
+
+.scholarship .band {
+  background: var(--cs-page-scholarship);
+}
+
+.mixed .band {
+  background: linear-gradient(
+    90deg,
+    var(--cs-page-application) 50%,
+    var(--cs-page-scholarship) 50%
+  );
+}

@@ -1,0 +1,335 @@
+.calendar {
+  /* One row of days: a whole thumb tall on a phone. */
+  --cell: 2.75rem;
+  --head: 1.75rem;
+  min-width: 0;
+}
+
+/* Beside the list the rows grow a little, so the month is as tall as the
+   three deadlines next to it. */
+@media (min-width: 800px) {
+  .calendar {
+    --cell: 3rem;
+  }
+}
+
+/* =====================================================
+   Month and its arrows
+   ===================================================== */
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.month {
+  margin: 0;
+  font-family: var(--cs-font-display);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--cs-ink);
+  text-align: center;
+}
+
+.navButton {
+  composes: focusable from '../ui/ui.module.css';
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  inline-size: var(--cell);
+  block-size: var(--cell);
+  padding: 0;
+  border: 0;
+  border-radius: var(--cs-radius-pill);
+  background: var(--cs-surface);
+  box-shadow: 0 0 0 1px var(--cs-divider);
+  color: var(--cs-ink-muted);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--ifm-transition-fast) var(--cs-ease),
+    color var(--ifm-transition-fast) var(--cs-ease);
+}
+
+.navButton:hover {
+  background: var(--cs-green-soft);
+  color: var(--cs-brand-strong);
+}
+
+.navButton[aria-disabled='true'] {
+  background: var(--cs-surface);
+  color: var(--cs-ink-subtle);
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* chevronDown turned to point back and forward along the reading direction. */
+.previous svg {
+  transform: rotate(90deg);
+}
+
+.next svg {
+  transform: rotate(-90deg);
+}
+
+[dir='rtl'] .previous svg {
+  transform: rotate(-90deg);
+}
+
+[dir='rtl'] .next svg {
+  transform: rotate(90deg);
+}
+
+/* =====================================================
+   The grid. Infima styles every table on the site; it sits in a lower
+   cascade layer, so these resets win.
+   ===================================================== */
+
+.frame {
+  /* Six weeks of room whatever the month, so turning it never moves what is
+     below. The table keeps its own row heights inside. */
+  min-block-size: calc(var(--head) + 6 * var(--cell));
+  touch-action: pan-y;
+}
+
+.table {
+  display: table;
+  inline-size: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin: 0;
+  overflow: visible;
+}
+
+.table thead,
+.table tbody,
+.table tr,
+.table tr:nth-child(2n) {
+  background: none;
+  border: 0;
+}
+
+.table th,
+.table td {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.table th {
+  block-size: var(--head);
+  font-size: var(--cs-text-xs);
+  font-weight: 600;
+  color: var(--cs-ink-subtle);
+}
+
+.table td {
+  block-size: var(--cell);
+}
+
+/* A plain day. */
+.plain {
+  display: grid;
+  place-items: center;
+  inline-size: 100%;
+  block-size: var(--cell);
+  font-size: 0.9375rem;
+  color: var(--cs-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.past {
+  color: var(--cs-ink-subtle);
+}
+
+/* =====================================================
+   A deadline day: the whole cell is the button, the page sits inside it
+   ===================================================== */
+
+.mark {
+  position: relative;
+  display: block;
+  inline-size: 100%;
+  block-size: var(--cell);
+  padding: 0.1875rem;
+  border: 0;
+  margin: 0;
+  background: none;
+  font: inherit;
+  color: var(--cs-ink);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mark:focus-visible {
+  outline: none;
+}
+
+.mark:focus-visible .sheet {
+  outline: 2px solid var(--cs-focus-ring);
+  outline-offset: 2px;
+}
+
+.sheet {
+  position: relative;
+  display: grid;
+  grid-template-rows: 0.4375rem 1fr;
+  inline-size: 100%;
+  block-size: 100%;
+  border-radius: 0.5625rem;
+  background: var(--cs-surface);
+  box-shadow:
+    0 0 0 1px var(--cs-divider),
+    0 3px 8px -4px rgb(16 24 40 / 0.4);
+  transition:
+    transform 160ms var(--cs-ease),
+    box-shadow 160ms var(--cs-ease);
+}
+
+.band {
+  border-radius: 0.5625rem 0.5625rem 0 0;
+  background: var(--cs-page-application);
+}
+
+.scholarship .band {
+  background: var(--cs-page-scholarship);
+}
+
+.mixed .band {
+  background: linear-gradient(
+    90deg,
+    var(--cs-page-application) 50%,
+    var(--cs-page-scholarship) 50%
+  );
+}
+
+.number {
+  display: grid;
+  place-items: center;
+  font-size: 0.9375rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* How many deadlines share the day, stuck on the page's corner. */
+.count {
+  position: absolute;
+  inset-block-start: -0.375rem;
+  inset-inline-end: -0.375rem;
+  display: grid;
+  place-items: center;
+  min-inline-size: 1.125rem;
+  block-size: 1.125rem;
+  padding-inline: 0.25rem;
+  border-radius: var(--cs-radius-pill);
+  background: var(--cs-ink);
+  color: var(--cs-surface);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  box-shadow: 0 0 0 2px var(--cs-surface);
+}
+
+.mark:hover .sheet,
+.highlighted .sheet {
+  box-shadow:
+    0 0 0 1.5px var(--cs-brand),
+    0 6px 14px -6px rgb(16 24 40 / 0.4);
+}
+
+.mark:active .sheet {
+  transform: scale(0.96);
+}
+
+/* The picked page lifts off the calendar, tilted like one being torn off. */
+.mark[aria-pressed='true'] .sheet {
+  transform: translateY(-2px) rotate(-3deg);
+  box-shadow:
+    0 0 0 2px var(--cs-brand-strong),
+    0 10px 18px -8px rgb(16 24 40 / 0.5);
+}
+
+[dir='rtl'] .mark[aria-pressed='true'] .sheet {
+  transform: translateY(-2px) rotate(3deg);
+}
+
+/* =====================================================
+   Today
+   ===================================================== */
+
+.plain.today {
+  inline-size: calc(var(--cell) - 0.375rem);
+  block-size: calc(var(--cell) - 0.375rem);
+  margin-inline: auto;
+  border-radius: var(--cs-radius-pill);
+  box-shadow: inset 0 0 0 1.5px var(--cs-brand-strong);
+  color: var(--cs-brand-strong);
+  font-weight: 700;
+}
+
+.mark.today .number {
+  color: var(--cs-brand-strong);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+/* =====================================================
+   Turning the month: a short slide from the side it came from
+   ===================================================== */
+
+.fromNext {
+  animation: from-next 150ms var(--cs-ease);
+}
+
+.fromPrevious {
+  animation: from-previous 150ms var(--cs-ease);
+}
+
+@keyframes from-next {
+  from {
+    opacity: 0.4;
+    translate: 12px 0;
+  }
+}
+
+@keyframes from-previous {
+  from {
+    opacity: 0.4;
+    translate: -12px 0;
+  }
+}
+
+[dir='rtl'] .fromNext {
+  animation-name: from-previous;
+}
+
+[dir='rtl'] .fromPrevious {
+  animation-name: from-next;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet,
+  .navButton {
+    transition: none;
+  }
+
+  .fromNext,
+  .fromPrevious {
+    animation: none;
+  }
+
+  .mark[aria-pressed='true'] .sheet,
+  [dir='rtl'] .mark[aria-pressed='true'] .sheet,
+  .mark:active .sheet {
+    transform: none;
+  }
+}
