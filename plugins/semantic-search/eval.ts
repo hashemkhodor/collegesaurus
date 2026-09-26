@@ -19,7 +19,7 @@ import {encodeIndex, encodeShards} from '../../src/components/Search/format.ts';
 import {candidateKeys, coverQuery} from '../../src/components/Search/query.ts';
 import {rankPages, type RankedPage} from '../../src/components/Search/rank.ts';
 import {contentTokens, shardOf, tokenize, variants} from '../../src/components/Search/text.ts';
-import {composeQuery, quantize, scoreAll, truncate, type Quantized} from '../../src/components/Search/vectors.ts';
+import {composeQuery, dequantize, quantize, scoreAll, truncate, type Quantized} from '../../src/components/Search/vectors.ts';
 import {buildIndex, prepare, readList, type BuiltIndex} from './build.ts';
 import {VectorCache, embedWithCache} from './cache.ts';
 import {embedTexts, type TaskType} from './gemini.ts';
@@ -47,7 +47,6 @@ if (!apiKey) {
   process.exit(1);
 }
 
-const dequantize = ({scale, q}: Quantized) => Float32Array.from(q, (value) => value * scale);
 const shrink = (vector: Quantized, dims: number) => (dims === FULL ? vector : quantize(truncate(dequantize(vector), dims)));
 const round = (value: number) => Number(value.toFixed(3));
 

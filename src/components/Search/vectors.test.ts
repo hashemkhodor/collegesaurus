@@ -2,7 +2,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 
-import {composeQuery, fromBase64, quantize, scoreAll, toBase64, truncate, unit} from './vectors.ts';
+import {composeQuery, dequantize, fromBase64, quantize, scoreAll, toBase64, truncate, unit} from './vectors.ts';
 
 function close(actual: ArrayLike<number>, expected: number[], tolerance = 1e-3) {
   assert.equal(actual.length, expected.length);
@@ -16,6 +16,10 @@ test('stores a vector as bytes scaled to its largest value', () => {
 
   assert.deepEqual([...q], [64, -127, 32]);
   close([scale], [1 / 127], 1e-9);
+});
+
+test('reads stored bytes back as the vector they stand for', () => {
+  close(dequantize(quantize([0.5, -1, 0.25])), [64 / 127, -1, 32 / 127], 1e-6);
 });
 
 test('stores an all-zero vector without dividing by zero', () => {

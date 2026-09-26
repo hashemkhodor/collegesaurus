@@ -21,6 +21,10 @@ export function quantize(vector: ArrayLike<number>): Quantized {
   return {scale, q};
 }
 
+export function dequantize({scale, q}: Quantized): Float32Array {
+  return Float32Array.from(q, (value) => value * scale);
+}
+
 export function unit(vector: ArrayLike<number>): Float32Array | null {
   let sum = 0;
   for (let i = 0; i < vector.length; i += 1) {

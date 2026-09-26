@@ -6,7 +6,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {encodeIndex, encodeShards, shardPath, type ChunkMeta, type PageMeta} from '../../src/components/Search/format.ts';
-import type {Quantized} from '../../src/components/Search/vectors.ts';
+import {dequantize, quantize, unit, type Quantized} from '../../src/components/Search/vectors.ts';
 import {chunkDocument} from './chunk.ts';
 import type {TaskType} from './gemini.ts';
 import {plainText, withoutLinks} from './markdown.ts';
@@ -47,6 +47,11 @@ export function prepare(docs: SourceDoc[]): {pages: PageMeta[]; chunks: SectionC
   return {pages, chunks};
 }
 
+/** The browser scores by dot product, which is cosine only for unit vectors. */
+function unitLength(vector: Quantized): Quantized {
+  return quantize(unit(dequantize(vector)) ?? new Float32Array(vector.q.length));
+}
+
 export async function buildIndex(
   docs: SourceDoc[],
   options: {embed: EmbedQuantized; words: string[]; phrases: string[]},
@@ -57,14 +62,18 @@ export async function buildIndex(
     words: options.words,
     phrases: options.phrases,
   });
-  const vectors = await options.embed(
-    chunks.map((chunk) => chunk.embed),
-    'RETRIEVAL_DOCUMENT',
-  );
-  const termVectors = await options.embed(
-    terms.map((term) => term.text),
-    'RETRIEVAL_QUERY',
-  );
+  const vectors = (
+    await options.embed(
+      chunks.map((chunk) => chunk.embed),
+      'RETRIEVAL_DOCUMENT',
+    )
+  ).map(unitLength);
+  const termVectors = (
+    await options.embed(
+      terms.map((term) => term.text),
+      'RETRIEVAL_QUERY',
+    )
+  ).map(unitLength);
   return {
     pages,
     chunks: chunks.map(({page, section, anchor, text}) => ({page, section, anchor, text})),

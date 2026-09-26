@@ -7,7 +7,7 @@ import path from 'node:path';
 
 import {decodeIndex, decodeShard} from '../../src/components/Search/format.ts';
 import {shardOf} from '../../src/components/Search/text.ts';
-import {quantize} from '../../src/components/Search/vectors.ts';
+import {dequantize, quantize} from '../../src/components/Search/vectors.ts';
 import {buildIndex, prepare, readList, writeIndex, type SourceDoc} from './build.ts';
 
 const AUB: SourceDoc = {
@@ -49,6 +49,14 @@ test('embeds sections as documents and vocabulary terms as queries', async () =>
   assert.deepEqual(index.chunks, [{page: 0, section: 'Tuition', anchor: 'tuition', text: 'Nursing · $1,000'}]);
   const nursing = index.terms.find((term) => term.key === 'nursing')!;
   assert.deepEqual([...nursing.vector.q], [...quantize([1, asked[1][1].indexOf('Nursing')]).q]);
+});
+
+test('stores unit-length vectors, whatever the embedder returns', async () => {
+  const index = await buildIndex([AUB], {embed: async (texts) => texts.map(() => quantize([3, 4])), words: [], phrases: []});
+
+  for (const vector of [...index.vectors, ...index.terms.map((term) => term.vector)]) {
+    assert.ok(Math.abs(Math.hypot(...dequantize(vector)) - 1) < 0.01);
+  }
 });
 
 test('writes index.json and every term shard', async () => {

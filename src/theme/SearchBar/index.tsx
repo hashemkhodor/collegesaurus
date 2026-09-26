@@ -55,6 +55,22 @@ export default function SearchBar(): ReactNode {
 
   useEffect(() => setActive(-1), [query]);
 
+  // The input is uncontrolled so that hydration keeps whatever was typed
+  // before it; this picks that up.
+  useEffect(() => {
+    const typed = input.current?.value ?? '';
+    if (typed) {
+      setValue(typed);
+      setQuery(typed);
+    }
+    if (input.current && document.activeElement === input.current) {
+      warmUp();
+      setOpen(true);
+    }
+    // Only on mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     setShortcut(/Mac|iPhone|iPad/.test(navigator.userAgent) ? '⌘ K' : 'Ctrl K');
     const onKey = (event: globalThis.KeyboardEvent) => {
@@ -95,6 +111,7 @@ export default function SearchBar(): ReactNode {
       if (open) {
         setOpen(false);
       } else {
+        event.currentTarget.value = '';
         setValue('');
         setQuery('');
       }
@@ -123,7 +140,6 @@ export default function SearchBar(): ReactNode {
         ref={input}
         type="search"
         className={clsx('navbar__search-input', styles.input)}
-        value={value}
         placeholder={label}
         aria-label={label}
         role="combobox"
