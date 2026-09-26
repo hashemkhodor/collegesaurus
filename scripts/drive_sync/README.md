@@ -82,6 +82,10 @@ The page's own window cards read the same columns and dates, so what the page
 marks as open is what the landing page lists. A deadline no page gives yet can
 go in `src/data/homepage/deadlines.ts`; a page row for the same day replaces it.
 
+The same deadlines go out as a calendar students can subscribe to
+(`/deadlines.ics`, `/ar/deadlines.ics`), so a corrected date reaches their
+calendars the next time their calendar app checks, usually within a day.
+
 ## Naming a component
 
 Put a directive on its own line directly above a table:
