@@ -23,7 +23,9 @@ export type Outcome = {
   understood: boolean;
 };
 
-export const RANKING: RankOptions = {limit: 20, perPage: 3, floor: 0, margin: 1, sectionMargin: 1};
+// From plugins/semantic-search/eval.ts: off-topic queries top out near 0.15,
+// and 90% of expected pages score within 0.14 of the best.
+export const RANKING: RankOptions = {limit: 20, perPage: 3, floor: 0.16, margin: 0.15, sectionMargin: 0.15};
 
 type Load = (url: string) => Promise<unknown>;
 

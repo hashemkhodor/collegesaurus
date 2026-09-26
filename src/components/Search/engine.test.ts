@@ -46,7 +46,7 @@ after(() => made.forEach((dir) => fs.rmSync(dir, {recursive: true, force: true})
 async function written(dims = 256): Promise<string> {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'semantic-search-engine-'));
   made.push(dir);
-  const index = await buildIndex(DOCS, {embed: hashEmbed(dims), words: ['university'], phrases: []});
+  const index = await buildIndex(DOCS, {embed: hashEmbed(dims), words: ['university', 'pizza'], phrases: []});
   writeIndex(dir, index, {model: 'hash', dims, shards: 16});
   return dir;
 }
@@ -95,6 +95,12 @@ test('fetches the index once and, for each query, only the shards its words need
   assert.equal(fetched.filter((url) => url.endsWith('index.json')).length, 1);
   assert.ok(first < 16, `fetched ${first} files`);
   assert.equal(fetched.length, first);
+});
+
+test('finds nothing for a query unlike every page', async () => {
+  const {engine} = await site();
+
+  assert.deepEqual(await engine.search('pizza'), {results: [], terms: ['pizza'], understood: true});
 });
 
 test('says so when no word of the query has a vector', async () => {
