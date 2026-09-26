@@ -13,6 +13,11 @@ export function typeLabel(type: string): string {
   }
 }
 
+/** A match in the text before a page's first heading. */
+export function sectionLabel(): string {
+  return translate({id: 'search.section.overview', message: 'Overview'});
+}
+
 export function keywordNote(): string {
   return translate({
     id: 'search.keywordNote',

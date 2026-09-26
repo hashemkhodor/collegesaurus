@@ -774,5 +774,8 @@
   "search.hint": {
     "message": "ابحث بما تقصده، لا بالكلمات نفسها فقط: جرّب {examples}.",
     "description": "Shown on the search page before anything is typed; {examples} are links to example searches"
+  },
+  "search.section.overview": {
+    "message": "نظرة عامة"
   }
 }

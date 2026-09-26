@@ -15,7 +15,14 @@ import useSearchQuery from '@theme/hooks/useSearchQuery';
 import type {Result} from '@site/src/components/Search/engine';
 import Highlighted from '@site/src/components/Search/Highlighted';
 import ResultTile from '@site/src/components/Search/ResultTile';
-import {failedNote, keywordNote, noMatchNote, searchingNote, typeLabel} from '@site/src/components/Search/labels';
+import {
+  failedNote,
+  keywordNote,
+  noMatchNote,
+  searchingNote,
+  sectionLabel,
+  typeLabel,
+} from '@site/src/components/Search/labels';
 import {useSearch} from '@site/src/components/Search/useSearch';
 import styles from './styles.module.css';
 
@@ -37,9 +44,9 @@ function PageResult({result, terms}: {result: Result; terms: string[]}) {
             {result.sections.map((section) => (
               <li key={section.href} className={styles.section}>
                 <Link to={section.href} className={styles.sectionLink} dir="auto">
-                  {section.title || <Highlighted text={section.snippet} terms={terms} className={styles.mark} />}
+                  {section.title || sectionLabel()}
                 </Link>
-                {section.title && section.snippet && (
+                {section.snippet && (
                   <p className={styles.snippet} dir="auto">
                     <Highlighted text={section.snippet} terms={terms} className={styles.mark} />
                   </p>
@@ -66,12 +73,17 @@ function Examples(): ReactNode {
         id="search.hint"
         description="Shown on the search page before anything is typed; {examples} are links to example searches"
         values={{
-          examples: examples.map((example, i) => (
-            <span key={example}>
-              {i > 0 && ', '}
-              <Link to={`${searchPage}?q=${encodeURIComponent(example)}`}>{example}</Link>
-            </span>
-          )),
+          // One element: Translate interpolates an element, but prints an array as text.
+          examples: (
+            <>
+              {examples.map((example, i) => (
+                <span key={example}>
+                  {i > 0 && ', '}
+                  <Link to={`${searchPage}?q=${encodeURIComponent(example)}`}>{example}</Link>
+                </span>
+              ))}
+            </>
+          ),
         }}>
         {'Search by what you mean, not only the exact words: try {examples}.'}
       </Translate>
