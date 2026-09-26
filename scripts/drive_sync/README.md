@@ -58,6 +58,30 @@ Write section headings in either language — `Faculty`, `الكلية`, or
 The academic year is taken from the folder path, so do **not** write
 `Tuition (AY 2025-26)`; just `Tuition`.
 
+## Deadlines
+
+The landing page's "Upcoming deadlines" card and calendar are read from the
+pages at build time, so a deadline shows there once its page states it in a
+table:
+
+- **Universities:** in the Application section, a table with a **Closes**
+  column (or Deadline / Last day; `يغلق` / `تُقفل`) and, if known, an
+  **Opens** column. The first other column names the row, e.g.
+  `Freshman – Regular (Fall 2027-28)`.
+- **Scholarships:** the same table in the Application window section, or a
+  `Stage | Date` table with a closing row, e.g.
+  `Applications close | 25 November 2026` (`إقفال التقديم`).
+- **Full dates only:** `Nov 30, 2026`, `30 November 2026` or
+  `30 تشرين الثاني 2026`, optionally followed by a note in brackets. `TBA`,
+  `Rolling`, `Mid-Jan 2027` or a date without a year stay on the page but
+  never reach the calendar.
+- A row named as a Scholarship or Financial aid (`منحة`, `مساعدات`) is shown
+  as a scholarship; every other row is an application.
+
+The page's own window cards read the same columns and dates, so what the page
+marks as open is what the landing page lists. A deadline no page gives yet can
+go in `src/data/homepage/deadlines.ts`; a page row for the same day replaces it.
+
 ## Naming a component
 
 Put a directive on its own line directly above a table:
