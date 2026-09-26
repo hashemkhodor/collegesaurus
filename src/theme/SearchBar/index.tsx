@@ -4,8 +4,18 @@
  * when meaning can't answer; Enter without a highlighted result, or "See all
  * results", opens the search page. A WAI-ARIA combobox.
  */
-import {useEffect, useId, useRef, useState, type FocusEvent, type KeyboardEvent, type ReactNode} from 'react';
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type FocusEvent,
+  type KeyboardEvent,
+  type MouseEvent,
+  type ReactNode,
+} from 'react';
 import clsx from 'clsx';
+import Link from '@docusaurus/Link';
 import {useHistory, useLocation} from '@docusaurus/router';
 import Translate, {translate} from '@docusaurus/Translate';
 import {usePluralForm} from '@docusaurus/theme-common';
@@ -89,7 +99,16 @@ export default function SearchBar(): ReactNode {
     input.current?.blur();
     openResult(history, href);
   };
-  const seeAll = () => go(`${searchPage}?q=${encodeURIComponent(value.trim())}`);
+  const seeAllHref = `${searchPage}?q=${encodeURIComponent(value.trim())}`;
+  const seeAll = () => go(seeAllHref);
+  // A plain click opens here; with a modifier or the middle button the
+  // browser opens the link wherever it was asked to.
+  const onLinkClick = (href: string) => (event: MouseEvent<HTMLAnchorElement>) => {
+    if (event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+      event.preventDefault();
+      go(href);
+    }
+  };
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.nativeEvent.isComposing) {
@@ -109,6 +128,8 @@ export default function SearchBar(): ReactNode {
       }
     } else if (event.key === 'Escape') {
       if (open) {
+        // A search field's own Escape would clear it too.
+        event.preventDefault();
         setOpen(false);
       } else {
         event.currentTarget.value = '';
@@ -195,22 +216,23 @@ export default function SearchBar(): ReactNode {
                   role="option"
                   aria-selected={i === active}
                   className={clsx(styles.option, i === active && styles.active)}
-                  onMouseEnter={() => setActive(i)}
-                  onClick={() => go(hrefOf(result))}>
-                  <ResultTile result={result} />
-                  <span className={styles.text}>
-                    <span className={styles.title} dir="auto">
-                      {result.title}
-                    </span>
-                    <span className={styles.meta} dir="auto">
-                      {section?.title || typeLabel(result.type)}
-                    </span>
-                    {section?.snippet && (
-                      <span className={styles.snippet} dir="auto">
-                        <Highlighted text={section.snippet} terms={terms} className={styles.mark} />
+                  onMouseEnter={() => setActive(i)}>
+                  <Link to={hrefOf(result)} tabIndex={-1} className={styles.link} onClick={onLinkClick(hrefOf(result))}>
+                    <ResultTile result={result} />
+                    <span className={styles.text}>
+                      <span className={styles.title} dir="auto">
+                        {result.title}
                       </span>
-                    )}
-                  </span>
+                      <span className={styles.meta} dir="auto">
+                        {section?.title || typeLabel(result.type)}
+                      </span>
+                      {section?.snippet && (
+                        <span className={styles.snippet} dir="auto">
+                          <Highlighted text={section.snippet} terms={terms} className={styles.mark} />
+                        </span>
+                      )}
+                    </span>
+                  </Link>
                 </li>
               );
             })}
@@ -219,9 +241,10 @@ export default function SearchBar(): ReactNode {
               role="option"
               aria-selected={active === results.length}
               className={clsx(styles.option, styles.seeAll, active === results.length && styles.active)}
-              onMouseEnter={() => setActive(results.length)}
-              onClick={seeAll}>
-              <Translate id="theme.SearchBar.seeAll">See all results</Translate>
+              onMouseEnter={() => setActive(results.length)}>
+              <Link to={seeAllHref} tabIndex={-1} className={styles.link} onClick={onLinkClick(seeAllHref)}>
+                <Translate id="theme.SearchBar.seeAll">See all results</Translate>
+              </Link>
             </li>
           </ul>
         </div>
