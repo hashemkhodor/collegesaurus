@@ -639,17 +639,17 @@
   "homepage.deadlines.appleCalendar": {
     "message": "تقويم Apple"
   },
-  "homepage.deadlines.subscribeGoogle": {
+  "homepage.deadlines.googleSubscribeHint": {
     "message": "من الكمبيوتر. ثم على Android فعّل المزامنة له في التطبيق.",
     "description": "How to subscribe with Google Calendar, which works from a computer only"
   },
-  "homepage.deadlines.subscribeApple": {
+  "homepage.deadlines.appleHint": {
     "message": "iPhone وiPad وMac"
   },
-  "homepage.deadlines.subscribeAndroid": {
+  "homepage.deadlines.androidHint": {
     "message": "عبر تطبيق ICSx⁵"
   },
-  "homepage.deadlines.subscribeOutlook": {
+  "homepage.deadlines.outlookHint": {
     "message": "Outlook على الويب"
   },
   "homepage.deadlines.copyLink": {
@@ -663,7 +663,7 @@
     "description": "In place of \"Copy the link\" once the calendar's address is copied"
   },
   "homepage.deadlines.addOne": {
-    "message": "أضف",
+    "message": "أضف إلى الرزنامة",
     "description": "On a deadline's card: opens the ways to add it to a calendar"
   },
   "homepage.deadlines.addOneLabel": {
@@ -676,6 +676,12 @@
   },
   "homepage.deadlines.otherCalendar": {
     "message": "تطبيق رزنامة آخر"
+  },
+  "homepage.deadlines.googleEventHint": {
+    "message": "على Android والويب"
+  },
+  "homepage.deadlines.fileHint": {
+    "message": "ينزّل ملفًا بصيغة ics"
   },
   "footer.tagline": {
     "message": "دليل مجاني إلى الجامعات والمنح الدراسية في لبنان، أعدّه طلاب."
