@@ -18,6 +18,29 @@ test('reads the kind of page from its path, in any locale', () => {
   assert.equal(pageType('/contribute'), 'page');
 });
 
+test('lists a section once when both its heading and its text matched', () => {
+  const [aub] = fromKeywordResults([
+    ranked({
+      document: {i: 7, t: 'Tuition is $1,000 per credit.', u: AUB.u, h: '#tuition', s: 'Tuition'},
+      type: RecordType.content,
+      page: AUB,
+      rank: 9,
+      sectionTitle: 'Tuition',
+      url: `${AUB.u}#tuition`,
+    }),
+    ranked({
+      document: {i: 6, t: 'Tuition', u: AUB.u, h: '#tuition'},
+      type: RecordType.heading,
+      page: AUB,
+      rank: 4,
+      sectionTitle: 'Tuition',
+      url: `${AUB.u}#tuition`,
+    }),
+  ]);
+
+  assert.deepEqual(aub.sections.map((section) => [section.title, section.score]), [['Tuition', 9]]);
+});
+
 test('groups keyword matches by page, in the order they ranked', () => {
   const results = fromKeywordResults([
     ranked({

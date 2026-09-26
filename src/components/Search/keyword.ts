@@ -25,7 +25,7 @@ export function fromKeywordResults(results: RankedResult[], terms: string[] = []
       entry = {path: document.u, title, type: pageType(document.u), score: result.rank, sections: []};
       pages.set(document.u, entry);
     }
-    if (type !== RecordType.title) {
+    if (type !== RecordType.title && !entry.sections.some((section) => section.href === result.url)) {
       entry.sections.push({
         title: result.sectionTitle,
         href: result.url,
