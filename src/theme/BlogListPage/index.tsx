@@ -1,47 +1,24 @@
 import React, {type ReactNode} from 'react';
 import clsx from 'clsx';
 
+import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import Translate, {translate} from '@docusaurus/Translate';
 import {
   PageMetadata,
   HtmlClassNameProvider,
   ThemeClassNames,
 } from '@docusaurus/theme-common';
-import BlogLayout from '@theme/BlogLayout';
+import Layout from '@theme/Layout';
 import BlogListPaginator from '@theme/BlogListPaginator';
 import SearchMetadata from '@theme/SearchMetadata';
 import type {Props} from '@theme/BlogListPage';
-import BlogPostItems from '@theme/BlogPostItems';
 import BlogListPageStructuredData from '@theme/BlogListPage/StructuredData';
 import Heading from '@theme/Heading';
+import StoryCard from '@site/src/components/Stories/StoryCard';
+import ui from '@site/src/components/Homepage/ui/ui.module.css';
 
-type BlogItem = Props['items'][number];
-
-const BLOG_BASE_MARKER = '/stories/';
-
-function groupKeyFor(permalink: string): string {
-  const idx = permalink.lastIndexOf(BLOG_BASE_MARKER);
-  if (idx === -1) return 'other';
-  const after = permalink.slice(idx + BLOG_BASE_MARKER.length);
-  const segments = after.split('/').filter(Boolean);
-  if (segments.length === 0) return 'other';
-  return segments[0];
-}
-
-function groupItemsBySlugPrefix(items: Props['items']): [string, BlogItem[]][] {
-  const groups = new Map<string, BlogItem[]>();
-  for (const item of items) {
-    const key = groupKeyFor(item.content.metadata.permalink);
-    const bucket = groups.get(key) ?? [];
-    bucket.push(item);
-    groups.set(key, bucket);
-  }
-  return [...groups.entries()].sort(([, a], [, b]) => {
-    if (a.length === 1 && b.length !== 1) return -1;
-    if (b.length === 1 && a.length !== 1) return 1;
-    return 0;
-  });
-}
+import styles from './styles.module.css';
 
 function BlogListPageMetadata(props: Props): ReactNode {
   const {metadata} = props;
@@ -59,19 +36,64 @@ function BlogListPageMetadata(props: Props): ReactNode {
   );
 }
 
+function uniqueTags(items: Props['items']) {
+  const seen = new Map<string, {label: string; permalink: string}>();
+  for (const {content} of items) {
+    for (const tag of content.metadata.tags) seen.set(tag.permalink, tag);
+  }
+  return [...seen.values()];
+}
+
 function BlogListPageContent(props: Props): ReactNode {
-  const {metadata, items, sidebar} = props;
-  const groups = groupItemsBySlugPrefix(items);
+  const {metadata, items} = props;
+  const tags = uniqueTags(items);
   return (
-    <BlogLayout sidebar={sidebar}>
-      {groups.map(([label, groupItems]) => (
-        <section key={label}>
-          <Heading as="h2">{label}</Heading>
-          <BlogPostItems items={groupItems} />
-        </section>
-      ))}
-      <BlogListPaginator metadata={metadata} />
-    </BlogLayout>
+    <Layout>
+      <main className={styles.page}>
+        <header className={styles.hero}>
+          <div className={styles.container}>
+            <p className={clsx(ui.eyebrow, styles.eyebrow)}>
+              <Translate id="stories.hero.eyebrow">Stories</Translate>
+            </p>
+            <Heading as="h1" className={styles.title}>
+              {metadata.blogTitle}
+            </Heading>
+            <p className={styles.lead}>
+              <Translate id="stories.hero.lead">
+                Real experiences from students who went through admissions,
+                scholarships and grad school in Lebanon and abroad.
+              </Translate>
+            </p>
+            {tags.length > 0 && (
+              <nav
+                className={styles.tags}
+                aria-label={translate({
+                  id: 'stories.topics.label',
+                  message: 'Browse stories by topic',
+                })}>
+                {tags.map((tag) => (
+                  <Link key={tag.permalink} className={styles.tag} to={tag.permalink}>
+                    {tag.label}
+                  </Link>
+                ))}
+              </nav>
+            )}
+          </div>
+        </header>
+        <div className={styles.container}>
+          <ul className={styles.grid}>
+            {items.map(({content}) => (
+              <StoryCard
+                key={content.metadata.permalink}
+                metadata={content.metadata}
+                image={content.frontMatter.image}
+              />
+            ))}
+          </ul>
+          <BlogListPaginator metadata={metadata} />
+        </div>
+      </main>
+    </Layout>
   );
 }
 
