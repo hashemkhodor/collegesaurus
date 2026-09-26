@@ -118,7 +118,9 @@ test('starts no more batches once one has failed', async () => {
 
   await assert.rejects(embedTexts(texts, options(fake, {batchSize: 1, concurrency: 2})), /HTTP 400/);
 
-  assert.ok(fake.calls.length <= 2, `${fake.calls.length} calls`);
+  // Without stopping, all 10 would be sent; the other worker may start one
+  // more before the failure is known.
+  assert.ok(fake.calls.length <= 3, `${fake.calls.length} calls`);
 });
 
 test('rejects an answer with the wrong number of vectors or dimensions', async () => {
