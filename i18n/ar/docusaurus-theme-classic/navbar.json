@@ -1,8 +1,4 @@
 {
-  "logo.alt": {
-    "message": "Collegesaurus",
-    "description": "The alt text of navbar logo"
-  },
   "item.label.Universities": {
     "message": "الجامعات",
     "description": "Navbar item with label Universities"

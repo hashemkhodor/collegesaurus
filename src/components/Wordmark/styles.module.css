@@ -1,0 +1,11 @@
+.wordmark {
+  font-family: 'Sansita', var(--ifm-font-family-base);
+  font-style: italic;
+  font-weight: 900;
+  letter-spacing: 0.005em;
+  color: var(--cs-ink);
+}
+
+.saurus {
+  color: #42b36c;
+}

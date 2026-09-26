@@ -45,6 +45,10 @@
   text-decoration: none;
 }
 
+.wordmark {
+  font-size: var(--cs-text-h3);
+}
+
 .tagline {
   margin: 0;
   max-width: 34ch;
@@ -84,7 +88,7 @@
    Link groups
    ===================================================== */
 
-/* A 2rem line box centres the titles on the 32px-tall logo. */
+/* A 2rem line box centres the titles on the wordmark beside the 32px logo. */
 .title {
   margin: 0 0 0.5rem;
   font-family: var(--cs-font-display);
