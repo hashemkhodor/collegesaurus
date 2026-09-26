@@ -93,17 +93,23 @@ export class VectorCache {
 
 export type Embed = (texts: string[], taskType: TaskType) => Promise<ArrayLike<number>[]>;
 
-/** Vectors for `texts`, in order, embedding each text the cache lacks once. */
+/**
+ * Vectors for `texts`, in order, embedding each text the cache lacks once.
+ * Missing texts go in groups, each kept as soon as it is back, so a failure
+ * late in a big first build loses one group rather than all of them.
+ */
 export async function embedWithCache(
   texts: string[],
   taskType: TaskType,
   cache: VectorCache,
   embed: Embed,
+  groupSize = 2000,
 ): Promise<Quantized[]> {
   const missing = [...new Set(texts.filter((text) => !cache.get(taskType, text)))];
-  if (missing.length > 0) {
-    const vectors = await embed(missing, taskType);
-    missing.forEach((text, i) => cache.set(taskType, text, vectors[i]));
+  for (let start = 0; start < missing.length; start += groupSize) {
+    const group = missing.slice(start, start + groupSize);
+    const vectors = await embed(group, taskType);
+    group.forEach((text, i) => cache.set(taskType, text, vectors[i]));
   }
   return texts.map((text) => cache.get(taskType, text)!);
 }

@@ -80,3 +80,18 @@ test('embeds each missing text once and reuses cached ones', async () => {
   assert.deepEqual(asked, [['AUB', 'LAU'], ['USJ']]);
   assert.deepEqual(vectors.map((vector) => [...vector.q]), [[0, 127], [0, 127]]);
 });
+
+test('keeps the groups embedded before a failure, so a retry only redoes the rest', async () => {
+  const cache = await VectorCache.open(tempDir(), 'gemini-embedding-001', 2);
+  const embed = async (texts: string[]) => {
+    if (texts.includes('USJ')) {
+      throw new Error('Gemini is down');
+    }
+    return texts.map(() => new Float32Array([1, 0]));
+  };
+
+  await assert.rejects(embedWithCache(['AUB', 'LAU', 'USJ'], 'RETRIEVAL_QUERY', cache, embed, 2), /down/);
+
+  assert.ok(cache.get('RETRIEVAL_QUERY', 'AUB') && cache.get('RETRIEVAL_QUERY', 'LAU'));
+  assert.equal(cache.get('RETRIEVAL_QUERY', 'USJ'), undefined);
+});
