@@ -24,7 +24,14 @@ export type SectionChunk = ChunkMeta & {
 
 export type TermVector = {key: string; weight: number; vector: Quantized};
 
-export type BuiltIndex = {pages: PageMeta[]; chunks: ChunkMeta[]; vectors: Quantized[]; terms: TermVector[]};
+export type BuiltIndex = {
+  pages: PageMeta[];
+  chunks: ChunkMeta[];
+  vectors: Quantized[];
+  terms: TermVector[];
+  /** Taken from every term; a query embedded whole (./eval.ts) needs the same. */
+  queryMean: Float32Array;
+};
 
 export type EmbedQuantized = (texts: string[], taskType: TaskType) => Promise<Quantized[]>;
 
@@ -47,9 +54,20 @@ export function prepare(docs: SourceDoc[]): {pages: PageMeta[]; chunks: SectionC
   return {pages, chunks};
 }
 
-/** The browser scores by dot product, which is cosine only for unit vectors. */
-function unitLength(vector: Quantized): Quantized {
-  return quantize(unit(dequantize(vector)) ?? new Float32Array(vector.q.length));
+/**
+ * e5 puts every text near one shared direction, so all cosines land near
+ * 0.85 and the pages nearest that direction top unrelated searches. Taking
+ * the average away leaves what sets each text apart.
+ */
+function centered(vectors: Quantized[]): {mean: Float32Array; vectors: Float32Array[]} {
+  const units = vectors.map((vector) => unit(dequantize(vector)) ?? new Float32Array(vector.q.length));
+  const mean = new Float32Array(units[0]?.length ?? 0);
+  for (const vector of units) {
+    vector.forEach((value, d) => {
+      mean[d] += value / units.length;
+    });
+  }
+  return {mean, vectors: units.map((vector) => vector.map((value, d) => value - mean[d]))};
 }
 
 export async function buildIndex(
@@ -62,23 +80,26 @@ export async function buildIndex(
     words: options.words,
     phrases: options.phrases,
   });
-  const vectors = (
+  const sections = centered(
     await options.embed(
       chunks.map((chunk) => chunk.embed),
       'RETRIEVAL_DOCUMENT',
-    )
-  ).map(unitLength);
-  const termVectors = (
+    ),
+  );
+  const termVectors = centered(
     await options.embed(
       terms.map((term) => term.text),
       'RETRIEVAL_QUERY',
-    )
-  ).map(unitLength);
+    ),
+  );
   return {
     pages,
     chunks: chunks.map(({page, section, anchor, text}) => ({page, section, anchor, text})),
-    vectors,
-    terms: terms.map(({key, weight}, i) => ({key, weight, vector: termVectors[i]})),
+    // The browser scores by dot product, which is cosine only for unit vectors.
+    vectors: sections.vectors.map((vector) => quantize(unit(vector) ?? vector)),
+    // Left at their length, so the browser's weighted average of terms is their average less the mean.
+    terms: terms.map(({key, weight}, i) => ({key, weight, vector: quantize(termVectors.vectors[i])})),
+    queryMean: termVectors.mean,
   };
 }
 

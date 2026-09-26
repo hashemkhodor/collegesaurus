@@ -3,7 +3,8 @@
  *
  *   composed  the query as the weighted average of its words' vectors, which
  *             is what the browser does
- *   exact     the model's own embedding of the whole query, the upper bound
+ *   exact     the model's own embedding of the whole query, less the terms'
+ *             mean as the index's terms are: the upper bound
  *   keyword   every query word must appear in the section, as the old search
  *             required (an approximation of lunr, not lunr itself)
  *
@@ -18,7 +19,7 @@ import {encodeIndex, encodeShards} from '../../src/components/Search/format.ts';
 import {candidateKeys, coverQuery, queryTokens} from '../../src/components/Search/query.ts';
 import {rankPages, type RankedPage} from '../../src/components/Search/rank.ts';
 import {contentTokens, shardOf, tokenize, variants} from '../../src/components/Search/text.ts';
-import {composeQuery, dequantize, scoreAll, type Quantized} from '../../src/components/Search/vectors.ts';
+import {composeQuery, dequantize, scoreAll, unit, type Quantized} from '../../src/components/Search/vectors.ts';
 import {buildIndex, prepare, readList, type BuiltIndex} from './build.ts';
 import {VectorCache, embedWithCache} from './cache.ts';
 import {MODEL, embedWith, loadModel, type TaskType} from './embedder.ts';
@@ -141,13 +142,14 @@ const prepared = new Map(
       terms: built.terms.length,
     };
     const terms = new Map(built.terms.map((term) => [term.key, term]));
-    return [locale, {...matrixOf(built.vectors, model.dims), terms, chunks: built.chunks}];
+    return [locale, {...matrixOf(built.vectors, model.dims), terms, chunks: built.chunks, queryMean: built.queryMean}];
   }),
 );
 queries.forEach((query, i) => {
-  const {matrix, scales, terms, chunks} = prepared.get(query.locale)!;
+  const {matrix, scales, terms, chunks, queryMean} = prepared.get(query.locale)!;
   const {ids, sections} = locales.get(query.locale)!;
-  record('exact', query, rankPages(scoreAll(dequantize(exact[i]), matrix, scales), chunks, OPEN), ids);
+  const whole = unit(dequantize(exact[i]).map((value, d) => value - queryMean[d])) ?? queryMean;
+  record('exact', query, rankPages(scoreAll(whole, matrix, scales), chunks, OPEN), ids);
   const started = performance.now();
   const {keys, unknown} = coverQuery(queryTokens(query.q), (key) => terms.has(key));
   const vector = composeQuery(keys.map((key) => terms.get(key)!));

@@ -47,16 +47,37 @@ test('embeds sections as documents and vocabulary terms as queries', async () =>
   assert.equal(asked[1][0], 'RETRIEVAL_QUERY');
   assert.ok(asked[1][1].includes('coding') && asked[1][1].includes('Nursing'));
   assert.deepEqual(index.chunks, [{page: 0, section: 'Tuition', anchor: 'tuition', text: 'Nursing · $1,000'}]);
-  const nursing = index.terms.find((term) => term.key === 'nursing')!;
-  assert.deepEqual([...nursing.vector.q], [...quantize([1, asked[1][1].indexOf('Nursing')]).q]);
 });
 
-test('stores unit-length vectors, whatever the embedder returns', async () => {
-  const index = await buildIndex([AUB], {embed: async (texts) => texts.map(() => quantize([3, 4])), words: [], phrases: []});
+const TWO_SECTIONS: SourceDoc = {...AUB, body: '## Tuition\n\n$1,000 a credit.\n\n## Nursing\n\nA four-year program.'};
+const close = (actual: ArrayLike<number>, expected: number[]) =>
+  assert.ok(expected.every((value, d) => Math.abs(actual[d] - value) < 0.01), `${Array.from(actual)} is not ${expected}`);
 
-  for (const vector of [...index.vectors, ...index.terms.map((term) => term.vector)]) {
-    assert.ok(Math.abs(Math.hypot(...dequantize(vector)) - 1) < 0.01);
+test('stores each section less the direction all sections share, at unit length', async () => {
+  // Neither vector is unit length, and both lean the same way along the first dimension.
+  const embed = async (texts: string[], taskType: string) =>
+    texts.map((text) => quantize(taskType === 'RETRIEVAL_DOCUMENT' && text.includes('Nursing') ? [3, -4] : [3, 4]));
+
+  const index = await buildIndex([TWO_SECTIONS], {embed, words: [], phrases: []});
+
+  assert.deepEqual(index.chunks.map((chunk) => chunk.section), ['Tuition', 'Nursing']);
+  close(dequantize(index.vectors[0]), [0, 1]);
+  close(dequantize(index.vectors[1]), [0, -1]);
+});
+
+test('stores each term less the direction all terms share', async () => {
+  const embed = async (texts: string[]) =>
+    texts.map((text) => quantize(text.toLowerCase() === 'nursing' ? [0.8, 0.6] : [0.8, -0.6]));
+
+  const index = await buildIndex([AUB], {embed, words: ['nursing', 'coding', 'tuition'], phrases: []});
+
+  const vectors = new Map(index.terms.map((term) => [term.key, dequantize(term.vector)]));
+  assert.ok(index.terms.length > 2);
+  for (const [key, vector] of vectors) {
+    assert.ok(Math.abs(vector[0]) < 0.01, `${key} keeps the shared direction: ${[...vector]}`);
+    assert.ok(key === 'nursing' ? vector[1] > 0 : vector[1] < 0, `${key}: ${[...vector]}`);
   }
+  close(Float32Array.from(vectors.get('nursing')!, (value, d) => value + index.queryMean[d]), [0.8, 0.6]);
 });
 
 test('writes index.json and every term shard', async () => {
