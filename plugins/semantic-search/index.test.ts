@@ -118,6 +118,16 @@ test('without a Gemini key, writes no index, so search keeps to keywords', async
   assert.ok(!fs.existsSync(path.join(outDir, 'semantic-search')));
 });
 
+test('when the embedding cache cannot be read, the site still builds, without an index', async () => {
+  const context = site();
+  fs.mkdirSync(path.join(context.siteDir, '.cache'));
+  fs.writeFileSync(path.join(context.siteDir, '.cache', 'semantic-search'), 'not a directory');
+
+  const outDir = await build(context, 'test-key', gemini().fetch);
+
+  assert.ok(!fs.existsSync(path.join(outDir, 'semantic-search')));
+});
+
 test('when Gemini refuses, the site still builds, without an index', async () => {
   const outDir = await build(site(), 'bad-key', gemini(400).fetch);
 

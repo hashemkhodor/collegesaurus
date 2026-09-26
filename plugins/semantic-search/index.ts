@@ -39,12 +39,14 @@ export default function semanticSearch(context: LoadContext): Plugin<void> {
         return;
       }
       const here = path.join(context.siteDir, 'plugins', 'semantic-search');
-      const cache = await VectorCache.open(path.join(context.siteDir, '.cache', 'semantic-search'), MODEL, DIMS);
       const started = Date.now();
+      let cache: VectorCache | undefined;
       try {
+        cache = await VectorCache.open(path.join(context.siteDir, '.cache', 'semantic-search'), MODEL, DIMS);
+        const vectors = cache;
         const index = await buildIndex(docs, {
           embed: (texts, taskType) =>
-            embedWithCache(texts, taskType, cache, (missing, task) =>
+            embedWithCache(texts, taskType, vectors, (missing, task) =>
               embedTexts(missing, {apiKey, model: MODEL, dims: DIMS, taskType: task}),
             ),
           words: ['en', 'fr', 'ar'].flatMap((lang) => readList(path.join(here, 'words', `${lang}.txt`))),
@@ -58,7 +60,9 @@ export default function semanticSearch(context: LoadContext): Plugin<void> {
       } catch (error) {
         console.error(`[semantic-search] ${currentLocale}: no index, search keeps to keywords. ${(error as Error).message}`);
       } finally {
-        await cache.save();
+        await cache?.save().catch((error: Error) => {
+          console.error(`[semantic-search] could not save the embedding cache: ${error.message}`);
+        });
       }
     },
   };
