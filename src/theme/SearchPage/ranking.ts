@@ -1,5 +1,6 @@
 /**
- * Ranking for the search page.
+ * Ranking for keyword search, which answers when search by meaning can't
+ * (src/components/Search/find.ts).
  *
  * The search plugin already requires every token, but a record is a whole
  * heading-section including its program table, so every university matches a
@@ -153,63 +154,4 @@ export function rankResults(
     perPage.set(result.document.u, seen + 1);
     return seen < MAX_PER_PAGE;
   });
-}
-
-export type Segment = {text: string; match: boolean};
-
-/**
- * A window around the best match rather than the start of the record, so a
- * program search shows the program row instead of the table's header.
- */
-export function buildSnippet(
-  text: string,
-  terms: string[],
-  maxLength = 200,
-): Segment[] {
-  if (!text) {
-    return [];
-  }
-  let start = phraseIndex(text, terms);
-  if (start < 0) {
-    const lower = text.toLowerCase();
-    start = terms
-      .map((term) => lower.indexOf(term))
-      .filter((index) => index >= 0)
-      .sort((a, b) => a - b)[0] ?? 0;
-  }
-
-  let from = Math.max(0, start - Math.floor(maxLength / 3));
-  if (from > 0) {
-    const space = text.indexOf(' ', from);
-    from = space >= 0 && space - from < 20 ? space + 1 : from;
-  }
-  const slice = text.slice(from, from + maxLength);
-  const prefix = from > 0 ? '…' : '';
-  const suffix = from + maxLength < text.length ? '…' : '';
-
-  const segments: Segment[] = [];
-  let buffer = '';
-  for (const part of slice.split(/(\s+)/)) {
-    const bare = part.toLowerCase().replace(new RegExp(WORD_SPLIT, 'gu'), '');
-    if (bare && terms.some((term) => wordMatches(bare, term))) {
-      if (buffer) {
-        segments.push({text: buffer, match: false});
-        buffer = '';
-      }
-      segments.push({text: part, match: true});
-    } else {
-      buffer += part;
-    }
-  }
-  if (buffer) {
-    segments.push({text: buffer, match: false});
-  }
-
-  if (prefix) {
-    segments.unshift({text: prefix, match: false});
-  }
-  if (suffix) {
-    segments.push({text: suffix, match: false});
-  }
-  return segments;
 }

@@ -30,9 +30,3 @@ declare module '@theme/hooks/useSearchQuery' {
     generateSearchPageLink: (value: string) => string;
   };
 }
-
-declare module '@theme/LoadingRing/LoadingRing' {
-  import type {ReactNode} from 'react';
-
-  export default function LoadingRing(props: {className?: string}): ReactNode;
-}
