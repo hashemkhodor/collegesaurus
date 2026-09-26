@@ -730,5 +730,158 @@
   },
   "footer.disclaimer": {
     "message": "مشروع طلابي مستقل، غير تابع لأي جامعة أو جهة مانحة."
+  },
+  "button.newTab": {
+    "message": "(يفتح في تبويب جديد)"
+  },
+  "contribute.meta.title": {
+    "message": "ساهم معنا"
+  },
+  "contribute.meta.description": {
+    "message": "كيف تساعد في إبقاء Collegesaurus دقيقًا: أبلغ عن خطأ، أضف صفحة، شارك قصتك أو انضمّ كمحرّر."
+  },
+  "contribute.hero.eyebrow": {
+    "message": "ساهم معنا"
+  },
+  "contribute.hero.title": {
+    "message": "ساعدنا في إبقاء Collegesaurus {accurate}"
+  },
+  "contribute.hero.lead": {
+    "message": "يُدار Collegesaurus من قِبَل متطوّعين، ويستطيع أي شخص أن يساعد. لا حاجة لمعرفة البرمجة، ومعظم الخيارات أدناه تستغرق أقل من خمس دقائق."
+  },
+  "contribute.hero.primary": {
+    "message": "أبلغ عن خطأ"
+  },
+  "contribute.hero.secondary": {
+    "message": "تصفّح البيانات"
+  },
+  "contribute.ways.title": {
+    "message": "طرق المساهمة"
+  },
+  "contribute.ways.correction.title": {
+    "message": "أبلغ عن خطأ"
+  },
+  "contribute.ways.correction.description": {
+    "message": "رقم أقساط لا يبدو صحيحًا، أو موعد تغيّر، أو جهة اتصال انتقلت؟ أشِر إلى ما هو خاطئ وأين رأيت المعلومة الصحيحة. لست مضطرًّا لإصلاحه بنفسك."
+  },
+  "contribute.ways.correction.cta": {
+    "message": "بلّغ عن خطأ"
+  },
+  "contribute.ways.add.title": {
+    "message": "أضف منحة أو جامعة"
+  },
+  "contribute.ways.add.description": {
+    "message": "تعرف منحة يمكن للطلاب اللبنانيين التقدّم إليها، أو جامعة يجدر إدراجها؟ املأ قالبًا صغيرًا وارفعه."
+  },
+  "contribute.ways.add.cta": {
+    "message": "اطّلع على المطلوب"
+  },
+  "contribute.ways.story.title": {
+    "message": "شارك قصتك"
+  },
+  "contribute.ways.story.description": {
+    "message": "قُبلتَ في برنامج، أو فزت بمنحة، أو تعلّمت شيئًا بالطريقة الصعبة؟ أخبرنا وقد ننشرها كقصة."
+  },
+  "contribute.ways.story.cta": {
+    "message": "أرسل لنا تجربتك"
+  },
+  "contribute.ways.editor.title": {
+    "message": "كن محرّرًا"
+  },
+  "contribute.ways.editor.description": {
+    "message": "مسؤول قبول، أو متطوّع يريد إبقاء صفحة محدّدة محدَّثة؟ اطلب صلاحية تعديل مستمرة على مجلّد Drive المناسب."
+  },
+  "contribute.ways.editor.cta": {
+    "message": "راسلنا"
+  },
+  "contribute.add.title": {
+    "message": "إضافة صفحة: ما ستحتاج إليه"
+  },
+  "contribute.add.lead": {
+    "message": "نزّل القالب، واملأه، وارفعه عبر النموذج. مجموعة ملفات لكل صفحة، وملف لكل لغة."
+  },
+  "contribute.add.scholarship": {
+    "message": "منحة جديدة"
+  },
+  "contribute.add.scholarship.count": {
+    "message": "ملفان"
+  },
+  "contribute.add.university": {
+    "message": "جامعة جديدة"
+  },
+  "contribute.add.university.count": {
+    "message": "٤ ملفات"
+  },
+  "contribute.add.templates": {
+    "message": "افتح القوالب"
+  },
+  "contribute.files.info.en": {
+    "message": "الصفحة النصية، بالإنجليزية"
+  },
+  "contribute.files.info.ar": {
+    "message": "الصفحة النصية، بالعربية"
+  },
+  "contribute.files.majors.en": {
+    "message": "البرامج الدراسية، صفّ لكل تخصّص، بالإنجليزية"
+  },
+  "contribute.files.majors.ar": {
+    "message": "البرامج الدراسية، بالعربية"
+  },
+  "contribute.rules.title": {
+    "message": "حافظ على بنية القالب"
+  },
+  "contribute.rules.lead": {
+    "message": "تقرأ المزامنة الصباحية هذه الملفات تلقائيًا، فلا تغيّر شكلها."
+  },
+  "contribute.rules.metadata": {
+    "message": "يبدأ كل ملف info.docx بعنوان {h1} يتبعه جدول مفاتيح وقيم."
+  },
+  "contribute.rules.university": {
+    "message": "تحافظ صفحات الجامعات على ترتيب أقسامها: المقدّمة، التقديم، الأقساط، المنح، المتطلبات، جهات الاتصال."
+  },
+  "contribute.rules.scholarship": {
+    "message": "صفحات المنح تثبّت كتلة Metadata فقط. يمكنك إعادة تسمية الأقسام الأخرى أو ترتيبها أو إضافتها أو حذفها بحرّية."
+  },
+  "contribute.rules.majors": {
+    "message": "يحتفظ ملف majors.xlsx بعناوين أعمدته؛ program وdegree وfaculty مطلوبة."
+  },
+  "contribute.add.signin": {
+    "message": "يتطلّب رفع الملفات تسجيل الدخول بحساب Google."
+  },
+  "contribute.add.submit": {
+    "message": "أرسل منحة أو جامعة"
+  },
+  "contribute.steps.title": {
+    "message": "كيف يتم الأمر"
+  },
+  "contribute.steps.submit.title": {
+    "message": "ترسلها"
+  },
+  "contribute.steps.submit.description": {
+    "message": "عبر النموذج، أو مباشرة إلى Drive إن كنت محرّرًا."
+  },
+  "contribute.steps.review.title": {
+    "message": "نراجعها"
+  },
+  "contribute.steps.review.description": {
+    "message": "يراجع المشرف الطلبات كل بضعة أيام ويتحقّق من كل تغيير بمصدر رسمي."
+  },
+  "contribute.steps.live.title": {
+    "message": "تُنشر"
+  },
+  "contribute.steps.live.description": {
+    "message": "تظهر التغييرات المعتمدة بعد إعادة البناء الصباحية التالية. يُنسب الفضل إليك بالطريقة التي اخترتها: بالاسم، أو دون اسم، أو دون ذكر."
+  },
+  "contribute.source.title": {
+    "message": "تصفّح المصدر"
+  },
+  "contribute.source.description": {
+    "message": "تُبنى كل صفحة جامعة ومنحة من ملف .docx أو .xlsx بسيط في مجلّد على Google Drive. المجلّد متاح للقراءة دون تسجيل الدخول، ونعيد بناء الموقع منه كل صباح قرابة الساعة السابعة بتوقيت بيروت."
+  },
+  "contribute.source.cta": {
+    "message": "افتح مجلّد Drive"
+  },
+  "contribute.thanks": {
+    "message": "شكرًا لك. كل تصحيح، مهما صغر، يساعد طالبًا على اتخاذ قرار أفضل."
   }
 }
