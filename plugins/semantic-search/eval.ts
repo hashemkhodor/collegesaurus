@@ -16,7 +16,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {parseArgs} from 'node:util';
 import {encodeIndex, encodeShards} from '../../src/components/Search/format.ts';
-import {candidateKeys, coverQuery} from '../../src/components/Search/query.ts';
+import {candidateKeys, coverQuery, queryTokens} from '../../src/components/Search/query.ts';
 import {rankPages, type RankedPage} from '../../src/components/Search/rank.ts';
 import {contentTokens, shardOf, tokenize, variants} from '../../src/components/Search/text.ts';
 import {composeQuery, dequantize, quantize, scoreAll, truncate, type Quantized} from '../../src/components/Search/vectors.ts';
@@ -25,7 +25,17 @@ import {VectorCache, embedWithCache} from './cache.ts';
 import {embedTexts, type TaskType} from './gemini.ts';
 
 type Query = {q: string; locale: string; group: string; expect: string[] | string};
-type Row = {method: string; dims: number; query: Query; expected: string[]; rank: number; top: [string, number][]; note?: string};
+type Row = {
+  method: string;
+  dims: number;
+  query: Query;
+  expected: string[];
+  rank: number;
+  top: [string, number][];
+  /** How far under the best page each expected page in the top 10 scored. */
+  gaps: number[];
+  note?: string;
+};
 
 const MODEL = 'gemini-embedding-001';
 const FULL = 768;
@@ -124,8 +134,13 @@ const timings: number[] = [];
 const record = (method: string, dims: number, query: Query, ranked: RankedPage[], ids: string[], note?: string) => {
   const expected = typeof query.expect === 'string' ? sets[query.expect] : query.expect;
   const at = ranked.findIndex((page) => expected.includes(ids[page.page]));
-  const top = ranked.slice(0, 3).map((page): [string, number] => [ids[page.page], round(page.score)]);
-  rows.push({method, dims, query, expected, rank: at < 0 ? 0 : at + 1, top, note});
+  const top = ranked.slice(0, 10).map((page): [string, number] => [ids[page.page], round(page.score)]);
+  const best = ranked[0]?.score ?? 0;
+  const gaps = ranked
+    .slice(0, 10)
+    .filter((page) => expected.includes(ids[page.page]))
+    .map((page) => round(best - page.score));
+  rows.push({method, dims, query, expected, rank: at < 0 ? 0 : at + 1, top, gaps, note});
 };
 
 const sizes: Record<string, unknown> = {};
@@ -152,7 +167,7 @@ for (const dims of SIZES) {
     const {ids} = locales.get(query.locale)!;
     record('exact', dims, query, rankPages(scoreAll(truncate(dequantize(exact[i]), dims), matrix, scales), chunks, OPEN), ids);
     const started = performance.now();
-    const {keys, unknown} = coverQuery(tokenize(query.q), (key) => terms.has(key));
+    const {keys, unknown} = coverQuery(queryTokens(query.q), (key) => terms.has(key));
     const vector = composeQuery(keys.map((key) => terms.get(key)!));
     const ranked = vector ? rankPages(scoreAll(vector, matrix, scales), chunks, OPEN) : [];
     if (dims === 256) {
@@ -167,7 +182,7 @@ for (const query of queries) {
 }
 
 const shardsPerQuery = queries.map((query) => {
-  const tokens = tokenize(query.q);
+  const tokens = queryTokens(query.q);
   const keys = [...candidateKeys(tokens), ...contentTokens(tokens).flatMap(variants)];
   return new Set(keys.map((key) => shardOf(key, SHARDS))).size;
 });
@@ -218,7 +233,16 @@ const calibration = Object.fromEntries(
       const mine = rows.filter((row) => `${row.method}@${row.dims}` === name);
       const onTopic = mine.filter((row) => row.expected.length).map((row) => row.top[0]?.[1] ?? 0).sort((a, b) => a - b);
       const offTopic = mine.filter((row) => !row.expected.length).map((row) => row.top[0]?.[1] ?? 0);
-      return [name, {onTopicTopScores: {min: onTopic[0], median: onTopic[Math.floor(onTopic.length / 2)], max: onTopic.at(-1)}, offTopicTopScores: offTopic}];
+      const gaps = mine.flatMap((row) => row.gaps).sort((a, b) => a - b);
+      const at = (share: number) => gaps[Math.min(gaps.length - 1, Math.floor(share * gaps.length))];
+      return [
+        name,
+        {
+          onTopicTopScores: {min: onTopic[0], median: onTopic[Math.floor(onTopic.length / 2)], max: onTopic.at(-1)},
+          offTopicTopScores: offTopic,
+          expectedGapUnderTop: {median: at(0.5), p80: at(0.8), p90: at(0.9), max: gaps.at(-1)},
+        },
+      ];
     }),
 );
 console.log('\nTop scores, on-topic vs off-topic:');
@@ -235,7 +259,7 @@ for (const query of queries) {
   const rank = (method: string, dims: number) => mine.find((row) => row.method === method && row.dims === dims)!;
   const composed = rank('composed', 256);
   console.log(
-    `${query.group.padEnd(13)} ${query.q.padEnd(44)} keyword ${rank('keyword', 0).rank}  exact ${rank('exact', 256).rank}  composed ${composed.rank}  top: ${composed.top.map(([id, score]) => `${id} ${score}`).join(', ')}  [${composed.note}]`,
+    `${query.group.padEnd(13)} ${query.q.padEnd(44)} keyword ${rank('keyword', 0).rank}  exact ${rank('exact', 256).rank}  composed ${composed.rank}  top: ${composed.top.slice(0, 3).map(([id, score]) => `${id} ${score}`).join(', ')}  [${composed.note}]`,
   );
 }
 
