@@ -99,6 +99,18 @@ test('fetches nothing for a query of small words only', async () => {
   assert.deepEqual(fetched, []);
 });
 
+test('can load the index before the first query, and never throws doing so', async () => {
+  const {engine, fetched} = await site();
+
+  await engine.warm();
+  await engine.search('AUB tuition');
+
+  assert.equal(fetched.filter((url) => url.endsWith('index.json')).length, 1);
+  await createEngine('/semantic-search/', async () => {
+    throw new Error('HTTP 404');
+  }).warm();
+});
+
 test('fails when the site has no index, so the caller can fall back to keywords', async () => {
   const engine = createEngine('/semantic-search/', async (url) => {
     throw new Error(`${url}: HTTP 404`);

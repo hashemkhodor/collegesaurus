@@ -79,6 +79,11 @@ export function createEngine(base: string, load: Load = fetchJson) {
   };
 
   return {
+    /** Fetches the index ahead of the first query (when the box is focused). */
+    async warm(): Promise<void> {
+      await getIndex().catch(() => undefined);
+    },
+
     async search(query: string, options: Partial<RankOptions> = {}): Promise<Outcome> {
       const tokens = tokenize(query);
       const terms = contentTokens(tokens);
