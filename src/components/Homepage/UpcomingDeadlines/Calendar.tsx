@@ -10,6 +10,7 @@ import {
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import Translate, {translate} from '@docusaurus/Translate';
+import useBrokenLinks from '@docusaurus/useBrokenLinks';
 import {usePluralForm} from '@docusaurus/theme-common';
 import Heading from '@theme/Heading';
 import ui from '../ui/ui.module.css';
@@ -25,6 +26,7 @@ import {useDeadlines, type DeadlineRow} from './useDeadlines';
 import styles from './Calendar.module.css';
 
 const KINDS: Kind[] = ['application', 'scholarship'];
+const ANCHOR = 'deadlines';
 
 function Card({
   row,
@@ -122,6 +124,7 @@ function Card({
  * below it on a phone. Picking a day narrows that list to the day.
  */
 export default function DeadlinesCalendar(): ReactNode {
+  const brokenLinks = useBrokenLinks();
   const {now, today, anchor, upcoming, anythingAtBuild} = useDeadlines();
   const formats = useDateFormats();
   const links = useCalendarLinks();
@@ -195,6 +198,9 @@ export default function DeadlinesCalendar(): ReactNode {
   if (!anythingAtBuild) {
     return null;
   }
+  // The top row's card links here. A plain id, unlike a heading's, has to be
+  // named to the build's link checker.
+  brokenLinks.collectAnchor(ANCHOR);
 
   const showMonth = (returnFocus: boolean) => {
     setSelected(null);
@@ -222,7 +228,7 @@ export default function DeadlinesCalendar(): ReactNode {
     );
 
   return (
-    <section id="deadlines" className={clsx(ui.card, styles.section)} onKeyDown={onKeyDown}>
+    <section id={ANCHOR} className={clsx(ui.card, styles.section)} onKeyDown={onKeyDown}>
       <div className={styles.head}>
         <Heading as="h2" className={ui.cardTitle}>
           <Translate id="homepage.deadlines.calendarTitle">Deadlines calendar</Translate>
