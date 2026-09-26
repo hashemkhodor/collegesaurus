@@ -32,11 +32,17 @@ export async function embedTexts(texts: string[], options: EmbedOptions): Promis
   }
   const results: Float32Array[][] = [];
   let next = 0;
+  let failed = false;
   const worker = async () => {
-    while (next < batches.length) {
+    while (next < batches.length && !failed) {
       const index = next;
       next += 1;
-      results[index] = await embedBatch(batches[index], options);
+      try {
+        results[index] = await embedBatch(batches[index], options);
+      } catch (error) {
+        failed = true;
+        throw error;
+      }
     }
   };
   await Promise.all(Array.from({length: Math.min(concurrency, batches.length)}, worker));

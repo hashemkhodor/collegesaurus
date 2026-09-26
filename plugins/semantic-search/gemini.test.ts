@@ -112,6 +112,15 @@ test('fails at once on a request the API refuses, without echoing the key', asyn
   assert.equal(fake.calls.length, 1);
 });
 
+test('starts no more batches once one has failed', async () => {
+  const fake = gemini([400]);
+  const texts = Array.from({length: 10}, (_, i) => `text ${i}`);
+
+  await assert.rejects(embedTexts(texts, options(fake, {batchSize: 1, concurrency: 2})), /HTTP 400/);
+
+  assert.ok(fake.calls.length <= 2, `${fake.calls.length} calls`);
+});
+
 test('rejects an answer with the wrong number of vectors or dimensions', async () => {
   await assert.rejects(embedTexts(['AUB'], options(gemini([], () => [1, 2, 3]))), /dimensions/);
 });
