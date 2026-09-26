@@ -27,7 +27,7 @@ const DOCS = [
   },
 ];
 
-/** Stands in for Gemini: texts sharing words get similar vectors. */
+/** Stands in for the embedding model: texts sharing words get similar vectors. */
 function hashEmbed(dims = 256) {
   return async (texts: string[]) =>
     texts.map((text) => {

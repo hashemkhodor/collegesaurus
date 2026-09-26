@@ -3,25 +3,29 @@ import type {LoadContext, Plugin} from '@docusaurus/types';
 import {collect} from '../chatbot-corpus/index.ts';
 import {buildIndex, readList, writeIndex, type SourceDoc} from './build.ts';
 import {VectorCache, embedWithCache} from './cache.ts';
-import {embedTexts} from './gemini.ts';
+import {embedWith, loadModel, type Model} from './embedder.ts';
 
 /**
  * Builds the site's semantic search: each locale's pages (the chatbot corpus:
  * universities, scholarships and Stories) and a large vocabulary, embedded
- * with Gemini, written to <locale>/semantic-search/. The browser composes a
- * query from the vocabulary's vectors, so it needs no API (see README.md).
+ * with an open multilingual model (./embedder.ts), written to
+ * <locale>/semantic-search/. The browser composes a query from the
+ * vocabulary's vectors, so it needs no API (see README.md).
  *
- * Without GEMINI_API_KEY, or if Gemini fails, the build carries on without an
+ * If the model can't be downloaded or run, the build carries on without an
  * index and the search box keeps to keyword search.
  */
 
-export const MODEL = 'gemini-embedding-001';
-export const DIMS = 256;
 export const SHARDS = 1024;
+
+export type Options = {
+  /** Loads the embedding model from a cache directory; tests pass a stand-in. */
+  load?: (dir: string) => Promise<Model>;
+};
 
 type AllContent = Parameters<typeof collect>[1];
 
-export default function semanticSearch(context: LoadContext): Plugin<void> {
+export default function semanticSearch(context: LoadContext, options: Options = {}): Plugin<void> {
   let docs: SourceDoc[] = [];
 
   return {
@@ -33,26 +37,24 @@ export default function semanticSearch(context: LoadContext): Plugin<void> {
 
     async postBuild({outDir}) {
       const {currentLocale} = context.i18n;
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) {
-        console.warn(`[semantic-search] ${currentLocale}: GEMINI_API_KEY is not set, so search keeps to keywords.`);
-        return;
-      }
       const here = path.join(context.siteDir, 'plugins', 'semantic-search');
+      const cacheDir = path.join(context.siteDir, '.cache', 'semantic-search');
       const started = Date.now();
       let cache: VectorCache | undefined;
       try {
-        cache = await VectorCache.open(path.join(context.siteDir, '.cache', 'semantic-search'), MODEL, DIMS);
+        const model = await (options.load ?? loadModel)(path.join(cacheDir, 'models'));
+        cache = await VectorCache.open(path.join(cacheDir, 'vectors'), model.name, model.dims);
         const vectors = cache;
         const index = await buildIndex(docs, {
           embed: (texts, taskType) =>
-            embedWithCache(texts, taskType, vectors, (missing, task) =>
-              embedTexts(missing, {apiKey, model: MODEL, dims: DIMS, taskType: task}),
-            ),
+            embedWithCache(texts, taskType, vectors, (missing, task) => {
+              console.log(`[semantic-search] ${currentLocale}: embedding ${missing.length} new texts`);
+              return embedWith(missing, task, model);
+            }),
           words: ['en', 'fr', 'ar'].flatMap((lang) => readList(path.join(here, 'words', `${lang}.txt`))),
           phrases: readList(path.join(here, 'phrases.txt')),
         });
-        writeIndex(path.join(outDir, 'semantic-search'), index, {model: MODEL, dims: DIMS, shards: SHARDS});
+        writeIndex(path.join(outDir, 'semantic-search'), index, {model: model.name, dims: model.dims, shards: SHARDS});
         const seconds = Math.round((Date.now() - started) / 1000);
         console.log(
           `[semantic-search] ${currentLocale}: ${index.chunks.length} sections, ${index.terms.length} terms (${seconds} s)`,

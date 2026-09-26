@@ -7,7 +7,8 @@ import path from 'node:path';
 import type {LoadContext} from '@docusaurus/types';
 
 import {decodeIndex} from '../../src/components/Search/format.ts';
-import semanticSearch from './index.ts';
+import type {Model} from './embedder.ts';
+import semanticSearch, {type Options} from './index.ts';
 
 const SITE = 'https://collegesaurus.org';
 const STORY = '---\ntitle: Hungary\n---\n\nI first heard about Stipendium Hungaricum from a friend.\n\n## Applying\n\nThe portal opens in November.\n';
@@ -56,52 +57,40 @@ function site(): LoadContext {
   return {siteDir, siteConfig: {url: SITE}, i18n: {currentLocale: 'en', defaultLocale: 'en'}} as unknown as LoadContext;
 }
 
-/** Stands in for the Gemini API over the network: one 256-dimension vector per text. */
-function gemini(status = 200) {
-  let calls = 0;
-  const fetch = (async (_url: string, init?: RequestInit) => {
-    calls += 1;
-    if (status !== 200) {
-      return new Response(JSON.stringify({error: {message: 'API key not valid'}}), {status});
-    }
-    const {requests} = JSON.parse(String(init?.body));
-    const embeddings = requests.map((request: {content: {parts: {text: string}[]}}) => ({
-      values: Array.from({length: 256}, (_, d) => ((request.content.parts[0].text.length + d) % 5) - 2),
-    }));
-    return new Response(JSON.stringify({embeddings}), {status: 200});
-  }) as typeof globalThis.fetch;
-  return {fetch, calls: () => calls};
+/** Stands in for the embedding model, so no test downloads one: a token's state is [its word's length % 3, % 5, 1]. */
+function standIn() {
+  let runs = 0;
+  const model: Model = {
+    name: 'stand-in',
+    dims: 3,
+    padId: 0,
+    tokenize: (text) => {
+      const ids = text.split(/\s+/).map((word) => word.length);
+      return {ids, attention_mask: ids.map(() => 1)};
+    },
+    run: async ({ids}) => {
+      runs += 1;
+      const data = Float32Array.from(ids.flatMap((row) => row.flatMap((id) => [id % 3, id % 5, 1])));
+      return {data, dims: [ids.length, ids[0].length, 3]};
+    },
+  };
+  return {load: async () => model, runs: () => runs};
 }
 
-async function build(context: LoadContext, key?: string, fetch?: typeof globalThis.fetch): Promise<string> {
-  const plugin = semanticSearch(context);
+async function build(context: LoadContext, load: Options['load']): Promise<string> {
+  const plugin = semanticSearch(context, {load});
   await plugin.allContentLoaded!({allContent: CONTENT} as never);
   const outDir = temporary('semantic-search-out-');
-  const saved = {key: process.env.GEMINI_API_KEY, fetch: globalThis.fetch};
-  if (key) {
-    process.env.GEMINI_API_KEY = key;
-  } else {
-    delete process.env.GEMINI_API_KEY;
-  }
-  globalThis.fetch = fetch ?? saved.fetch;
-  try {
-    await plugin.postBuild!({outDir} as never);
-  } finally {
-    if (saved.key === undefined) {
-      delete process.env.GEMINI_API_KEY;
-    } else {
-      process.env.GEMINI_API_KEY = saved.key;
-    }
-    globalThis.fetch = saved.fetch;
-  }
+  await plugin.postBuild!({outDir} as never);
   return outDir;
 }
 
 test("writes the locale's index and every term shard", async () => {
-  const outDir = await build(site(), 'test-key', gemini().fetch);
+  const outDir = await build(site(), standIn().load);
 
   const dir = path.join(outDir, 'semantic-search');
   const index = decodeIndex(JSON.parse(fs.readFileSync(path.join(dir, 'index.json'), 'utf8')));
+  assert.deepEqual([index.model, index.dims], ['stand-in', 3]);
   assert.deepEqual(index.pages, [{path: '/stories/hungary', title: 'Stipendium Hungaricum, From Lebanon', type: 'story'}]);
   assert.deepEqual(
     index.chunks.map((chunk) => [chunk.section, chunk.anchor]),
@@ -115,18 +104,20 @@ test("writes the locale's index and every term shard", async () => {
 
 test('embeds nothing again when a rebuild finds nothing changed', async () => {
   const context = site();
-  const fake = gemini();
-  await build(context, 'test-key', fake.fetch);
-  const calls = fake.calls();
+  const model = standIn();
+  await build(context, model.load);
+  const runs = model.runs();
 
-  await build(context, 'test-key', fake.fetch);
+  await build(context, model.load);
 
-  assert.ok(calls > 0);
-  assert.equal(fake.calls(), calls);
+  assert.ok(runs > 0);
+  assert.equal(model.runs(), runs);
 });
 
-test('without a Gemini key, writes no index, so search keeps to keywords', async () => {
-  const outDir = await build(site());
+test('when the model cannot be loaded, the site still builds, without an index', async () => {
+  const outDir = await build(site(), async () => {
+    throw new Error('huggingface.co: HTTP 503');
+  });
 
   assert.ok(!fs.existsSync(path.join(outDir, 'semantic-search')));
 });
@@ -136,13 +127,7 @@ test('when the embedding cache cannot be read, the site still builds, without an
   fs.mkdirSync(path.join(context.siteDir, '.cache'));
   fs.writeFileSync(path.join(context.siteDir, '.cache', 'semantic-search'), 'not a directory');
 
-  const outDir = await build(context, 'test-key', gemini().fetch);
-
-  assert.ok(!fs.existsSync(path.join(outDir, 'semantic-search')));
-});
-
-test('when Gemini refuses, the site still builds, without an index', async () => {
-  const outDir = await build(site(), 'bad-key', gemini(400).fetch);
+  const outDir = await build(context, standIn().load);
 
   assert.ok(!fs.existsSync(path.join(outDir, 'semantic-search')));
 });

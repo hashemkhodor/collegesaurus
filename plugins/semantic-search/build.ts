@@ -1,6 +1,6 @@
 /**
  * From the pages to the search files: sections with their heading ids and
- * text, the vocabulary, and a Gemini vector for each (see ./index.ts, which
+ * text, the vocabulary, and an embedding for each (see ./index.ts, which
  * runs this at build time, and ./eval.ts, which measures it).
  */
 import fs from 'node:fs';
@@ -8,7 +8,7 @@ import path from 'node:path';
 import {encodeIndex, encodeShards, shardPath, type ChunkMeta, type PageMeta} from '../../src/components/Search/format.ts';
 import {dequantize, quantize, unit, type Quantized} from '../../src/components/Search/vectors.ts';
 import {chunkDocument} from './chunk.ts';
-import type {TaskType} from './gemini.ts';
+import type {TaskType} from './embedder.ts';
 import {plainText, withoutLinks} from './markdown.ts';
 import {buildVocabulary} from './vocab.ts';
 

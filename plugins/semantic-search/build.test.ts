@@ -67,7 +67,7 @@ test('writes index.json and every term shard', async () => {
     phrases: [],
   });
 
-  writeIndex(dir, index, {model: 'gemini-embedding-001', dims: 2, shards: 8});
+  writeIndex(dir, index, {model: 'Xenova/multilingual-e5-small', dims: 2, shards: 8});
 
   const written = decodeIndex(JSON.parse(fs.readFileSync(path.join(dir, 'index.json'), 'utf8')));
   assert.deepEqual([written.pages.length, written.chunks.length, written.shards], [1, 1, 8]);

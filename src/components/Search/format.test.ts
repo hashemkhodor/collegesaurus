@@ -18,12 +18,12 @@ const CHUNKS = [
 test('writes the index and reads back its pages, sections and vectors', () => {
   const vectors = [quantize([0.6, 0.8, 0]), quantize([0, -1, 0])];
   const file = JSON.parse(
-    JSON.stringify(encodeIndex({model: 'gemini-embedding-001', dims: 3, shards: 4, pages: PAGES, chunks: CHUNKS, vectors})),
+    JSON.stringify(encodeIndex({model: 'Xenova/multilingual-e5-small', dims: 3, shards: 4, pages: PAGES, chunks: CHUNKS, vectors})),
   );
 
   const index = decodeIndex(file);
 
-  assert.deepEqual([index.model, index.dims, index.shards], ['gemini-embedding-001', 3, 4]);
+  assert.deepEqual([index.model, index.dims, index.shards], ['Xenova/multilingual-e5-small', 3, 4]);
   assert.deepEqual(index.pages, PAGES);
   assert.deepEqual(index.chunks, CHUNKS);
   assert.deepEqual([...index.matrix], [95, 127, 0, 0, -127, 0]);
@@ -32,7 +32,7 @@ test('writes the index and reads back its pages, sections and vectors', () => {
 
 test('refuses an index whose vectors do not match its sections', () => {
   const file = encodeIndex({
-    model: 'gemini-embedding-001',
+    model: 'Xenova/multilingual-e5-small',
     dims: 3,
     shards: 4,
     pages: PAGES,

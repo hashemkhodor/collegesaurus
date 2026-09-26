@@ -8,7 +8,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {quantize, type Quantized} from '../../src/components/Search/vectors.ts';
-import type {TaskType} from './gemini.ts';
+import type {TaskType} from './embedder.ts';
 
 const DIGEST_BYTES = 32;
 
