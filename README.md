@@ -18,7 +18,7 @@ All the Lebanese university and scholarship info you'd normally have to dig thro
 - **Scholarships** — Eligibility, application windows, supported universities, benefits, and recipient contacts
 - **Bilingual** — Full English and Arabic (RTL) support, with content mirrored byte-for-byte for tables
 - **Sortable program tables** — Built-in `<MajorsTable>` MDX component with sortable columns and direct links to each program
-- **Local search** — Search across all content, no external service needed
+- **Search by meaning** — Finds pages by what you mean, not only the words you type ("coding degree" finds Computer Science), in English, Arabic and French, ordered by relevance. It runs in the browser with no search service, and falls back to exact-word search
 - **Open source** — Anyone can contribute corrections, updates, or new content
 
 ---
@@ -175,6 +175,12 @@ npm run serve                         # Serve the production build
 npm run typecheck                     # TypeScript check
 npm run clear                         # Clear cache (fix weird build issues)
 ```
+
+### Search
+
+The search box ranks pages by meaning. `plugins/semantic-search` builds its index during `npm run build`: every section of the university, scholarship and Stories pages, plus a vocabulary of English, Arabic and French words and phrases, embedded with Gemini (`gemini-embedding-001`). In the browser a query becomes the average of its words' vectors, so searching calls no API. The build needs `GEMINI_API_KEY`: a repository secret on GitHub, or in `.env` locally. Embeddings are cached in `.cache/semantic-search/`, so a rebuild only embeds what changed. Without the key the site still builds, and search matches exact words only. The dev server has no index either: try search with `npm run build && npm run serve`.
+
+`node plugins/semantic-search/eval.ts` measures search on the real queries in `eval-queries.json`, against exact matching and against Gemini's own query embeddings.
 
 ## License
 

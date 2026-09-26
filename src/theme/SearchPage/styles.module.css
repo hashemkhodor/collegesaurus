@@ -35,50 +35,89 @@
   outline-offset: 2px;
 }
 
-.count {
+.count,
+.note,
+.hint {
+  margin: 0 0 1rem;
   font-size: var(--cs-text-sm, 0.875rem);
   color: var(--cs-ink-muted, var(--ifm-color-emphasis-700));
-  margin-bottom: 1.5rem;
+}
+
+.hint a {
+  color: var(--cs-brand-strong);
+  font-weight: 600;
+}
+
+.results {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .result {
-  padding-bottom: 1.1rem;
-  margin-bottom: 1.1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding-block: 1.25rem;
   border-bottom: 1px solid var(--cs-divider, var(--ifm-color-emphasis-200));
 }
 
-.result:last-of-type {
+.result:last-child {
   border-bottom: 0;
 }
 
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
 .resultTitle {
+  margin: 0.25rem 0 0.125rem;
   font-size: 1.125rem;
   font-weight: 700;
   line-height: 1.3;
-  margin: 0 0 0.2rem;
 }
 
-.breadcrumb {
+.resultTitle a {
+  color: var(--cs-ink);
+}
+
+.kind {
+  margin: 0;
   font-size: var(--cs-text-xs, 0.75rem);
   color: var(--cs-ink-subtle, var(--ifm-color-emphasis-600));
-  margin: 0 0 0.35rem;
 }
 
-.summary {
+/* A page's matching sections hang off it. */
+.sections {
+  margin: 0.75rem 0 0;
+  padding: 0;
+  padding-inline-start: 0.875rem;
+  border-inline-start: 2px solid var(--cs-divider, var(--ifm-color-emphasis-200));
+  list-style: none;
+}
+
+.section + .section {
+  margin-top: 0.625rem;
+}
+
+.sectionLink {
+  color: var(--cs-brand-strong);
   font-size: var(--cs-text-sm, 0.875rem);
-  line-height: 1.6;
-  color: var(--cs-ink-muted, var(--ifm-color-emphasis-700));
-  margin: 0;
+  font-weight: 600;
 }
 
-/* The matched words, so it is obvious why a result came back. */
+.snippet {
+  margin: 0.125rem 0 0;
+  font-size: var(--cs-text-sm, 0.875rem);
+  line-height: 1.55;
+  color: var(--cs-ink-muted, var(--ifm-color-emphasis-700));
+}
+
+/* The query's own words, so it is clear why a result came back. */
 .mark {
-  background: var(--cs-green-soft, rgb(0 166 81 / 0.18));
-  color: inherit;
   padding: 0 0.1em;
   border-radius: 3px;
-}
-
-.note {
-  color: var(--cs-ink-muted, var(--ifm-color-emphasis-700));
+  background: var(--cs-green-soft, rgb(0 166 81 / 0.18));
+  color: inherit;
 }
