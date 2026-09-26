@@ -22,13 +22,38 @@
 
 .row {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 2.6fr);
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.45fr) minmax(0, 1.15fr);
   gap: var(--cs-gap);
   margin-top: var(--cs-section-space);
+}
+
+@media (max-width: 1199px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      'stats deadlines'
+      'universities universities';
+  }
+
+  .row > :nth-child(1) {
+    grid-area: stats;
+  }
+
+  .row > :nth-child(2) {
+    grid-area: universities;
+  }
+
+  .row > :nth-child(3) {
+    grid-area: deadlines;
+  }
 }
 
 @media (max-width: 996px) {
   .row {
     grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'stats'
+      'universities'
+      'deadlines';
   }
 }

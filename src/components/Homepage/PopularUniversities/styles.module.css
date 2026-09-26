@@ -56,11 +56,23 @@
   mask-repeat: no-repeat;
 }
 
-/* Widen the strip as the card gets wider: two cards on a phone, four once the
-   card is full width or shares the row with the stats. */
+/* Widen the strip as the card gets wider: two cards in the narrow desktop
+   column and on a phone, more in the full-width rows between. */
 @media (min-width: 641px) {
   .track {
     --cards: 4;
+  }
+}
+
+@media (min-width: 997px) {
+  .track {
+    --cards: 5;
+  }
+}
+
+@media (min-width: 1200px) {
+  .track {
+    --cards: 2;
   }
 }
 

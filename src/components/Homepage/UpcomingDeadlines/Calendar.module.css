@@ -1,0 +1,258 @@
+.section {
+  margin-top: var(--cs-gap);
+  scroll-margin-top: calc(var(--ifm-navbar-height) + 1rem);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--cs-text-sm);
+  color: var(--cs-ink-muted);
+}
+
+.legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+/* A tear-off page's band, in miniature. */
+.swatch {
+  inline-size: 1rem;
+  block-size: 0.625rem;
+  border-radius: 3px;
+  background: var(--cs-page-application);
+}
+
+.swatchScholarship {
+  background: var(--cs-page-scholarship);
+}
+
+.body {
+  display: grid;
+  gap: 1.5rem;
+}
+
+/* Side by side once the list beside the calendar has room for its cards;
+   below that, stacked, with the month no wider than it reads well. */
+@media (min-width: 800px) {
+  .body {
+    grid-template-columns: minmax(0, 23rem) minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(1.5rem, 3vw, 2.75rem);
+  }
+}
+
+@media (max-width: 799px) {
+  .calendarPane {
+    inline-size: 100%;
+    max-inline-size: 27rem;
+    margin-inline: auto;
+  }
+}
+
+/* On a phone the calendar borrows a little of the card's padding, so each day
+   stays a thumb wide. */
+@media (max-width: 440px) {
+  .calendarPane {
+    inline-size: auto;
+    max-inline-size: none;
+    margin-inline: -0.5rem;
+  }
+}
+
+.quiet {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin: 0;
+  font-size: var(--cs-text-sm);
+  line-height: 1.6;
+  color: var(--cs-ink-muted);
+}
+
+.jump {
+  composes: focusable from '../ui/ui.module.css';
+  min-block-size: 2.75rem;
+  padding-inline: 1.1rem;
+  border: 0;
+  border-radius: var(--cs-radius-pill);
+  background: var(--cs-green-soft);
+  color: var(--cs-brand-strong);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* =====================================================
+   The month on display, or the day picked in it
+   ===================================================== */
+
+.listPane {
+  min-width: 0;
+}
+
+/* As tall as the calendar's month row, so the first card lines up with the
+   week beside it. */
+.paneHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  min-block-size: 2.75rem;
+  margin: 0 0 0.5rem;
+}
+
+@media (min-width: 800px) {
+  .paneHead {
+    min-block-size: 3rem;
+  }
+}
+
+.paneTitle {
+  margin: 0;
+  font-family: var(--cs-font-display);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--cs-ink);
+}
+
+.reset {
+  composes: focusable from '../ui/ui.module.css';
+  min-block-size: 2.75rem;
+  padding-inline: 1rem;
+  border: 0;
+  border-radius: var(--cs-radius-pill);
+  background: var(--cs-green-soft);
+  color: var(--cs-brand-strong);
+  font: inherit;
+  font-size: var(--cs-text-sm);
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cards {
+  display: grid;
+  gap: 0.625rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  container-type: inline-size;
+}
+
+/* Cards follow the Guidebook's deadline cards: the whole card is the link. */
+.card {
+  composes: focusable from '../ui/ui.module.css';
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    'page text'
+    'page when';
+  align-items: center;
+  gap: 0.35rem 0.9rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: var(--cs-radius-md);
+  background: var(--cs-bg-soft);
+  box-shadow: inset 0 0 0 1px var(--cs-divider);
+  color: inherit;
+  transition:
+    background-color 0.16s var(--cs-ease),
+    box-shadow 0.16s var(--cs-ease),
+    transform 0.16s var(--cs-ease);
+}
+
+.card > time {
+  grid-area: page;
+  align-self: start;
+}
+
+.card:hover {
+  background: color-mix(in srgb, var(--cs-brand) 10%, var(--cs-bg-soft));
+  box-shadow:
+    inset 0 0 0 1.5px var(--cs-brand),
+    0 6px 18px color-mix(in srgb, var(--cs-brand) 14%, transparent);
+  transform: translateY(-1px);
+  color: inherit;
+  text-decoration: none;
+}
+
+.text {
+  grid-area: text;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.name {
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--cs-ink);
+}
+
+.round {
+  font-size: var(--cs-text-sm);
+  line-height: 1.4;
+  color: var(--cs-ink-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.when {
+  grid-area: when;
+  justify-self: start;
+}
+
+/* Wide enough for the pill to sit at the end of the line. */
+@container (min-width: 30rem) {
+  .card {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: 'page text when';
+  }
+
+  .when {
+    justify-self: end;
+  }
+}
+
+.reset:hover,
+.jump:hover {
+  background: color-mix(in srgb, var(--cs-brand) 22%, var(--cs-green-soft));
+}
+
+@media (hover: none) {
+  .card:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+}

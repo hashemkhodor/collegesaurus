@@ -1,0 +1,29 @@
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* Fixed width so the relative wording after mount shifts nothing. */
+  min-width: 5.75rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--cs-radius-pill);
+  font-size: var(--cs-text-xs);
+  font-weight: 700;
+  letter-spacing: var(--cs-tracking-caps);
+  text-transform: var(--cs-transform-caps);
+  white-space: nowrap;
+}
+
+.open {
+  background: var(--cs-pill-open-bg);
+  color: var(--cs-pill-open-fg);
+}
+
+.soon {
+  background: var(--cs-pill-soon-bg);
+  color: var(--cs-pill-soon-fg);
+}
+
+.neutral {
+  background: var(--cs-pill-neutral-bg);
+  color: var(--cs-pill-neutral-fg);
+}

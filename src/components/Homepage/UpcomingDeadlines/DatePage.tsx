@@ -16,14 +16,19 @@ export default function DatePage({
   iso,
   kinds,
   month,
+  size = 'large',
 }: {
   iso: string;
   kinds: Kind[];
   /** The short month name, already in the page's locale. */
   month: string;
+  /** Small takes an icon's place in a row of the top card. */
+  size?: 'large' | 'small';
 }): ReactNode {
   return (
-    <time dateTime={iso} className={clsx(styles.page, kindClass(kinds, styles))}>
+    <time
+      dateTime={iso}
+      className={clsx(styles.page, size === 'small' && styles.small, kindClass(kinds, styles))}>
       <span className={styles.band} suppressHydrationWarning>
         {month}
       </span>
