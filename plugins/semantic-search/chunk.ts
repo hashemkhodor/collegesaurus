@@ -119,12 +119,16 @@ function pack(body: string, maxChars: number): string[] {
     .map((block) => block.replace(/^\n+|\n+$/g, ''));
   for (const block of blocks) {
     if (block.length > maxChars) {
-      const lead = flush().join('\n\n');
-      const parts = splitBlock(block, lead ? maxChars - lead.length - 2 : maxChars);
-      if (lead) {
+      const leads = flush();
+      const lead = leads.join('\n\n');
+      if (lead && lead.length + 2 <= maxChars / 2) {
+        const parts = splitBlock(block, maxChars - lead.length - 2);
         parts[0] = `${lead}\n\n${parts[0]}`;
+        out.push(...parts);
+      } else {
+        // Lead-ins too long to carry along go in chunks of their own.
+        out.push(...group(leads, maxChars, [], '\n\n'), ...splitBlock(block, maxChars));
       }
-      out.push(...parts);
       current = [];
       continue;
     }
@@ -156,14 +160,22 @@ function splitBlock(block: string, maxChars: number): string[] {
   return splitText(block, maxChars);
 }
 
-/** Packs lines into groups of at most maxChars, each starting with `prefix`. */
-function group(lines: string[], maxChars: number, prefix: string[] = []): string[] {
-  const budget = maxChars - (prefix.length > 0 ? prefix.join('\n').length + 1 : 0);
+/**
+ * Packs lines into groups of at most maxChars, each starting with `prefix`.
+ * A prefix (a table header) taking more than half the room is not repeated:
+ * it becomes the first lines instead.
+ */
+function group(lines: string[], maxChars: number, prefix: string[] = [], separator = '\n'): string[] {
+  const prefixLength = prefix.length > 0 ? prefix.join(separator).length + separator.length : 0;
+  if (prefixLength > maxChars / 2) {
+    return group([...prefix, ...lines], maxChars, [], separator);
+  }
+  const budget = maxChars - prefixLength;
   const groups: string[][] = [];
   let current: string[] = [];
   for (const line of lines) {
     for (const part of line.length > budget ? splitText(line, budget) : [line]) {
-      if (current.length > 0 && [...current, part].join('\n').length > budget) {
+      if (current.length > 0 && [...current, part].join(separator).length > budget) {
         groups.push(current);
         current = [];
       }
@@ -173,7 +185,7 @@ function group(lines: string[], maxChars: number, prefix: string[] = []): string
   if (current.length > 0) {
     groups.push(current);
   }
-  return groups.map((lines) => [...prefix, ...lines].join('\n'));
+  return groups.map((lines) => [...prefix, ...lines].join(separator));
 }
 
 /** Splits running text at sentence ends, or at spaces for a huge sentence. */
@@ -196,11 +208,12 @@ function splitText(text: string, maxChars: number): string[] {
 }
 
 function hardWrap(text: string, maxChars: number): string[] {
+  const limit = Math.max(1, maxChars);
   const parts: string[] = [];
   let rest = text;
-  while (rest.length > maxChars) {
-    const space = rest.lastIndexOf(' ', maxChars);
-    const cut = space > 0 ? space : maxChars;
+  while (rest.length > limit) {
+    const space = rest.lastIndexOf(' ', limit);
+    const cut = space > 0 ? space : limit;
     parts.push(rest.slice(0, cut).trimEnd());
     rest = rest.slice(cut).trimStart();
   }

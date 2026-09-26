@@ -131,6 +131,27 @@ test('keeps a heading with the table it introduces', () => {
   assert.ok(firstTable?.body.startsWith('#### Need-based aid\n\n| Grant | Details |'));
 });
 
+test('still splits a long paragraph after lead-ins too long to carry with it', () => {
+  const leadIns = Array.from({length: 7}, (_, i) => `${`Requirement ${i} applies to every applicant `.repeat(4)}and:`);
+  const paragraph = 'Applicants must submit transcripts. '.repeat(45);
+
+  const chunks = chunkDocument(aub(`## Requirements\n\n${leadIns.join('\n\n')}\n\n${paragraph}`));
+
+  assert.ok(chunks.length > 1);
+  assert.ok(chunks.every((chunk) => chunk.body.length <= 1200), chunks.map((chunk) => chunk.body.length).join());
+  assert.equal(chunks.map((chunk) => chunk.body).join(' ').split(/\s+/).length, `${leadIns.join(' ')} ${paragraph}`.trim().split(/\s+/).length);
+});
+
+test('splits a table whose header is longer than a chunk, keeping every row', () => {
+  const header = `| ${Array.from({length: 60}, (_, i) => `Column ${i} heading`).join(' | ')} |\n|${'---|'.repeat(60)}`;
+  const rows = Array.from({length: 20}, (_, i) => `| Program ${i} |${' x |'.repeat(59)}`);
+
+  const chunks = chunkDocument(aub(`## Faculty\n\n${header}\n${rows.join('\n')}`));
+
+  const found = chunks.flatMap((chunk) => chunk.body.split('\n').filter((line) => line.startsWith('| Program ')));
+  assert.deepEqual(found, rows);
+});
+
 test('drops sections without content', () => {
   const chunks = chunkDocument(aub('## Empty\n\n## Contacts\n\nCall 01-350000.\n'));
 
