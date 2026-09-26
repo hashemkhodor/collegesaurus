@@ -2,6 +2,12 @@
   position: relative;
 }
 
+/* Infima places the icon at "0.75rem center", which the RTL build doesn't
+   mirror while it does mirror the padding; with a keyword it mirrors both. */
+.input {
+  background-position: left 0.75rem center;
+}
+
 .input::-webkit-search-decoration,
 .input::-webkit-search-results-decoration {
   -webkit-appearance: none;
