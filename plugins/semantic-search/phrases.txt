@@ -1,0 +1,95 @@
+# Things students search for, in the words they use. Each line gets its own
+# vector, which beats averaging its words. Up to three words (not counting
+# small words such as "of" or "d'" inside); longer lines are ignored.
+
+computer science
+computer engineering
+software engineering
+information technology
+data science
+artificial intelligence
+civil engineering
+mechanical engineering
+electrical engineering
+chemical engineering
+biomedical engineering
+business administration
+graphic design
+interior design
+fine arts
+political science
+social work
+public health
+medical school
+dental school
+study medicine
+become a doctor
+study abroad
+full scholarship
+partial scholarship
+merit scholarship
+need-based aid
+financial aid
+tuition fees
+application fee
+application deadline
+entrance exam
+admission requirements
+english test
+high school grades
+lebanese baccalaureate
+official exams
+bachelor's degree
+master's degree
+student housing
+transfer students
+international students
+public university
+private university
+cheap university
+study in europe
+study in america
+
+منحة دراسية
+منح دراسية
+منحة كاملة
+الدراسة في الخارج
+علوم الحاسوب
+هندسة الحاسوب
+هندسة مدنية
+هندسة ميكانيكية
+هندسة كهربائية
+إدارة الأعمال
+كلية الطب
+طب الأسنان
+العلوم السياسية
+الصحة العامة
+الأقساط الجامعية
+رسوم التسجيل
+شروط القبول
+امتحان الدخول
+الشهادة الثانوية
+الامتحانات الرسمية
+الجامعة اللبنانية
+مساعدة مالية
+سكن الطلاب
+جامعة خاصة
+جامعة رسمية
+
+bourse d'études
+bourse complète
+aide financière
+frais de scolarité
+droits d'inscription
+conditions d'admission
+examen d'entrée
+génie civil
+génie informatique
+génie électrique
+médecine dentaire
+sciences politiques
+gestion des entreprises
+baccalauréat libanais
+université libanaise
+étudier en France
+étudier en Europe
