@@ -625,6 +625,58 @@
     "message": "يفتح في {date}",
     "description": "In a deadline's notes in the reader's calendar app, when applications open"
   },
+  "homepage.deadlines.addAll": {
+    "message": "أضف كل المواعيد إلى رزنامتي",
+    "description": "Under the calendar: opens the ways to subscribe to every deadline"
+  },
+  "homepage.deadlines.addAllIntro": {
+    "message": "تظهر المواعيد الجديدة والمعدَّلة من تلقاء نفسها.",
+    "description": "Over the ways to subscribe to every deadline"
+  },
+  "homepage.deadlines.googleCalendar": {
+    "message": "تقويم Google"
+  },
+  "homepage.deadlines.appleCalendar": {
+    "message": "تقويم Apple"
+  },
+  "homepage.deadlines.subscribeGoogle": {
+    "message": "من الكمبيوتر. ثم على Android فعّل المزامنة له في التطبيق.",
+    "description": "How to subscribe with Google Calendar, which works from a computer only"
+  },
+  "homepage.deadlines.subscribeApple": {
+    "message": "iPhone وiPad وMac"
+  },
+  "homepage.deadlines.subscribeAndroid": {
+    "message": "عبر تطبيق ICSx⁵"
+  },
+  "homepage.deadlines.subscribeOutlook": {
+    "message": "Outlook على الويب"
+  },
+  "homepage.deadlines.copyLink": {
+    "message": "انسخ الرابط"
+  },
+  "homepage.deadlines.copyLinkHint": {
+    "message": "لأي تطبيق رزنامة آخر"
+  },
+  "homepage.deadlines.copied": {
+    "message": "تم النسخ",
+    "description": "In place of \"Copy the link\" once the calendar's address is copied"
+  },
+  "homepage.deadlines.addOne": {
+    "message": "أضف",
+    "description": "On a deadline's card: opens the ways to add it to a calendar"
+  },
+  "homepage.deadlines.addOneLabel": {
+    "message": "أضف {name} إلى رزنامتي",
+    "description": "The card's Add button, for screen readers"
+  },
+  "homepage.deadlines.addOneNote": {
+    "message": "نسخة لمرة واحدة: لا تتغيّر إن تغيّر الموعد.",
+    "description": "Under the ways to add one deadline to a calendar"
+  },
+  "homepage.deadlines.otherCalendar": {
+    "message": "تطبيق رزنامة آخر"
+  },
   "footer.tagline": {
     "message": "دليل مجاني إلى الجامعات والمنح الدراسية في لبنان، أعدّه طلاب."
   },

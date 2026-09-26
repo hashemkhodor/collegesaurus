@@ -1,0 +1,166 @@
+.button {
+  composes: focusable from '../ui/ui.module.css';
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-block-size: 2.75rem;
+  padding-inline: 1.1rem;
+  border: 0;
+  border-radius: var(--cs-radius-pill);
+  background: var(--cs-green-soft);
+  color: var(--cs-brand-strong);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.button:hover {
+  background: color-mix(in srgb, var(--cs-brand) 22%, var(--cs-green-soft));
+}
+
+.chevron {
+  transition: transform 0.16s var(--cs-ease);
+}
+
+.button[aria-expanded='true'] .chevron {
+  transform: rotate(180deg);
+}
+
+/* Small enough to sit beside a card's pill; the space around it still takes
+   a thumb. */
+.compactButton {
+  position: relative;
+  gap: 0.35rem;
+  min-block-size: 2.25rem;
+  padding-inline: 0.8rem;
+  font-size: var(--cs-text-sm);
+}
+
+.compactButton::before {
+  content: '';
+  position: absolute;
+  inset: -0.25rem;
+}
+
+.panel {
+  margin-top: 0.5rem;
+  padding: 0.35rem;
+  border-radius: var(--cs-radius-md);
+  background: var(--cs-bg-soft);
+  box-shadow: inset 0 0 0 1px var(--cs-divider);
+  animation: reveal 0.16s var(--cs-ease);
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+.intro {
+  margin: 0.4rem 0.65rem 0.3rem;
+  font-size: var(--cs-text-sm);
+  line-height: 1.5;
+  color: var(--cs-ink-muted);
+}
+
+.options {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.option {
+  composes: focusable from '../ui/ui.module.css';
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.1rem;
+  inline-size: 100%;
+  min-block-size: 2.75rem;
+  padding: 0.5rem 0.65rem;
+  border: 0;
+  border-radius: var(--cs-radius-sm);
+  background: transparent;
+  color: var(--cs-ink);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.option:hover {
+  background: color-mix(in srgb, var(--cs-brand) 10%, var(--cs-bg-soft));
+  color: var(--cs-ink);
+  text-decoration: none;
+}
+
+.label {
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.hint {
+  font-size: var(--cs-text-sm);
+  line-height: 1.4;
+  color: var(--cs-ink-muted);
+}
+
+.address {
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.note {
+  margin: 0.6rem 0 0;
+  font-size: var(--cs-text-xs);
+  line-height: 1.5;
+  color: var(--cs-ink-muted);
+}
+
+/* Inside a card: the ways in as a row of chips under a rule. */
+.compactPanel {
+  margin-top: 0.25rem;
+  padding: 0.75rem 0 0;
+  border-top: 1px solid var(--cs-divider);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.compactPanel .options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.compactPanel .option {
+  inline-size: auto;
+  padding-inline: 0.95rem;
+  border-radius: var(--cs-radius-pill);
+  font-size: var(--cs-text-sm);
+  background: var(--cs-surface);
+  box-shadow: inset 0 0 0 1px var(--cs-divider);
+}
+
+.compactPanel .option:hover {
+  background: var(--cs-surface);
+  box-shadow: inset 0 0 0 1.5px var(--cs-brand);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron {
+    transition: none;
+  }
+
+  .panel {
+    animation: none;
+  }
+}

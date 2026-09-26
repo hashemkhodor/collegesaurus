@@ -74,6 +74,14 @@
   }
 }
 
+.subscribe {
+  margin-top: 1rem;
+}
+
+.subscribeButton {
+  inline-size: 100%;
+}
+
 .quiet {
   display: flex;
   flex-wrap: wrap;
@@ -158,9 +166,10 @@
   container-type: inline-size;
 }
 
-/* Cards follow the Guidebook's deadline cards: the whole card is the link. */
+/* Cards follow the Guidebook's deadline cards: the name's link covers the
+   whole card, and only the Add button and its panel sit above it. */
 .card {
-  composes: focusable from '../ui/ui.module.css';
+  position: relative;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   grid-template-areas:
@@ -179,6 +188,11 @@
     transform 0.16s var(--cs-ease);
 }
 
+.card:has(.name:focus-visible) {
+  outline: 2px solid var(--cs-focus-ring);
+  outline-offset: 3px;
+}
+
 .card > time {
   grid-area: page;
   align-self: start;
@@ -190,8 +204,11 @@
     inset 0 0 0 1.5px var(--cs-brand),
     0 6px 18px color-mix(in srgb, var(--cs-brand) 14%, transparent);
   transform: translateY(-1px);
-  color: inherit;
-  text-decoration: none;
+}
+
+.above {
+  position: relative;
+  z-index: 1;
 }
 
 .text {
@@ -208,6 +225,22 @@
   color: var(--cs-ink);
 }
 
+.name:hover {
+  color: var(--cs-ink);
+  text-decoration: none;
+}
+
+.name:focus-visible {
+  outline: none;
+}
+
+.name::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--cs-radius-md);
+}
+
 .round {
   font-size: var(--cs-text-sm);
   line-height: 1.4;
@@ -221,18 +254,22 @@
 
 .when {
   grid-area: when;
-  justify-self: start;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
 }
 
-/* Wide enough for the pill to sit at the end of the line. */
+.cardOptions {
+  grid-column: 1 / -1;
+}
+
+/* Wide enough for the pill and the button to sit at the end of the line. */
 @container (min-width: 30rem) {
   .card {
     grid-template-columns: auto minmax(0, 1fr) auto;
     grid-template-areas: 'page text when';
-  }
-
-  .when {
-    justify-self: end;
   }
 }
 
