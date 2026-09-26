@@ -29,16 +29,19 @@ jobs:
           GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
           GDRIVE_CONTENT_ROOT_ID: ${{ secrets.GDRIVE_CONTENT_ROOT_ID }}
       - run: npm ci
-      # Reuse the deploys' embeddings (plugins/semantic-search); a pull
-      # request only reads the cache, it never saves its own copy.
+      # Reuse the deploys' embedding model and embeddings
+      # (plugins/semantic-search); a pull request only reads the caches, it
+      # never saves its own copy.
       - uses: actions/cache/restore@v4
         with:
-          path: .cache/semantic-search
-          key: semantic-search-${{ github.run_id }}
-          restore-keys: semantic-search-
+          path: .cache/semantic-search/models
+          key: semantic-search-model-${{ hashFiles('plugins/semantic-search/embedder.ts') }}
+      - uses: actions/cache/restore@v4
+        with:
+          path: .cache/semantic-search/vectors
+          key: semantic-search-vectors-${{ github.run_id }}
+          restore-keys: semantic-search-vectors-
       - run: npm run build
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
   python-tests:
     # Pytest gate for the drive-sync pipeline (parser/emitter against
