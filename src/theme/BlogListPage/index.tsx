@@ -2,46 +2,19 @@ import React, {type ReactNode} from 'react';
 import clsx from 'clsx';
 
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import Translate, {translate} from '@docusaurus/Translate';
 import {
   PageMetadata,
   HtmlClassNameProvider,
   ThemeClassNames,
 } from '@docusaurus/theme-common';
-import BlogLayout from '@theme/BlogLayout';
-import BlogListPaginator from '@theme/BlogListPaginator';
 import SearchMetadata from '@theme/SearchMetadata';
 import type {Props} from '@theme/BlogListPage';
-import BlogPostItems from '@theme/BlogPostItems';
 import BlogListPageStructuredData from '@theme/BlogListPage/StructuredData';
-import Heading from '@theme/Heading';
-
-type BlogItem = Props['items'][number];
-
-const BLOG_BASE_MARKER = '/stories/';
-
-function groupKeyFor(permalink: string): string {
-  const idx = permalink.lastIndexOf(BLOG_BASE_MARKER);
-  if (idx === -1) return 'other';
-  const after = permalink.slice(idx + BLOG_BASE_MARKER.length);
-  const segments = after.split('/').filter(Boolean);
-  if (segments.length === 0) return 'other';
-  return segments[0];
-}
-
-function groupItemsBySlugPrefix(items: Props['items']): [string, BlogItem[]][] {
-  const groups = new Map<string, BlogItem[]>();
-  for (const item of items) {
-    const key = groupKeyFor(item.content.metadata.permalink);
-    const bucket = groups.get(key) ?? [];
-    bucket.push(item);
-    groups.set(key, bucket);
-  }
-  return [...groups.entries()].sort(([, a], [, b]) => {
-    if (a.length === 1 && b.length !== 1) return -1;
-    if (b.length === 1 && a.length !== 1) return 1;
-    return 0;
-  });
-}
+import StoriesPage, {
+  StoryGrid,
+  TopicChips,
+} from '@site/src/components/Stories/StoriesPage';
 
 function BlogListPageMetadata(props: Props): ReactNode {
   const {metadata} = props;
@@ -59,23 +32,16 @@ function BlogListPageMetadata(props: Props): ReactNode {
   );
 }
 
-function BlogListPageContent(props: Props): ReactNode {
-  const {metadata, items, sidebar} = props;
-  const groups = groupItemsBySlugPrefix(items);
-  return (
-    <BlogLayout sidebar={sidebar}>
-      {groups.map(([label, groupItems]) => (
-        <section key={label}>
-          <Heading as="h2">{label}</Heading>
-          <BlogPostItems items={groupItems} />
-        </section>
-      ))}
-      <BlogListPaginator metadata={metadata} />
-    </BlogLayout>
-  );
+function uniqueTags(items: Props['items']) {
+  const seen = new Map<string, {label: string; permalink: string}>();
+  for (const {content} of items) {
+    for (const tag of content.metadata.tags) seen.set(tag.permalink, tag);
+  }
+  return [...seen.values()];
 }
 
 export default function BlogListPage(props: Props): ReactNode {
+  const {metadata, items} = props;
   return (
     <HtmlClassNameProvider
       className={clsx(
@@ -84,7 +50,26 @@ export default function BlogListPage(props: Props): ReactNode {
       )}>
       <BlogListPageMetadata {...props} />
       <BlogListPageStructuredData {...props} />
-      <BlogListPageContent {...props} />
+      <StoriesPage
+        eyebrow={<Translate id="stories.hero.eyebrow">Stories</Translate>}
+        title={metadata.blogTitle}
+        lead={
+          <Translate id="stories.hero.lead">
+            Real experiences from students who went through admissions,
+            scholarships and grad school in Lebanon and abroad.
+          </Translate>
+        }
+        hero={
+          <TopicChips
+            tags={uniqueTags(items)}
+            label={translate({
+              id: 'stories.topics.label',
+              message: 'Browse stories by topic',
+            })}
+          />
+        }>
+        <StoryGrid items={items} listMetadata={metadata} />
+      </StoriesPage>
     </HtmlClassNameProvider>
   );
 }

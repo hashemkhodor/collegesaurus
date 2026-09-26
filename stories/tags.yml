@@ -59,3 +59,8 @@ epfl:
   label: EPFL
   permalink: /epfl
   description: Stories involving EPFL
+
+lebanon:
+  label: Lebanon
+  permalink: /lebanon
+  description: Stories about studying or applying from Lebanon

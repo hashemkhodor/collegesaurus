@@ -1,0 +1,381 @@
+.page {
+  background: var(--cs-bg);
+  padding-bottom: var(--cs-section-space);
+  overflow-x: clip;
+}
+
+/* Keeps the last card clear of the floating chat button on a phone. */
+@media (max-width: 640px) {
+  .page {
+    padding-bottom: 5rem;
+  }
+}
+
+.container {
+  max-width: var(--cs-container);
+  margin-inline: auto;
+  padding-inline: var(--cs-gutter);
+}
+
+/* =====================================================
+   Hero
+   ===================================================== */
+
+.hero {
+  background:
+    radial-gradient(
+      45rem 22rem at 90% -20%,
+      var(--cs-blue-soft),
+      transparent 62%
+    ),
+    radial-gradient(30rem 20rem at 5% 0%, var(--cs-green-soft), transparent 58%),
+    var(--cs-bg);
+  padding-block: clamp(2rem, 6vw, 4rem) clamp(0.5rem, 2vw, 1rem);
+}
+
+.hero .container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+}
+
+.eyebrow {
+  background: var(--cs-green-soft);
+  border-radius: var(--cs-radius-pill);
+  padding: 0.4rem 0.85rem;
+}
+
+.title {
+  font-family: var(--cs-font-display);
+  font-size: clamp(2rem, 1.4rem + 2.6vw, 3.25rem);
+  line-height: var(--cs-lh-display);
+  letter-spacing: var(--cs-tracking-display);
+  font-weight: 800;
+  color: var(--cs-ink);
+  margin: 0;
+  max-width: 20ch;
+}
+
+.lead {
+  font-size: var(--cs-text-lead);
+  line-height: 1.6;
+  color: var(--cs-ink-muted);
+  max-width: 38rem;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* =====================================================
+   Sections
+   ===================================================== */
+
+.section {
+  margin-top: var(--cs-section-space);
+}
+
+/* Lands the "See what you need" anchor below the sticky navbar. */
+.anchorTarget {
+  scroll-margin-top: calc(var(--ifm-navbar-height) + 1.5rem);
+}
+
+.sectionTitle {
+  font-family: var(--cs-font-display);
+  font-size: var(--cs-text-h2);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--cs-ink);
+  margin: 0 0 1.25rem;
+}
+
+.sectionLead {
+  font-size: var(--cs-text-sm);
+  line-height: 1.6;
+  color: var(--cs-ink-muted);
+  margin: 0.5rem 0 0;
+  max-width: 44rem;
+}
+
+/* ---------- Ways to help ---------- */
+
+.ways {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--cs-gap);
+}
+
+.way {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.wayTitle {
+  margin: 0.25rem 0 0;
+  font-size: var(--cs-text-h3);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--cs-ink);
+}
+
+.wayText {
+  margin: 0;
+  flex: 1;
+  font-size: var(--cs-text-sm);
+  line-height: 1.6;
+  color: var(--cs-ink-muted);
+}
+
+/* ---------- Adding a page ---------- */
+
+.addCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.addCard > .sectionLead {
+  margin: -1rem 0 0;
+}
+
+.kinds {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--cs-gap);
+  width: 100%;
+}
+
+.kind {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  background: var(--cs-bg-soft);
+  border-radius: var(--cs-radius-md);
+  padding: 1.25rem;
+}
+
+.kindTitle {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: var(--cs-text-h3);
+  font-weight: 700;
+  color: var(--cs-ink);
+}
+
+.count {
+  font-size: var(--cs-text-xs);
+  font-weight: 700;
+  color: var(--cs-brand-strong);
+  background: var(--cs-green-soft);
+  border-radius: var(--cs-radius-pill);
+  padding: 0.15rem 0.6rem;
+}
+
+.files {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.file {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: var(--cs-text-sm);
+  line-height: 1.4;
+}
+
+.fileIcon {
+  flex: none;
+  margin-top: 0.1rem;
+  color: var(--cs-brand-strong);
+}
+
+.filePurpose {
+  display: block;
+  color: var(--cs-ink-muted);
+}
+
+.rules {
+  width: 100%;
+  background: var(--cs-surface-muted);
+  border-radius: var(--cs-radius-md);
+  padding: 1.25rem;
+}
+
+.rulesTitle {
+  margin: 0;
+  font-size: var(--cs-text-h3);
+  font-weight: 700;
+  color: var(--cs-ink);
+}
+
+.rulesLead {
+  margin: 0.25rem 0 0.75rem;
+  font-size: var(--cs-text-sm);
+  color: var(--cs-ink-muted);
+}
+
+.checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: var(--cs-text-sm);
+  line-height: 1.5;
+  color: var(--cs-ink);
+}
+
+.check {
+  flex: none;
+  margin-top: 0.15rem;
+  color: var(--cs-brand-strong);
+}
+
+.note {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: var(--cs-text-sm);
+  color: var(--cs-ink-muted);
+}
+
+.noteIcon {
+  flex: none;
+  color: var(--cs-ink-subtle);
+}
+
+/* ---------- How it works ---------- */
+
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--cs-gap);
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-inline-start: 1.25rem;
+  border-inline-start: 2px solid var(--cs-divider);
+}
+
+.stepNumber {
+  font-family: var(--cs-font-display);
+  font-size: var(--cs-text-h2);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--cs-brand-strong);
+}
+
+.stepTitle {
+  margin: 0;
+  font-size: var(--cs-text-h3);
+  font-weight: 700;
+  color: var(--cs-ink);
+}
+
+.stepText {
+  margin: 0;
+  font-size: var(--cs-text-sm);
+  line-height: 1.6;
+  color: var(--cs-ink-muted);
+}
+
+/* ---------- Read the source ---------- */
+
+.source {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.sourceText {
+  flex: 1;
+  min-width: 0;
+}
+
+.sourceTitle {
+  margin: 0;
+  font-size: var(--cs-text-h3);
+  font-weight: 700;
+  color: var(--cs-ink);
+}
+
+.source > :first-child,
+.source > :last-child {
+  flex: none;
+}
+
+.thanks {
+  margin: var(--cs-section-space) 0 0;
+  text-align: center;
+  color: var(--cs-ink-muted);
+  font-size: var(--cs-text-sm);
+}
+
+/* =====================================================
+   Responsive
+   ===================================================== */
+
+@media (max-width: 996px) {
+  .steps {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+
+  .source {
+    flex-wrap: wrap;
+  }
+
+  .sourceText {
+    flex-basis: 16rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .ways,
+  .kinds {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .actions > * {
+    flex: 1 1 100%;
+  }
+
+  .source {
+    align-items: flex-start;
+  }
+}
