@@ -564,6 +564,20 @@
   "homepage.deadlines.emptyLink": {
     "message": "تجد مواعيد التقديم في صفحة كل جامعة."
   },
+  "homepage.deadlines.seeCalendar": {
+    "message": "افتح الرزنامة"
+  },
+  "homepage.deadlines.calendarTitle": {
+    "message": "رزنامة المواعيد"
+  },
+  "homepage.deadlines.inMonth": {
+    "message": "في {month}",
+    "description": "Over the deadlines of the month shown in the calendar"
+  },
+  "homepage.deadlines.showMonth": {
+    "message": "كل مواعيد {month}",
+    "description": "Widens the list from the picked day back to its whole month"
+  },
   "homepage.deadlines.closesToday": {
     "message": "يُغلق اليوم"
   },
@@ -587,31 +601,17 @@
     "message": "مواعيد تُغلق يوم {date}",
     "description": "Over the deadlines of the day picked in the calendar"
   },
-  "homepage.deadlines.closeDay": {
-    "message": "إغلاق",
-    "description": "Closes the deadlines of the day picked in the calendar"
-  },
   "homepage.deadlines.emptyMonth": {
     "message": "لا مواعيد تُغلق في {month}.",
-    "description": "Under the calendar when the month shown has no deadlines"
+    "description": "Beside the calendar when the month shown has no deadlines"
   },
   "homepage.deadlines.nextDeadline": {
     "message": "التالي: {date}",
     "description": "Jumps the calendar to the next deadline"
   },
-  "homepage.deadlines.comingUp": {
-    "message": "المواعيد القادمة"
-  },
   "homepage.deadlines.moreRounds": {
     "message": "ولا غيرها|وموعد آخر|وموعدان آخران|و{count} مواعيد أخرى|و{count} موعدًا آخر|و{count} موعد آخر",
-    "description": "Under the first two rounds that close on the same day, by plural form"
-  },
-  "homepage.deadlines.showAll": {
-    "message": "اعرض كل المواعيد ({count})|اعرض كل المواعيد ({count})|اعرض كل المواعيد ({count})|اعرض كل المواعيد ({count})|اعرض كل المواعيد ({count})|اعرض كل المواعيد ({count})",
-    "description": "Opens the whole list of upcoming deadlines, by plural form"
-  },
-  "homepage.deadlines.showFewer": {
-    "message": "اعرض أقل"
+    "description": "Under the first rounds that close on the same day, by plural form"
   },
   "footer.tagline": {
     "message": "دليل مجاني إلى الجامعات والمنح الدراسية في لبنان، أعدّه طلاب."
