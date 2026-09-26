@@ -59,7 +59,7 @@ export function createEngine(base: string, load: Load = fetchJson) {
     }
     return shard;
   };
-  const lookup = async (keys: string[], count: number, known: Map<string, TermEntry>) => {
+  const lookup = async (keys: string[], {shards: count, dims}: Index, known: Map<string, TermEntry>) => {
     const byShard = new Map<number, string[]>();
     for (const key of keys) {
       const n = shardOf(key, count);
@@ -70,6 +70,10 @@ export function createEngine(base: string, load: Load = fetchJson) {
         const terms = await getShard(n);
         for (const key of inShard) {
           const entry = terms.get(key);
+          // An index.json still cached from before a deploy that changed the size.
+          if (entry && entry.vector.q.length !== dims) {
+            throw new Error(`search index has ${dims} dimensions but its terms ${entry.vector.q.length}`);
+          }
           if (entry) {
             known.set(key, entry);
           }
@@ -90,12 +94,13 @@ export function createEngine(base: string, load: Load = fetchJson) {
       if (terms.length === 0) {
         return {results: [], terms, understood: false};
       }
-      const {pages, chunks, matrix, scales, shards: count} = await getIndex();
+      const index = await getIndex();
+      const {pages, chunks, matrix, scales} = index;
       const known = new Map<string, TermEntry>();
-      await lookup(candidateKeys(tokens), count, known);
+      await lookup(candidateKeys(tokens), index, known);
       let cover = coverQuery(tokens, (key) => known.has(key));
       if (cover.unknown.length > 0) {
-        await lookup(cover.unknown.flatMap(variants), count, known);
+        await lookup(cover.unknown.flatMap(variants), index, known);
         cover = coverQuery(tokens, (key) => known.has(key));
       }
       const vector = composeQuery(cover.keys.map((key) => known.get(key)!));

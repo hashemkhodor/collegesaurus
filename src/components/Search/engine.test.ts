@@ -28,21 +28,28 @@ const DOCS = [
 ];
 
 /** Stands in for Gemini: texts sharing words get similar vectors. */
-async function hashEmbed(texts: string[]) {
-  return texts.map((text) => {
-    const vector = new Float32Array(256);
-    for (const word of text.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? []) {
-      vector[parseInt(createHash('md5').update(word).digest('hex').slice(0, 8), 16) % 256] += 1;
-    }
-    return quantize(vector);
-  });
+function hashEmbed(dims = 256) {
+  return async (texts: string[]) =>
+    texts.map((text) => {
+      const vector = new Float32Array(dims);
+      for (const word of text.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? []) {
+        vector[parseInt(createHash('md5').update(word).digest('hex').slice(0, 8), 16) % dims] += 1;
+      }
+      return quantize(vector);
+    });
+}
+
+/** Files the build wrote, in a temporary directory. */
+async function written(dims = 256): Promise<string> {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'semantic-search-engine-'));
+  const index = await buildIndex(DOCS, {embed: hashEmbed(dims), words: ['university'], phrases: []});
+  writeIndex(dir, index, {model: 'hash', dims, shards: 16});
+  return dir;
 }
 
 /** The engine over files the build wrote, counting what it fetches. */
 async function site() {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'semantic-search-engine-'));
-  const index = await buildIndex(DOCS, {embed: hashEmbed, words: ['university'], phrases: []});
-  writeIndex(dir, index, {model: 'hash', dims: 256, shards: 16});
+  const dir = await written();
   const fetched: string[] = [];
   const load = async (url: string) => {
     fetched.push(url);
@@ -109,6 +116,17 @@ test('can load the index before the first query, and never throws doing so', asy
   await createEngine('/semantic-search/', async () => {
     throw new Error('HTTP 404');
   }).warm();
+});
+
+test('refuses to score with term vectors of another size than the index, so the caller falls back', async () => {
+  // A deploy that changed the size, met by an index.json still in cache.
+  const [before, after] = await Promise.all([written(256), written(64)]);
+  const engine = createEngine('/semantic-search/', async (url) => {
+    const dir = url.endsWith('index.json') ? before : after;
+    return JSON.parse(fs.readFileSync(path.join(dir, url.replace('/semantic-search/', '')), 'utf8'));
+  });
+
+  await assert.rejects(engine.search('AUB tuition'), /256 dimensions/);
 });
 
 test('fails when the site has no index, so the caller can fall back to keywords', async () => {
