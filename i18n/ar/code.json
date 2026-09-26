@@ -564,6 +564,55 @@
   "homepage.deadlines.emptyLink": {
     "message": "تجد مواعيد التقديم في صفحة كل جامعة."
   },
+  "homepage.deadlines.closesToday": {
+    "message": "يُغلق اليوم"
+  },
+  "homepage.deadlines.legendApplications": {
+    "message": "طلبات الالتحاق"
+  },
+  "homepage.deadlines.legendScholarships": {
+    "message": "المنح والمساعدات"
+  },
+  "homepage.deadlines.previousMonth": {
+    "message": "الشهر السابق"
+  },
+  "homepage.deadlines.nextMonth": {
+    "message": "الشهر التالي"
+  },
+  "homepage.deadlines.dayLabel": {
+    "message": "{date}: لا مواعيد|{date}: موعد نهائي واحد|{date}: موعدان نهائيان|{date}: {count} مواعيد نهائية|{date}: {count} موعدًا نهائيًا|{date}: {count} موعد نهائي",
+    "description": "A calendar day with deadlines, for screen readers, by plural form"
+  },
+  "homepage.deadlines.closingOn": {
+    "message": "مواعيد تُغلق يوم {date}",
+    "description": "Over the deadlines of the day picked in the calendar"
+  },
+  "homepage.deadlines.closeDay": {
+    "message": "إغلاق",
+    "description": "Closes the deadlines of the day picked in the calendar"
+  },
+  "homepage.deadlines.emptyMonth": {
+    "message": "لا مواعيد تُغلق في {month}.",
+    "description": "Under the calendar when the month shown has no deadlines"
+  },
+  "homepage.deadlines.nextDeadline": {
+    "message": "التالي: {date}",
+    "description": "Jumps the calendar to the next deadline"
+  },
+  "homepage.deadlines.comingUp": {
+    "message": "المواعيد القادمة"
+  },
+  "homepage.deadlines.moreRounds": {
+    "message": "ولا غيرها|وموعد آخر|وموعدان آخران|و{count} مواعيد أخرى|و{count} موعدًا آخر|و{count} موعد آخر",
+    "description": "Under the first two rounds that close on the same day, by plural form"
+  },
+  "homepage.deadlines.showAll": {
+    "message": "اعرض كل المواعيد ({count})|اعرض كل المواعيد ({count})|اعرض كل المواعيد ({count})|اعرض كل المواعيد ({count})|اعرض كل المواعيد ({count})|اعرض كل المواعيد ({count})",
+    "description": "Opens the whole list of upcoming deadlines, by plural form"
+  },
+  "homepage.deadlines.showFewer": {
+    "message": "اعرض أقل"
+  },
   "footer.tagline": {
     "message": "دليل مجاني إلى الجامعات والمنح الدراسية في لبنان، أعدّه طلاب."
   },
