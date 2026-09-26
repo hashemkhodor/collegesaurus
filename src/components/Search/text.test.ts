@@ -35,6 +35,10 @@ test('drops the words every question has, in all three languages', () => {
   assert.deepEqual(contentTokens(tokenize("Une bourse d'études en France")), ['bourse', 'etudes', 'france']);
 });
 
+test('drops numbers, which say nothing about meaning', () => {
+  assert.deepEqual(contentTokens(tokenize('SAT 1200 per section in 2026')), ['sat', 'section']);
+});
+
 test('keeps short words that carry the meaning', () => {
   assert.deepEqual(contentTokens(tokenize('طب')), ['طب']);
   assert.deepEqual(contentTokens(tokenize('LU')), ['lu']);

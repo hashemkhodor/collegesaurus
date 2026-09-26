@@ -16,6 +16,12 @@ test("takes the pages' words, keyed as the browser looks them up, in their most 
   ]);
 });
 
+test('leaves numbers out', () => {
+  const terms = buildVocabulary({documents: ['Tuition is $1,000 per credit in 2026']});
+
+  assert.deepEqual(terms.map((term) => term.key), ['credit', 'tuition']);
+});
+
 test('adds phrases that several sections share, never across punctuation', () => {
   // Without the cell borders, "science bs" would also be in two sections.
   const terms = buildVocabulary({documents: ['Computer Science · BS', 'Computer Science · BA', 'Science · BS']});

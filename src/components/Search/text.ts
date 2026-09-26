@@ -39,7 +39,7 @@ const STOPWORDS = new Set(
     'some such than that the their theirs them themselves then there these they this those through to too',
     'under until up very was we were what when where which while who whom whose why will with would you',
     'your yours yourself yourselves best top good great list find want looking look info information',
-    'please tell show like get know give vs etc',
+    'please tell show like get know give vs etc per',
     // French, accents folded.
     'au aux avec ce ces cet cette dans de des du elle elles en et eux il ils je la le les leur leurs lui',
     'ma mais me mes moi mon ne nos notre nous ou par pas pour qu que qui sa se ses son sur ta te tes toi ton',
@@ -54,9 +54,9 @@ const STOPWORDS = new Set(
     .split(' '),
 );
 
-/** Single letters are elisions and conjunctions ("d'", "l'", "و"), never a subject. */
+/** Single letters are elisions and conjunctions ("d'", "l'", "و"), never a subject; nor are numbers. */
 export function isStopword(token: string): boolean {
-  return token.length < 2 || STOPWORDS.has(token);
+  return token.length < 2 || STOPWORDS.has(token) || /^\d+$/.test(token);
 }
 
 export function contentTokens(tokens: string[]): string[] {
