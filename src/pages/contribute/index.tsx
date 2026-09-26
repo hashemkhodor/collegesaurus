@@ -67,7 +67,7 @@ const WAYS: Way[] = [
         should be listed? Fill in a small template and upload it.
       </Translate>
     ),
-    to: '#add',
+    to: '#add-title',
     cta: <Translate id="contribute.ways.add.cta">See what you need</Translate>,
   },
   {
@@ -223,7 +223,13 @@ export default function Contribute(): ReactNode {
             <Heading as="h1" className={styles.title}>
               <Translate
                 id="contribute.hero.title"
-                values={{accurate: <Accent underline>accurate</Accent>}}>
+                values={{
+                  accurate: (
+                    <Accent underline>
+                      <Translate id="contribute.hero.accent">accurate</Translate>
+                    </Accent>
+                  ),
+                }}>
                 {'Help keep Collegesaurus {accurate}'}
               </Translate>
             </Heading>
@@ -275,10 +281,12 @@ export default function Contribute(): ReactNode {
           </section>
 
           <section
-            id="add"
             className={clsx(ui.card, styles.section, styles.addCard)}
             aria-labelledby="add-title">
-            <Heading as="h2" id="add-title" className={ui.cardTitle}>
+            <Heading
+              as="h2"
+              id="add-title"
+              className={clsx(ui.cardTitle, styles.anchorTarget)}>
               <Translate id="contribute.add.title">
                 Adding a page: what you'll need
               </Translate>

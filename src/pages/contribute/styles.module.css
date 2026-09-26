@@ -77,8 +77,11 @@
 
 .section {
   margin-top: var(--cs-section-space);
-  /* Lands the "See what you need" anchor below the sticky navbar. */
-  scroll-margin-top: calc(var(--ifm-navbar-height) + 1rem);
+}
+
+/* Lands the "See what you need" anchor below the sticky navbar. */
+.anchorTarget {
+  scroll-margin-top: calc(var(--ifm-navbar-height) + 1.5rem);
 }
 
 .sectionTitle {
