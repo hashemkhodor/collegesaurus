@@ -5,6 +5,7 @@
  */
 import {useEffect, useMemo, useRef, type ReactNode, type RefObject} from 'react';
 import useBaseUrl from '@docusaurus/useBaseUrl';
+import {translate} from '@docusaurus/Translate';
 import {useDoc} from '@docusaurus/plugin-content-docs/client';
 import {deadlines} from '@site/src/data/homepage/deadlines';
 import {UNIVERSITY_LOGOS} from '@site/src/data/homepage/logos';
@@ -425,7 +426,7 @@ export default function Guidebook({data, children}: {data: string; children: Rea
   const now = useNow();
   const plugin = d.kind === 'scholarship' ? 'scholarships' : 'universities';
   const deadline = useMemo(
-    () => deadlines().find((x) => x.ref.plugin === plugin && x.ref.id === docId) ?? null,
+    () => deadlines(translate).find((x) => x.ref.plugin === plugin && x.ref.id === docId) ?? null,
     [plugin, docId],
   );
   const facts = buildFacts(d, s, deadline, now, locale);

@@ -1,10 +1,13 @@
-import {translate} from '@docusaurus/Translate';
 import type {Deadline} from './types';
 
+/** Docusaurus' `translate`, or anything that answers the same way. */
+export type Translate = (message: {id: string; message: string}) => string;
+
 /**
- * Hand-maintained until the pipeline carries structured dates: the application
- * windows on the content pages are free text in a different shape per
- * university, and most of them have passed.
+ * Deadlines no page gives as a full date yet, such as a scholarship whose
+ * application window names a day without a year. The pages' own deadlines are
+ * read at build time (plugins/homepage-data), and a page row for the same day
+ * replaces an entry here.
  *
  * Every entry needs an official source and the date it was last checked. Rows
  * drop off on their own once they close, so a stale list empties rather than
@@ -13,8 +16,11 @@ import type {Deadline} from './types';
  *
  * Leaving `opens` out means the row never claims to be open, which is how a
  * published-but-expected deadline should read.
+ *
+ * `translate` is passed in so the build can read this list as well as the page:
+ * the page hands over Docusaurus' own, the build a lookup in code.json.
  */
-export function deadlines(): Deadline[] {
+export function deadlines(translate: Translate): Deadline[] {
   return [
     {
       ref: {plugin: 'universities', id: 'aub'},

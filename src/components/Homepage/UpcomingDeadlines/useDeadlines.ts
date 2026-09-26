@@ -1,4 +1,5 @@
 import {useMemo} from 'react';
+import {translate} from '@docusaurus/Translate';
 import type {HomeDoc} from '@site/plugins/homepage-data/types';
 import {deadlines} from '@site/src/data/homepage/deadlines';
 import {findDoc, useHomepageData, useNow} from '../hooks';
@@ -17,7 +18,7 @@ export function useDeadlines() {
   const now = useNow();
   const rows = useMemo(
     () =>
-      calendarEntries(data.deadlines, deadlines()).flatMap((entry): DeadlineRow[] => {
+      calendarEntries(data.deadlines, deadlines(translate)).flatMap((entry): DeadlineRow[] => {
         const doc = findDoc(data, entry.ref);
         return doc ? [{entry, doc}] : [];
       }),
