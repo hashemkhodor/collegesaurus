@@ -2,7 +2,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 
-import {addMonths, clampMonth, dayFormatter, weeksOf} from './dates.ts';
+import {addMonths, clampMonth, dayFormatter, nextDay, weeksOf} from './dates.ts';
 
 /** Runs `body` with the process in another timezone, as a reader's browser would be. */
 function inZone<T>(zone: string, body: () => T): T {
@@ -64,4 +64,11 @@ test('a month is held between the first and last months that have deadlines', ()
   assert.equal(clampMonth('2026-08', '2026-09', '2027-08'), '2026-09');
   assert.equal(clampMonth('2026-11', '2026-09', '2027-08'), '2026-11');
   assert.equal(clampMonth('2027-09', '2026-09', '2027-08'), '2027-08');
+});
+
+test('the next day steps across months, years and leap days', () => {
+  assert.equal(nextDay('2026-10-31'), '2026-11-01');
+  assert.equal(nextDay('2026-12-31'), '2027-01-01');
+  assert.equal(nextDay('2027-02-28'), '2027-03-01');
+  assert.equal(nextDay('2028-02-28'), '2028-02-29');
 });
