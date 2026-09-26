@@ -22,6 +22,12 @@ const pad = (n: number) => String(n).padStart(2, '0');
 /** The YYYY-MM month of a YYYY-MM-DD date. */
 export const monthOf = (iso: string): string => iso.slice(0, 7);
 
+/** The day after a YYYY-MM-DD date. */
+export function nextDay(iso: string): string {
+  const [year, month, day] = iso.split('-').map(Number) as [number, number, number];
+  return new Date(Date.UTC(year, month - 1, day + 1)).toISOString().slice(0, 10);
+}
+
 /** The month `count` months after `month`, or before it when negative. */
 export function addMonths(month: string, count: number): string {
   const [year, index] = month.split('-').map(Number) as [number, number];

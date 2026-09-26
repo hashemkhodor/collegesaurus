@@ -2,10 +2,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import type {LoadContext, Plugin} from '@docusaurus/types';
 import {calendarEntries} from '../../src/components/Homepage/UpcomingDeadlines/entries.ts';
+import {eventText} from '../../src/components/Homepage/UpcomingDeadlines/event.ts';
 import {deadlines, type Translate} from '../../src/data/homepage/deadlines.ts';
 import type {HomeDeadline, HomeDoc, HomeUniversity, HomepageData} from './types';
 import {pageDeadlines} from './deadlines.ts';
-import {feedFiles, feedText, type CalendarFile} from './feed.ts';
+import {feedFiles, type CalendarFile} from './feed.ts';
 
 /**
  * Publishes a small index of the newest academic year for the landing page.
@@ -187,7 +188,7 @@ export default function homepageData(context: LoadContext): Plugin<void> {
           const doc = docs[ref.plugin].find((candidate) => candidate.id === ref.id);
           return doc && {shortName: doc.shortName, url: `${siteConfig.url}${doc.permalink}`};
         },
-        text: feedText(translate, i18n.currentLocale),
+        text: eventText(translate, i18n.currentLocale),
         site: siteConfig.url,
         stamp: new Date(generatedAt),
       });

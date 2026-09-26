@@ -1,4 +1,5 @@
 import {createHash} from 'node:crypto';
+import {nextDay} from '../../src/components/Homepage/UpcomingDeadlines/dates.ts';
 
 /**
  * iCalendar (RFC 5545) text for the deadlines calendar: all-day events, and
@@ -79,11 +80,6 @@ function fold(line: string): string {
 }
 
 const dateValue = (iso: string) => iso.replace(/-/g, '');
-
-function nextDay(iso: string): string {
-  const [year, month, day] = iso.split('-').map(Number) as [number, number, number];
-  return new Date(Date.UTC(year, month - 1, day + 1)).toISOString().slice(0, 10);
-}
 
 const stampValue = (stamp: Date) =>
   stamp.toISOString().replace(/\.\d{3}/, '').replace(/[-:]/g, '');
