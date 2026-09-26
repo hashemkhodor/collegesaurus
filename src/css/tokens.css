@@ -47,6 +47,11 @@
   --cs-pill-neutral-fg: #475467; /* 6.98 */
   --cs-pill-neutral-bg: #f2f4f7;
 
+  /* Bands of the deadline calendar's tear-off pages, one per type. Both carry
+     white month text and read against the page as shapes too. */
+  --cs-page-application: #007a3d; /* 5.45 with white text */
+  --cs-page-scholarship: #6d5ae6; /* 4.93 with white text */
+
   /* Stays dark in both themes: it sits behind university marks that are
      white, drawn for their own dark headers. Neutral graphite, so it reads as
      a backdrop rather than a colour of its own. */
@@ -126,6 +131,8 @@
   --cs-pill-soon-bg: rgb(245 158 11 / 0.16);
   --cs-pill-neutral-fg: #b4bccb; /* 6.32 */
   --cs-pill-neutral-bg: rgb(255 255 255 / 0.06);
+
+  --cs-page-application: #277f4e; /* 4.96 with white text, 3.09 on the surface */
 
   --cs-card-ring: 0 0 0 1px var(--cs-divider);
   --cs-shadow-card: 0 1px 2px rgb(0 0 0 / 0.3),

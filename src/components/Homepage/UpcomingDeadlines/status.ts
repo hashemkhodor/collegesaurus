@@ -36,7 +36,7 @@ export function daysUntil(from: Date, iso: string): number {
 export const CLOSING_SOON_DAYS = 30;
 
 export function deadlineStatus(
-  deadline: Deadline,
+  deadline: Pick<Deadline, 'opens' | 'closes'>,
   now: Date,
 ): DeadlineStatus {
   const toClose = daysUntil(now, deadline.closes);
