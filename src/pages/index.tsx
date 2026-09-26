@@ -6,6 +6,7 @@ import Hero from '@site/src/components/Homepage/Hero';
 import StatsCard from '@site/src/components/Homepage/StatsCard';
 import PopularUniversities from '@site/src/components/Homepage/PopularUniversities';
 import UpcomingDeadlines from '@site/src/components/Homepage/UpcomingDeadlines';
+import DeadlinesCalendar from '@site/src/components/Homepage/UpcomingDeadlines/Calendar';
 import Benefits from '@site/src/components/Homepage/Benefits';
 import ExploreByMajor from '@site/src/components/Homepage/ExploreByMajor';
 
@@ -30,8 +31,9 @@ export default function Home(): ReactNode {
           <div className={styles.row}>
             <StatsCard />
             <PopularUniversities />
+            <UpcomingDeadlines />
           </div>
-          <UpcomingDeadlines />
+          <DeadlinesCalendar />
           <Benefits />
           <ExploreByMajor />
         </div>

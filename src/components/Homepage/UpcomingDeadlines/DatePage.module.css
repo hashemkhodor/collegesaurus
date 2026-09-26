@@ -68,3 +68,34 @@
     var(--cs-page-scholarship) 50%
   );
 }
+
+/* The size of the icon it replaces in the top card's rows. */
+.small {
+  min-inline-size: 2.5rem;
+  border-radius: 0.5rem;
+}
+
+.small .band {
+  padding: 0.2rem 0.55rem 0.15rem;
+  font-size: 0.5625rem;
+}
+
+.small .band::before,
+.small .band::after {
+  top: 0.2rem;
+  inline-size: 0.2rem;
+  block-size: 0.2rem;
+}
+
+.small .band::before {
+  inset-inline-start: 0.2rem;
+}
+
+.small .band::after {
+  inset-inline-end: 0.2rem;
+}
+
+.small .day {
+  padding: 0.05rem 0.35rem 0.15rem;
+  font-size: 1.125rem;
+}
