@@ -37,11 +37,6 @@ export function unit(vector: ArrayLike<number>): Float32Array | null {
   return Float32Array.from(vector, (value) => value / norm);
 }
 
-/** Gemini embeddings are Matryoshka-trained, so their leading dimensions are a smaller embedding. */
-export function truncate(vector: ArrayLike<number>, dims: number): Float32Array {
-  return unit(Array.from(vector).slice(0, dims)) ?? new Float32Array(dims);
-}
-
 export function composeQuery(parts: {vector: Quantized; weight: number}[]): Float32Array | null {
   if (parts.length === 0) {
     return null;

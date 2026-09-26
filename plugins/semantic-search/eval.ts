@@ -3,14 +3,13 @@
  *
  *   composed  the query as the weighted average of its words' vectors, which
  *             is what the browser does
- *   exact     Gemini's own embedding of the whole query, the upper bound
+ *   exact     the model's own embedding of the whole query, the upper bound
  *   keyword   every query word must appear in the section, as the old search
  *             required (an approximation of lunr, not lunr itself)
  *
- * Vectors are embedded at 768 dimensions and compared there and cut to 256.
  * Prints a summary and writes every ranking to --report.
  *
- *   GEMINI_API_KEY=… node plugins/semantic-search/eval.ts [--site URL] [--report FILE]
+ *   node plugins/semantic-search/eval.ts [--model Xenova/multilingual-e5-base] [--site URL] [--report FILE]
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -19,15 +18,15 @@ import {encodeIndex, encodeShards} from '../../src/components/Search/format.ts';
 import {candidateKeys, coverQuery, queryTokens} from '../../src/components/Search/query.ts';
 import {rankPages, type RankedPage} from '../../src/components/Search/rank.ts';
 import {contentTokens, shardOf, tokenize, variants} from '../../src/components/Search/text.ts';
-import {composeQuery, dequantize, quantize, scoreAll, truncate, type Quantized} from '../../src/components/Search/vectors.ts';
+import {composeQuery, dequantize, scoreAll, type Quantized} from '../../src/components/Search/vectors.ts';
 import {buildIndex, prepare, readList, type BuiltIndex} from './build.ts';
 import {VectorCache, embedWithCache} from './cache.ts';
-import {embedTexts, type TaskType} from './gemini.ts';
+import {MODEL, embedWith, loadModel, type TaskType} from './embedder.ts';
+import {SHARDS} from './index.ts';
 
 type Query = {q: string; locale: string; group: string; expect: string[] | string};
 type Row = {
   method: string;
-  dims: number;
   query: Query;
   expected: string[];
   rank: number;
@@ -37,27 +36,19 @@ type Row = {
   note?: string;
 };
 
-const MODEL = 'gemini-embedding-001';
-const FULL = 768;
-const SIZES = [256, 768];
-const SHARDS = 1024;
 const HERE = path.dirname(new URL(import.meta.url).pathname);
-const ROOT = path.resolve(HERE, '../..');
+const CACHE = path.resolve(HERE, '../../.cache/semantic-search');
 const OPEN = {limit: 100, perPage: 3, floor: -1, margin: 2, sectionMargin: 2};
 
 const args = parseArgs({
   options: {
+    model: {type: 'string', default: MODEL},
     site: {type: 'string', default: 'https://collegesaurus.org'},
-    report: {type: 'string', default: path.join(ROOT, '.cache', 'semantic-search', 'eval-report.json')},
+    report: {type: 'string'},
   },
 }).values;
-const apiKey = process.env.GEMINI_API_KEY;
-if (!apiKey) {
-  console.error('GEMINI_API_KEY is not set.');
-  process.exit(1);
-}
+const report = args.report ?? path.join(CACHE, `eval-${path.basename(args.model)}.json`);
 
-const shrink = (vector: Quantized, dims: number) => (dims === FULL ? vector : quantize(truncate(dequantize(vector), dims)));
 const round = (value: number) => Number(value.toFixed(3));
 
 function matrixOf(vectors: Quantized[], dims: number) {
@@ -85,11 +76,12 @@ function keywordScores(query: string, sections: string[][]): Float32Array {
   });
 }
 
-const cache = await VectorCache.open(path.join(ROOT, '.cache', 'semantic-search'), MODEL, FULL);
+const model = await loadModel(path.join(CACHE, 'models'), args.model);
+const cache = await VectorCache.open(path.join(CACHE, 'vectors'), model.name, model.dims);
 const embed = (texts: string[], taskType: TaskType) =>
   embedWithCache(texts, taskType, cache, (missing, task) => {
     console.log(`  embedding ${missing.length} texts as ${task}`);
-    return embedTexts(missing, {apiKey, model: MODEL, dims: FULL, taskType: task});
+    return embedWith(missing, task, model);
   });
 const words = ['en', 'fr', 'ar'].flatMap((lang) => readList(path.join(HERE, 'words', `${lang}.txt`)));
 const phrases = readList(path.join(HERE, 'phrases.txt'));
@@ -122,16 +114,9 @@ const exact = await embed(
 );
 await cache.save();
 
-// Is a 256-dimension embedding the first 256 dimensions of the 768 one? If so,
-// the build can ask for 256 directly.
-const samples = ['AUB tuition', 'منحة دراسية', 'bourse d’études en Hongrie'];
-const direct = await embedTexts(samples, {apiKey, model: MODEL, dims: 256, taskType: 'RETRIEVAL_QUERY'});
-const cut = (await embedTexts(samples, {apiKey, model: MODEL, dims: FULL, taskType: 'RETRIEVAL_QUERY'})).map((v) => truncate(v, 256));
-const matryoshka = samples.map((text, i) => [text, round(direct[i].reduce((sum, value, d) => sum + value * cut[i][d], 0))]);
-
 const rows: Row[] = [];
 const timings: number[] = [];
-const record = (method: string, dims: number, query: Query, ranked: RankedPage[], ids: string[], note?: string) => {
+const record = (method: string, query: Query, ranked: RankedPage[], ids: string[], note?: string) => {
   const expected = typeof query.expect === 'string' ? sets[query.expect] : query.expect;
   const at = ranked.findIndex((page) => expected.includes(ids[page.page]));
   const top = ranked.slice(0, 10).map((page): [string, number] => [ids[page.page], round(page.score)]);
@@ -140,46 +125,37 @@ const record = (method: string, dims: number, query: Query, ranked: RankedPage[]
     .slice(0, 10)
     .filter((page) => expected.includes(ids[page.page]))
     .map((page) => round(best - page.score));
-  rows.push({method, dims, query, expected, rank: at < 0 ? 0 : at + 1, top, gaps, note});
+  rows.push({method, query, expected, rank: at < 0 ? 0 : at + 1, top, gaps, note});
 };
 
 const sizes: Record<string, unknown> = {};
-for (const dims of SIZES) {
-  const prepared = new Map(
-    [...locales].map(([locale, {built}]) => {
-      const vectors = built.vectors.map((vector) => shrink(vector, dims));
-      const terms = built.terms.map((term) => ({...term, vector: shrink(term.vector, dims)}));
-      if (dims === 256) {
-        const shards = encodeShards(terms, SHARDS).map((shard) => JSON.stringify(shard).length);
-        const index = encodeIndex({model: MODEL, dims, shards: SHARDS, pages: built.pages, chunks: built.chunks, vectors});
-        sizes[locale] = {
-          indexBytes: JSON.stringify(index).length,
-          shardBytesTotal: shards.reduce((a, b) => a + b, 0),
-          shardBytesAverage: Math.round(shards.reduce((a, b) => a + b, 0) / SHARDS),
-          terms: terms.length,
-        };
-      }
-      return [locale, {...matrixOf(vectors, dims), terms: new Map(terms.map((term) => [term.key, term])), chunks: built.chunks}];
-    }),
-  );
-  queries.forEach((query, i) => {
-    const {matrix, scales, terms, chunks} = prepared.get(query.locale)!;
-    const {ids} = locales.get(query.locale)!;
-    record('exact', dims, query, rankPages(scoreAll(truncate(dequantize(exact[i]), dims), matrix, scales), chunks, OPEN), ids);
-    const started = performance.now();
-    const {keys, unknown} = coverQuery(queryTokens(query.q), (key) => terms.has(key));
-    const vector = composeQuery(keys.map((key) => terms.get(key)!));
-    const ranked = vector ? rankPages(scoreAll(vector, matrix, scales), chunks, OPEN) : [];
-    if (dims === 256) {
-      timings.push(performance.now() - started);
-    }
-    record('composed', dims, query, ranked, ids, `${keys.join(' + ')}${unknown.length ? ` (unknown: ${unknown.join(', ')})` : ''}`);
-  });
-}
-for (const query of queries) {
-  const {built, ids, sections} = locales.get(query.locale)!;
-  record('keyword', 0, query, rankPages(keywordScores(query.q, sections), built.chunks, {...OPEN, floor: 1e-9}), ids);
-}
+const prepared = new Map(
+  [...locales].map(([locale, {built}]) => {
+    const shards = encodeShards(built.terms, SHARDS).map((shard) => JSON.stringify(shard).length);
+    const index = encodeIndex({model: model.name, dims: model.dims, shards: SHARDS, pages: built.pages, chunks: built.chunks, vectors: built.vectors});
+    const total = shards.reduce((a, b) => a + b, 0);
+    sizes[locale] = {
+      indexBytes: JSON.stringify(index).length,
+      shardBytesTotal: total,
+      shardBytesAverage: Math.round(total / SHARDS),
+      terms: built.terms.length,
+    };
+    const terms = new Map(built.terms.map((term) => [term.key, term]));
+    return [locale, {...matrixOf(built.vectors, model.dims), terms, chunks: built.chunks}];
+  }),
+);
+queries.forEach((query, i) => {
+  const {matrix, scales, terms, chunks} = prepared.get(query.locale)!;
+  const {ids, sections} = locales.get(query.locale)!;
+  record('exact', query, rankPages(scoreAll(dequantize(exact[i]), matrix, scales), chunks, OPEN), ids);
+  const started = performance.now();
+  const {keys, unknown} = coverQuery(queryTokens(query.q), (key) => terms.has(key));
+  const vector = composeQuery(keys.map((key) => terms.get(key)!));
+  const ranked = vector ? rankPages(scoreAll(vector, matrix, scales), chunks, OPEN) : [];
+  timings.push(performance.now() - started);
+  record('composed', query, ranked, ids, `${keys.join(' + ')}${unknown.length ? ` (unknown: ${unknown.join(', ')})` : ''}`);
+  record('keyword', query, rankPages(keywordScores(query.q, sections), chunks, {...OPEN, floor: 1e-9}), ids);
+});
 
 const shardsPerQuery = queries.map((query) => {
   const tokens = queryTokens(query.q);
@@ -187,7 +163,7 @@ const shardsPerQuery = queries.map((query) => {
   return new Set(keys.map((key) => shardOf(key, SHARDS))).size;
 });
 
-const methods = [...new Set(rows.map((row) => `${row.method}@${row.dims}`))];
+const methods = [...new Set(rows.map((row) => row.method))];
 const groups = [...new Set(queries.filter((query) => query.group !== 'off-topic').map((query) => query.group)), 'all'];
 const metric = (selected: Row[]) => {
   const n = selected.length || 1;
@@ -205,7 +181,7 @@ const summary = Object.fromEntries(
         metric(
           rows.filter(
             (row) =>
-              `${row.method}@${row.dims}` === name &&
+              row.method === name &&
               row.query.group !== 'off-topic' &&
               (group === 'all' || row.query.group === group),
           ),
@@ -215,7 +191,7 @@ const summary = Object.fromEntries(
   ]),
 );
 
-console.log('\nMRR@10 (hit@1 / hit@3), on-topic queries by group:');
+console.log(`\n${model.name}, ${model.dims} dimensions. MRR@10 (hit@1 / hit@3), on-topic queries by group:`);
 console.log(['method', ...groups].join('\t'));
 for (const name of methods) {
   console.log(
@@ -228,9 +204,9 @@ for (const name of methods) {
 
 const calibration = Object.fromEntries(
   methods
-    .filter((name) => !name.startsWith('keyword'))
+    .filter((name) => name !== 'keyword')
     .map((name) => {
-      const mine = rows.filter((row) => `${row.method}@${row.dims}` === name);
+      const mine = rows.filter((row) => row.method === name);
       const onTopic = mine.filter((row) => row.expected.length).map((row) => row.top[0]?.[1] ?? 0).sort((a, b) => a - b);
       const offTopic = mine.filter((row) => !row.expected.length).map((row) => row.top[0]?.[1] ?? 0);
       const gaps = mine.flatMap((row) => row.gaps).sort((a, b) => a - b);
@@ -247,8 +223,7 @@ const calibration = Object.fromEntries(
 );
 console.log('\nTop scores, on-topic vs off-topic:');
 console.log(JSON.stringify(calibration, null, 1));
-console.log('\nMatryoshka check, cos(256 direct, 768 cut to 256):', JSON.stringify(matryoshka));
-console.log('Sizes at 256 dims:', JSON.stringify(sizes));
+console.log('Sizes:', JSON.stringify(sizes));
 console.log(
   `Composing and ranking one query in Node: median ${round(timings.sort((a, b) => a - b)[Math.floor(timings.length / 2)])} ms; shards per query: median ${shardsPerQuery.sort((a, b) => a - b)[Math.floor(shardsPerQuery.length / 2)]}`,
 );
@@ -256,13 +231,13 @@ console.log(
 console.log('\nPer query (rank of the first expected page; 0 = not in the list):');
 for (const query of queries) {
   const mine = rows.filter((row) => row.query === query);
-  const rank = (method: string, dims: number) => mine.find((row) => row.method === method && row.dims === dims)!;
-  const composed = rank('composed', 256);
+  const rank = (method: string) => mine.find((row) => row.method === method)!;
+  const composed = rank('composed');
   console.log(
-    `${query.group.padEnd(13)} ${query.q.padEnd(44)} keyword ${rank('keyword', 0).rank}  exact ${rank('exact', 256).rank}  composed ${composed.rank}  top: ${composed.top.slice(0, 3).map(([id, score]) => `${id} ${score}`).join(', ')}  [${composed.note}]`,
+    `${query.group.padEnd(13)} ${query.q.padEnd(44)} keyword ${rank('keyword').rank}  exact ${rank('exact').rank}  composed ${composed.rank}  top: ${composed.top.slice(0, 3).map(([id, score]) => `${id} ${score}`).join(', ')}  [${composed.note}]`,
   );
 }
 
-fs.mkdirSync(path.dirname(args.report), {recursive: true});
-fs.writeFileSync(args.report, JSON.stringify({summary, calibration, matryoshka, sizes, rows}, null, 1));
-console.log(`\nReport: ${args.report}`);
+fs.mkdirSync(path.dirname(report), {recursive: true});
+fs.writeFileSync(report, JSON.stringify({model: model.name, dims: model.dims, summary, calibration, sizes, rows}, null, 1));
+console.log(`\nReport: ${report}`);

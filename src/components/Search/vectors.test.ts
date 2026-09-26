@@ -2,7 +2,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 
-import {composeQuery, dequantize, fromBase64, quantize, scoreAll, toBase64, truncate, unit} from './vectors.ts';
+import {composeQuery, dequantize, fromBase64, quantize, scoreAll, toBase64, unit} from './vectors.ts';
 
 function close(actual: ArrayLike<number>, expected: number[], tolerance = 1e-3) {
   assert.equal(actual.length, expected.length);
@@ -32,10 +32,6 @@ test('stores an all-zero vector without dividing by zero', () => {
 test('scales a vector to unit length, or gives up on a zero one', () => {
   close(unit([3, 4])!, [0.6, 0.8]);
   assert.equal(unit([0, 0]), null);
-});
-
-test('keeps the leading dimensions of a longer embedding at unit length', () => {
-  close(truncate([3, 4, 12], 2), [0.6, 0.8]);
 });
 
 test('weights each word of a query before averaging', () => {
