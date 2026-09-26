@@ -5,10 +5,10 @@
  * called: the query's vector is the weighted average of its words' vectors.
  */
 import {decodeIndex, decodeShard, shardPath, type Index, type IndexFile, type ShardFile, type TermEntry} from './format.ts';
-import {candidateKeys, coverQuery} from './query.ts';
+import {candidateKeys, coverQuery, queryTokens} from './query.ts';
 import {rankPages, type RankOptions} from './rank.ts';
 import {pickSnippet} from './snippet.ts';
-import {contentTokens, shardOf, tokenize, variants} from './text.ts';
+import {contentTokens, shardOf, variants} from './text.ts';
 import {composeQuery, scoreAll} from './vectors.ts';
 
 export type ResultSection = {title: string; href: string; snippet: string; score: number};
@@ -89,7 +89,7 @@ export function createEngine(base: string, load: Load = fetchJson) {
     },
 
     async search(query: string, options: Partial<RankOptions> = {}): Promise<Outcome> {
-      const tokens = tokenize(query);
+      const tokens = queryTokens(query);
       const terms = contentTokens(tokens);
       if (terms.length === 0) {
         return {results: [], terms, understood: false};

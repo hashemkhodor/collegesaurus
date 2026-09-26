@@ -48,6 +48,12 @@ test('adds the general words and student phrases the pages lack, at full weight'
   ]);
 });
 
+test('keeps student phrases that start with a word such as "information"', () => {
+  const keys = buildVocabulary({documents: [], phrases: ['information technology']}).map((term) => term.key);
+
+  assert.deepEqual(keys, ['information technology']);
+});
+
 test('weighs words down as they spread across sections', () => {
   const documents = Array.from({length: 40}, (_, i) => {
     const words = ['university'];

@@ -38,7 +38,7 @@ const STOPWORDS = new Set(
     'myself no nor not now of off on once only or other our ours ourselves out over own same she should so',
     'some such than that the their theirs them themselves then there these they this those through to too',
     'under until up very was we were what when where which while who whom whose why will with would you',
-    'your yours yourself yourselves best top good great list find want looking look info information',
+    'your yours yourself yourselves best top good great list find want looking look',
     'please tell show like get know give vs etc per',
     // French, accents folded.
     'au aux avec ce ces cet cette dans de des du elle elles en et eux il ils je la le les leur leurs lui',

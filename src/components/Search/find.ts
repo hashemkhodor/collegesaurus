@@ -5,7 +5,8 @@
  * cleared the floor. If exact words fail too, the caller says search is down.
  */
 import type {Outcome, Result} from './engine';
-import {contentTokens, tokenize} from './text.ts';
+import {queryTokens} from './query.ts';
+import {contentTokens} from './text.ts';
 
 export type Found = {source: 'semantic' | 'keyword'; results: Result[]; terms: string[]};
 
@@ -17,7 +18,7 @@ export type Sources = {
 };
 
 export async function findResults(query: string, sources: Sources): Promise<Found> {
-  const terms = contentTokens(tokenize(query));
+  const terms = contentTokens(queryTokens(query));
   let understood = false;
   if (sources.semantic) {
     try {

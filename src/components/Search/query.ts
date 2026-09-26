@@ -4,9 +4,14 @@
  * looks the query up). A known phrase such as "computer science" wins over
  * its words, since its own vector means more than their average.
  */
-import {isStopword, variants} from './text.ts';
+import {isStopword, tokenize, variants} from './text.ts';
 
 export const MAX_PHRASE = 3;
+
+/** The query's words. "IT" in capitals is the major; "it" stays a stopword. */
+export function queryTokens(query: string): string[] {
+  return tokenize(query.replace(/\bIT\b/g, 'information technology'));
+}
 
 /** Every key worth fetching for `tokens`: phrases (not starting or ending on a stopword) and words. */
 export function candidateKeys(tokens: string[], maxN = MAX_PHRASE): string[] {

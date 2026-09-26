@@ -2,10 +2,15 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 
-import {candidateKeys, coverQuery} from './query.ts';
+import {candidateKeys, coverQuery, queryTokens} from './query.ts';
 import {tokenize} from './text.ts';
 
 const knows = (...keys: string[]) => (key: string) => keys.includes(key);
+
+test('reads a capitalized IT as the major, and a lowercase it as a word', () => {
+  assert.deepEqual(queryTokens('IT jobs'), ['information', 'technology', 'jobs']);
+  assert.deepEqual(queryTokens('is it free'), ['is', 'it', 'free']);
+});
 
 test('looks up every phrase of up to three words and every word, longest first', () => {
   assert.deepEqual(candidateKeys(tokenize('study medicine abroad')), [
