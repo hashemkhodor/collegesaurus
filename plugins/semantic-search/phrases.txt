@@ -1,6 +1,6 @@
 # Things students search for, in the words they use. Each line gets its own
-# vector, which beats averaging its words. Up to three words (not counting
-# small words such as "of" or "d'" inside); longer lines are ignored.
+# vector, which beats averaging its words. Up to three words, counting small
+# ones such as "of" or "d'"; longer lines are ignored.
 
 computer science
 computer engineering

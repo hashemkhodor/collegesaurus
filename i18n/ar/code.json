@@ -777,5 +777,9 @@
   },
   "search.section.overview": {
     "message": "نظرة عامة"
+  },
+  "theme.SearchPage.inputLabel": {
+    "message": "بحث",
+    "description": "The ARIA label for the search page input"
   }
 }

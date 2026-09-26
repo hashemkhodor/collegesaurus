@@ -178,7 +178,7 @@ npm run clear                         # Clear cache (fix weird build issues)
 
 ### Search
 
-The search box ranks pages by meaning. `plugins/semantic-search` builds its index during `npm run build`: every section of the university, scholarship and Stories pages, plus a vocabulary of English, Arabic and French words and phrases, embedded with Gemini (`gemini-embedding-001`). In the browser a query becomes the average of its words' vectors, so searching calls no API. The build needs `GEMINI_API_KEY`: a repository secret on GitHub, or in `.env` locally. Embeddings are cached in `.cache/semantic-search/`, so a rebuild only embeds what changed. Without the key the site still builds, and search matches exact words only. The dev server has no index either: try search with `npm run build && npm run serve`.
+The search box ranks pages by meaning. `plugins/semantic-search` builds its index during `npm run build`: every section of the university, scholarship and Stories pages, plus a vocabulary of English, Arabic and French words and phrases, embedded with Gemini (`gemini-embedding-001`). In the browser a query becomes the average of its words' vectors, so searching calls no API. The build needs `GEMINI_API_KEY`: a repository secret on GitHub; locally, export it before `npm run build`, or put it in `.env` for `./scripts/sync-test.sh`. Embeddings are cached in `.cache/semantic-search/`, so a rebuild only embeds what changed. Without the key the site still builds, and search matches exact words only. The dev server has no index either: try search with `npm run build && npm run serve`.
 
 `node plugins/semantic-search/eval.ts` measures search on the real queries in `eval-queries.json`, against exact matching and against Gemini's own query embeddings.
 
