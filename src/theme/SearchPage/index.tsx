@@ -155,9 +155,9 @@ function SearchPageContent(): ReactNode {
                 results.length,
                 translate({id: 'search.pageCount', message: '1 page|{count} pages'}, {count: results.length}),
               )}
-              {source === 'keyword' && ` ${keywordNote()}`}
             </p>
           )}
+          {source === 'keyword' && results.length > 0 && <p className={styles.note}>{keywordNote()}</p>}
           {status === 'done' && results.length === 0 && <p className={styles.note}>{noMatchNote(state.query)}</p>}
           {status === 'error' && <p className={styles.note}>{failedNote()}</p>}
         </div>

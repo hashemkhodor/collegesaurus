@@ -129,7 +129,7 @@ export default function SearchBar(): ReactNode {
         role="combobox"
         aria-autocomplete="list"
         aria-expanded={expanded}
-        aria-controls={`${id}-list`}
+        aria-controls={expanded ? `${id}-list` : undefined}
         aria-activedescendant={expanded && active >= 0 ? optionId(active) : undefined}
         autoComplete="off"
         autoCorrect="off"
