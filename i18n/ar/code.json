@@ -613,6 +613,18 @@
     "message": "ولا غيرها|وموعد آخر|وموعدان آخران|و{count} مواعيد أخرى|و{count} موعدًا آخر|و{count} موعد آخر",
     "description": "Under the first rounds that close on the same day, by plural form"
   },
+  "homepage.deadlines.feedName": {
+    "message": "مواعيد Collegesaurus",
+    "description": "The deadlines calendar's name in the reader's calendar app"
+  },
+  "homepage.deadlines.feedEvent": {
+    "message": "آخر موعد: {name}",
+    "description": "A deadline's title in the reader's calendar app"
+  },
+  "homepage.deadlines.feedOpens": {
+    "message": "يفتح في {date}",
+    "description": "In a deadline's notes in the reader's calendar app, when applications open"
+  },
   "footer.tagline": {
     "message": "دليل مجاني إلى الجامعات والمنح الدراسية في لبنان، أعدّه طلاب."
   },

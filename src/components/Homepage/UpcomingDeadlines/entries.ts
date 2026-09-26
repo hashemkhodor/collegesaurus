@@ -73,3 +73,7 @@ export function calendarEntries(
 export function entrySlug(entry: CalendarEntry): string {
   return `${entry.ref.plugin}-${entry.ref.id}-${entry.closes}`;
 }
+
+/** The calendar files the build publishes under each language's base URL. */
+export const FEED_PATH = 'deadlines.ics';
+export const eventPath = (entry: CalendarEntry) => `deadlines/${entrySlug(entry)}.ics`;
