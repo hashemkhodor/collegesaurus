@@ -32,7 +32,8 @@ const SOURCES: Source[] = [
   {
     file: 'fr.txt',
     url: `${HF}/almanach/camembert-base/resolve/main/tokenizer.json`,
-    pick: (text) => sentencePiece(text, /^▁[a-zàâäçéèêëîïôöùûüÿœæ]{3,}$/),
+    // Capitalized too: CamemBERT is cased, and places ("Hongrie") are searched for.
+    pick: (text) => sentencePiece(text, /^▁[A-ZÀÂÄÇÉÈÊËÎÏÔÖÙÛÜŸŒÆa-zàâäçéèêëîïôöùûüÿœæ][a-zàâäçéèêëîïôöùûüÿœæ]{2,}$/),
   },
   {
     file: 'ar.txt',

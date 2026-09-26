@@ -63,8 +63,10 @@ export function contentTokens(tokens: string[]): string[] {
   return tokens.filter((token) => !isStopword(token));
 }
 
-const PLURALS: [RegExp, string][] = [
+const ENGLISH_FORMS: [RegExp, string][] = [
+  [/iest$/, 'y'],
   [/ies$/, 'y'],
+  [/est$/, ''],
   [/s$/, ''],
   [/es$/, ''],
 ];
@@ -78,8 +80,9 @@ const ARABIC_SUFFIXES: [string, string][] = [
 
 /**
  * Other spellings to look up when a word itself has no vector: a singular for
- * a plural, or an Arabic word without the conjunctions, prepositions and
- * article written onto it. Least changed first.
+ * a plural, the plain adjective for a superlative, or an Arabic word with the
+ * article the pages usually write, or without the conjunctions, prepositions
+ * and article written onto it. Least changed first.
  */
 export function variants(word: string): string[] {
   const out: string[] = [];
@@ -92,6 +95,9 @@ export function variants(word: string): string[] {
     const stems = ARABIC_PREFIXES.filter((prefix) => word.startsWith(prefix))
       .map((prefix) => word.slice(prefix.length))
       .sort((a, b) => b.length - a.length);
+    if (stems.length === 0) {
+      add(`ال${word}`, 2);
+    }
     for (const form of [word, ...stems]) {
       add(form, 2);
       for (const [suffix, replacement] of ARABIC_SUFFIXES) {
@@ -102,7 +108,7 @@ export function variants(word: string): string[] {
     }
     return out;
   }
-  for (const [pattern, replacement] of PLURALS) {
+  for (const [pattern, replacement] of ENGLISH_FORMS) {
     if (pattern.test(word)) {
       add(word.replace(pattern, replacement), 3);
     }

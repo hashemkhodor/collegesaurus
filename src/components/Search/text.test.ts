@@ -50,6 +50,15 @@ test('offers the singular of an unknown English or French plural', () => {
   assert.deepEqual(variants('bourses'), ['bourse', 'bours']);
 });
 
+test('offers the plain adjective of an unknown superlative', () => {
+  assert.deepEqual(variants('cheapest'), ['cheap']);
+  assert.ok(variants('easiest').includes('easy'));
+});
+
+test('offers an unknown Arabic word with the article, as the pages usually write it', () => {
+  assert.ok(variants('تمريض').includes('التمريض'));
+});
+
 test('offers an unknown Arabic word without its attached prefixes', () => {
   assert.deepEqual(variants('والجامعه'), ['الجامعه', 'جامعه']);
   assert.deepEqual(variants('بالطب'), ['الطب', 'طب']);
@@ -57,8 +66,8 @@ test('offers an unknown Arabic word without its attached prefixes', () => {
 });
 
 test('offers the singular of an Arabic sound plural', () => {
-  assert.deepEqual(variants('جامعات'), ['جامعه', 'جامع']);
-  assert.deepEqual(variants('مهندسون'), ['مهندس']);
+  assert.deepEqual(variants('جامعات'), ['الجامعات', 'جامعه', 'جامع']);
+  assert.deepEqual(variants('مهندسون'), ['المهندسون', 'مهندس']);
 });
 
 test('never offers a variant too short to mean anything', () => {
