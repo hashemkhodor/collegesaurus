@@ -214,6 +214,47 @@ const PATHS = {
       <path d="M5 5a14 14 0 0 1 14 14" />
     </>
   ),
+  pencil: (
+    <>
+      <path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19z" />
+      <line x1="14.5" y1="6.5" x2="17.5" y2="9.5" />
+    </>
+  ),
+  upload: (
+    <>
+      <path d="M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15" />
+      <line x1="12" y1="15" x2="12" y2="4" />
+      <polyline points="7.5,8.5 12,4 16.5,8.5" />
+    </>
+  ),
+  users: (
+    <>
+      <circle cx="9" cy="8.5" r="3.5" />
+      <path d="M2.5 20a6.5 6.5 0 0 1 13 0" />
+      <path d="M16 5.3a3.5 3.5 0 0 1 0 6.4" />
+      <path d="M18 14.2a6.5 6.5 0 0 1 3.5 5.8" />
+    </>
+  ),
+  link: (
+    <>
+      <path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1" />
+      <path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" />
+    </>
+  ),
+  clock: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <polyline points="12,7 12,12 15.5,14" />
+    </>
+  ),
+  document: (
+    <>
+      <path d="M6 3h8l4 4v13.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5z" />
+      <polyline points="14,3 14,7 18,7" />
+      <line x1="9" y1="12" x2="15" y2="12" />
+      <line x1="9" y1="16" x2="15" y2="16" />
+    </>
+  ),
   // GitHub's own mark, unmodified: Primer Octicons mark-github-24 (MIT, GitHub Inc.).
   github: (
     <g transform="translate(3 3) scale(0.75)" fill="currentColor" stroke="none">
