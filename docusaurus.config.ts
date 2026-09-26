@@ -11,6 +11,9 @@ const config: Config = {
   title: 'Collegesaurus',
   tagline: 'Your guide to universities and scholarships in Lebanon',
   favicon: 'img/favicon.ico',
+  stylesheets: [
+    'https://fonts.googleapis.com/css2?family=Sansita:ital,wght@1,900&text=Collegesaurus&display=swap',
+  ],
   headTags: [
     {
       tagName: 'link',
@@ -159,10 +162,12 @@ const config: Config = {
       },
     },
     navbar: {
+      title: 'Collegesaurus',
       logo: {
-        alt: 'Collegesaurus',
-        src: 'img/brand/logo-lockup.svg',
-        srcDark: 'img/brand/logo-lockup-dark.svg',
+        src: 'img/brand/logo-icon.svg',
+        srcDark: 'img/brand/logo-icon-dark.svg',
+        width: 32,
+        height: 32,
       },
       items: [
         {

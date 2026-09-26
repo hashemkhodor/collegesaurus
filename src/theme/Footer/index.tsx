@@ -11,6 +11,7 @@ import isInternalUrl from '@docusaurus/isInternalUrl';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import ThemedImage from '@theme/ThemedImage';
+import Wordmark from '@site/src/components/Wordmark';
 import {ThemeClassNames} from '@docusaurus/theme-common';
 import {useAlternatePageUtils} from '@docusaurus/theme-common/internal';
 import {Icon, type IconName} from '@site/src/components/Homepage/ui';
@@ -151,14 +152,13 @@ function LocaleLinks(): ReactNode {
 }
 
 export default function Footer(): ReactNode {
-  const {siteConfig} = useDocusaurusContext();
   const universities = useDocsEntry('universities');
   const scholarships = useDocsEntry('scholarships');
   // Build time, not the reader's clock, so server and client render one year.
   const year = new Date(useHomepageData().generatedAt).getUTCFullYear();
   const logo = {
-    light: useBaseUrl('/img/brand/logo-lockup.svg'),
-    dark: useBaseUrl('/img/brand/logo-lockup-dark.svg'),
+    light: useBaseUrl('/img/brand/logo-icon.svg'),
+    dark: useBaseUrl('/img/brand/logo-icon-dark.svg'),
   };
   const feed = useBaseUrl('/stories/rss.xml');
 
@@ -219,12 +219,8 @@ export default function Footer(): ReactNode {
         <div className={styles.top}>
           <div className={styles.brand}>
             <Link to="/" className={styles.home}>
-              <ThemedImage
-                sources={logo}
-                alt={siteConfig.title}
-                width={152}
-                height={32}
-              />
+              <ThemedImage sources={logo} alt="" width={32} height={32} />
+              <Wordmark className={styles.wordmark} />
             </Link>
             <p className={styles.tagline}>
               <Translate id="footer.tagline">

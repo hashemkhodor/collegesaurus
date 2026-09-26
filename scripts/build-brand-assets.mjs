@@ -19,54 +19,21 @@ const out = 'static/img/brand';
 mkdirSync(out, {recursive: true});
 const tmp = mkdtempSync(join(tmpdir(), 'brand-'));
 
-// Illustrator reuses .st0/.st1 with different fills per file, so styles are
-// inlined before files are nested into one lockup.
 function clean(file, prefix) {
   return optimize(readFileSync(join(src, file), 'utf8'), {
     multipass: true,
     plugins: [
-      {name: 'preset-default', params: {overrides: {inlineStyles: {onlyMatchedOnce: false}}}},
+      'preset-default',
       'removeDimensions',
       {name: 'prefixIds', params: {prefix}},
     ],
   }).data;
 }
 
-function parts(svg) {
-  const [, w, h] = svg.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/).map(Number);
-  const body = svg.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '');
-  return {w, h, body};
-}
-
-// Icon beside the wordmark; the wordmark is 45% of the icon's height.
-function lockup(iconFile, textFile, prefix) {
-  const icon = parts(clean(iconFile, `${prefix}-icon`));
-  const text = parts(clean(textFile, `${prefix}-text`));
-  const textH = icon.h * 0.45;
-  const textW = (text.w / text.h) * textH;
-  const gap = icon.h * 0.14;
-  const w = +(icon.w + gap + textW).toFixed(2);
-  return (
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${icon.h}" role="img" aria-label="Collegesaurus">` +
-    `<g>${icon.body}</g>` +
-    `<g transform="translate(${+(icon.w + gap).toFixed(2)} ${+((icon.h - textH) / 2).toFixed(2)}) scale(${+(textH / text.h).toFixed(4)})">${text.body}</g>` +
-    `</svg>\n`
-  );
-}
-
 const write = (name, svg) => writeFileSync(join(out, name), svg);
 
-write('logo-lockup.svg', lockup(
-  'black-no-circle/collegesaurus-black-icon-no-circle.svg',
-  'black/collegesaurus-black-text.svg',
-  'l',
-));
-write('logo-lockup-dark.svg', lockup(
-  'white/collegesaurus-white-icon.svg',
-  'white/collegesaurus-white-text.svg',
-  'd',
-));
 write('logo-icon.svg', clean('black-no-circle/collegesaurus-black-icon-no-circle.svg', 'i'));
+write('logo-icon-dark.svg', clean('white/collegesaurus-white-icon.svg', 'id'));
 const badge = clean('black/collegesaurus-black-icon.svg', 'b');
 write('logo-badge.svg', badge);
 write('favicon.svg', badge);
