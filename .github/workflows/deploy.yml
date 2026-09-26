@@ -73,6 +73,14 @@ jobs:
           GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
           GDRIVE_CONTENT_ROOT_ID: ${{ secrets.GDRIVE_CONTENT_ROOT_ID }}
       - run: npm ci
+      # Embeddings already paid for (plugins/semantic-search), so a build only
+      # embeds the text that changed. Saved under a new key each run; the
+      # newest is restored.
+      - uses: actions/cache@v4
+        with:
+          path: .cache/semantic-search
+          key: semantic-search-${{ github.run_id }}
+          restore-keys: semantic-search-
       - run: npm run build
         env:
           # URL of the Collegesaurus AI chat page; the floating chat bubble
@@ -83,6 +91,10 @@ jobs:
           # Published in /chatbot/version.json (plugins/chatbot-corpus), where
           # check-drive and the chatbot look for changes.
           DRIVE_FINGERPRINT: ${{ needs.check-drive.outputs.fingerprint }}
+          # Builds the search index (plugins/semantic-search). Used at build
+          # time only; it never reaches the site. Without it search keeps to
+          # keywords.
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: build

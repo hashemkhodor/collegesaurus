@@ -29,7 +29,16 @@ jobs:
           GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
           GDRIVE_CONTENT_ROOT_ID: ${{ secrets.GDRIVE_CONTENT_ROOT_ID }}
       - run: npm ci
+      # Reuse the deploys' embeddings (plugins/semantic-search); a pull
+      # request only reads the cache, it never saves its own copy.
+      - uses: actions/cache/restore@v4
+        with:
+          path: .cache/semantic-search
+          key: semantic-search-${{ github.run_id }}
+          restore-keys: semantic-search-
       - run: npm run build
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
   python-tests:
     # Pytest gate for the drive-sync pipeline (parser/emitter against
@@ -48,9 +57,11 @@ jobs:
       - run: pytest
 
   plugin-tests:
-    # Unit tests for the build plugins (the chatbot corpus, and the deadlines
-    # homepage-data reads from the pages) and for the landing page's date
-    # rules. Node 24 runs TypeScript directly, so no install step is needed.
+    # Unit tests for the build plugins (the chatbot corpus, the deadlines
+    # homepage-data reads from the pages, and the semantic search index), the
+    # landing page's date rules and the search box's engine. Node 24 runs
+    # TypeScript directly; the install is for @docusaurus/utils, whose slugger
+    # gives search results the pages' own heading ids.
     name: Plugin tests
     runs-on: ubuntu-latest
     steps:
@@ -58,4 +69,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - run: node --test --disable-warning=MODULE_TYPELESS_PACKAGE_JSON plugins/*/*.test.ts src/components/Homepage/UpcomingDeadlines/*.test.ts
+          cache: npm
+      - run: npm ci
+      - run: node --test --disable-warning=MODULE_TYPELESS_PACKAGE_JSON plugins/*/*.test.ts src/components/Homepage/UpcomingDeadlines/*.test.ts src/components/Search/*.test.ts
