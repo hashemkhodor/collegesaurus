@@ -49,6 +49,8 @@ export function useCalendarLinks() {
   const text = useMemo(() => eventText(translate, i18n.currentLocale), [i18n.currentLocale]);
   const google = translate({id: 'homepage.deadlines.googleCalendar', message: 'Google Calendar'});
   const apple = translate({id: 'homepage.deadlines.appleCalendar', message: 'Apple Calendar'});
+  const appleHint = translate({id: 'homepage.deadlines.appleHint', message: 'iPhone, iPad and Mac'});
+  const outlookHint = translate({id: 'homepage.deadlines.outlookHint', message: 'Outlook on the web'});
 
   const feed = (): CalendarOption[] => {
     const url = withBaseUrl(`/${FEED_PATH}`, {absolute: true});
@@ -58,7 +60,7 @@ export function useCalendarLinks() {
           key: 'google',
           label: google,
           hint: translate({
-            id: 'homepage.deadlines.subscribeGoogle',
+            id: 'homepage.deadlines.googleSubscribeHint',
             message: 'From a computer. On Android, then turn on Sync for it in the app.',
             description: 'How to subscribe with Google Calendar, which works from a computer only',
           }),
@@ -68,19 +70,19 @@ export function useCalendarLinks() {
         {
           key: 'apple',
           label: apple,
-          hint: translate({id: 'homepage.deadlines.subscribeApple', message: 'iPhone, iPad and Mac'}),
+          hint: appleHint,
           href: webcal(url),
         },
         {
           key: 'android',
           label: 'Android',
-          hint: translate({id: 'homepage.deadlines.subscribeAndroid', message: 'With the ICSx⁵ app'}),
+          hint: translate({id: 'homepage.deadlines.androidHint', message: 'With the ICSx⁵ app'}),
           ...(device.opensApps ? {href: icsx5Subscribe(url)} : {href: ICSX5_PAGE, newTab: true}),
         },
         {
           key: 'outlook',
           label: 'Outlook',
-          hint: translate({id: 'homepage.deadlines.subscribeOutlook', message: 'Outlook on the web'}),
+          hint: outlookHint,
           href: outlookSubscribe(url, text.calendar),
           newTab: true,
         },
@@ -111,15 +113,23 @@ export function useCalendarLinks() {
         {
           key: 'google',
           label: google,
+          hint: translate({id: 'homepage.deadlines.googleEventHint', message: 'Android and the web'}),
           ...(device.opensApps
             ? {href: inGoogleCalendarApp(inGoogle)}
             : {href: inGoogle, newTab: true}),
         },
-        {key: 'apple', label: apple, href: file},
-        {key: 'outlook', label: 'Outlook', href: outlookEvent(details), newTab: true},
+        {key: 'apple', label: apple, hint: appleHint, href: file},
+        {
+          key: 'outlook',
+          label: 'Outlook',
+          hint: outlookHint,
+          href: outlookEvent(details),
+          newTab: true,
+        },
         {
           key: 'other',
           label: translate({id: 'homepage.deadlines.otherCalendar', message: 'Other calendar app'}),
+          hint: translate({id: 'homepage.deadlines.fileHint', message: 'Downloads an .ics file'}),
           href: file,
           download: true,
         },

@@ -1,6 +1,16 @@
+.dropdown {
+  position: relative;
+  display: flex;
+}
+
+.compact {
+  display: inline-flex;
+}
+
 .button {
   composes: focusable from '../ui/ui.module.css';
   display: inline-flex;
+  flex: 1;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
@@ -17,21 +27,14 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-.button:hover {
+.button:hover,
+.open .button {
   background: color-mix(in srgb, var(--cs-brand) 22%, var(--cs-green-soft));
-}
-
-.chevron {
-  transition: transform 0.16s var(--cs-ease);
-}
-
-.button[aria-expanded='true'] .chevron {
-  transform: rotate(180deg);
 }
 
 /* Small enough to sit beside a card's pill; the space around it still takes
    a thumb. */
-.compactButton {
+.compact .button {
   position: relative;
   gap: 0.35rem;
   min-block-size: 2.25rem;
@@ -39,33 +42,111 @@
   font-size: var(--cs-text-sm);
 }
 
-.compactButton::before {
+.compact .button::before {
   content: '';
   position: absolute;
   inset: -0.25rem;
 }
 
-.panel {
-  margin-top: 0.5rem;
-  padding: 0.35rem;
-  border-radius: var(--cs-radius-md);
-  background: var(--cs-bg-soft);
-  box-shadow: inset 0 0 0 1px var(--cs-divider);
-  animation: reveal 0.16s var(--cs-ease);
+.chevron {
+  transition: transform 0.16s var(--cs-ease);
 }
 
-@keyframes reveal {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
+.open .chevron {
+  transform: rotate(180deg);
+}
+
+/* Floats like the site's other menus: a raised card, under the button or
+   over it when the page has no room below. */
+.menu {
+  position: absolute;
+  inset-block-start: calc(100% + 0.5rem);
+  inset-inline: 0;
+  z-index: 5;
+  padding: 0.35rem;
+  border-radius: var(--cs-radius-md);
+  background: var(--cs-surface);
+  box-shadow:
+    0 0 0 1px var(--cs-divider),
+    var(--cs-shadow-raised);
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition:
+    opacity 0.14s var(--cs-ease),
+    transform 0.14s var(--cs-ease),
+    visibility 0s linear 0.14s;
+}
+
+.menu:focus {
+  outline: none;
+}
+
+/* A bridge over the gap, so the pointer can cross from the button. */
+.menu::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 100%;
+  block-size: 0.5rem;
+}
+
+.up .menu {
+  inset-block: auto calc(100% + 0.5rem);
+  transform: translateY(4px);
+}
+
+.up .menu::before {
+  inset-block: 100% auto;
+}
+
+.compact .menu {
+  inset-inline: auto 0;
+  inline-size: 15rem;
+  max-inline-size: calc(100vw - 2rem);
+}
+
+.open .menu {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  transition-delay: 0s;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  /* A short wait first, so passing over the button on the way elsewhere
+     doesn't open it. */
+  .dropdown:hover .menu {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    transition-delay: 0.1s;
+  }
+
+  .dropdown:hover .chevron {
+    transform: rotate(180deg);
   }
 }
 
-.intro {
-  margin: 0.4rem 0.65rem 0.3rem;
-  font-size: var(--cs-text-sm);
+.intro,
+.note {
+  margin: 0.4rem 0.7rem;
+  font-size: var(--cs-text-xs);
   line-height: 1.5;
   color: var(--cs-ink-muted);
+}
+
+.intro {
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid var(--cs-divider);
+}
+
+.note {
+  padding-top: 0.45rem;
+  border-top: 1px solid var(--cs-divider);
 }
 
 .options {
@@ -84,12 +165,13 @@
   gap: 0.1rem;
   inline-size: 100%;
   min-block-size: 2.75rem;
-  padding: 0.5rem 0.65rem;
+  padding: 0.45rem 0.7rem;
   border: 0;
   border-radius: var(--cs-radius-sm);
   background: transparent;
   color: var(--cs-ink);
   font: inherit;
+  font-size: var(--cs-text-sm);
   text-align: start;
   cursor: pointer;
   touch-action: manipulation;
@@ -97,9 +179,13 @@
 }
 
 .option:hover {
-  background: color-mix(in srgb, var(--cs-brand) 10%, var(--cs-bg-soft));
+  background: color-mix(in srgb, var(--cs-brand) 9%, var(--cs-surface));
   color: var(--cs-ink);
   text-decoration: none;
+}
+
+.option:focus-visible {
+  outline-offset: -2px;
 }
 
 .label {
@@ -108,7 +194,7 @@
 }
 
 .hint {
-  font-size: var(--cs-text-sm);
+  font-size: var(--cs-text-xs);
   line-height: 1.4;
   color: var(--cs-ink-muted);
 }
@@ -118,49 +204,13 @@
   user-select: all;
 }
 
-.note {
-  margin: 0.6rem 0 0;
-  font-size: var(--cs-text-xs);
-  line-height: 1.5;
-  color: var(--cs-ink-muted);
-}
-
-/* Inside a card: the ways in as a row of chips under a rule. */
-.compactPanel {
-  margin-top: 0.25rem;
-  padding: 0.75rem 0 0;
-  border-top: 1px solid var(--cs-divider);
-  border-radius: 0;
-  background: none;
-  box-shadow: none;
-}
-
-.compactPanel .options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.compactPanel .option {
-  inline-size: auto;
-  padding-inline: 0.95rem;
-  border-radius: var(--cs-radius-pill);
-  font-size: var(--cs-text-sm);
-  background: var(--cs-surface);
-  box-shadow: inset 0 0 0 1px var(--cs-divider);
-}
-
-.compactPanel .option:hover {
-  background: var(--cs-surface);
-  box-shadow: inset 0 0 0 1.5px var(--cs-brand);
-}
-
+/* Appears and goes without moving, still after the same short wait. */
 @media (prefers-reduced-motion: reduce) {
   .chevron {
     transition: none;
   }
 
-  .panel {
-    animation: none;
+  .menu {
+    transition-property: visibility;
   }
 }
