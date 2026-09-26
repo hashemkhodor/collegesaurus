@@ -1,0 +1,50 @@
+.button {
+  composes: focusable from '../../Homepage/ui/ui.module.css';
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding-inline: clamp(1rem, 3vw, 1.5rem);
+  border-radius: var(--cs-radius-pill);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: background var(--ifm-transition-fast) var(--cs-ease);
+}
+
+.button:hover {
+  text-decoration: none;
+}
+
+.primary {
+  background: var(--cs-brand-fill);
+  box-shadow: var(--cs-shadow-brand);
+  color: #fff;
+}
+
+.primary:hover {
+  background: var(--cs-brand-fill-hover);
+  color: #fff;
+}
+
+.soft {
+  background: var(--cs-green-soft);
+  color: var(--cs-brand-strong);
+  font-weight: 700;
+}
+
+.soft:hover {
+  background: color-mix(in srgb, var(--cs-brand) 22%, var(--cs-green-soft));
+  color: var(--cs-brand-strong);
+}
+
+.external {
+  flex: none;
+  opacity: 0.8;
+}
+
+.visuallyHidden {
+  composes: visuallyHidden from '../../Homepage/ui/ui.module.css';
+}
