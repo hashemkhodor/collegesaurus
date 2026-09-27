@@ -23,9 +23,15 @@ export type Outcome = {
   understood: boolean;
 };
 
-// From plugins/semantic-search/eval.ts: off-topic queries top out near 0.15,
-// and 90% of expected pages score within 0.14 of the best.
-export const RANKING: RankOptions = {limit: 20, perPage: 3, floor: 0.16, margin: 0.15, sectionMargin: 0.15};
+// From plugins/semantic-search/eval.ts (re-run as the corpus grows): English
+// off-topic queries score up to about 0.17, and 90% of expected pages score
+// within 0.15 of their page's best. One Arabic off-topic query ("weather in
+// Beirut") has scored as high as 0.23 in practice — above even some good
+// on-topic matches — so no floor here can exclude it without also hiding
+// real results; it surfaces a low-relevance page instead of falling back to
+// keyword search. Follow-up: a per-locale floor, a larger off-topic sample,
+// or a CI check that fails when a fresh eval-report tops this floor.
+export const RANKING: RankOptions = {limit: 20, perPage: 3, floor: 0.18, margin: 0.15, sectionMargin: 0.15};
 
 type Load = (url: string) => Promise<unknown>;
 
