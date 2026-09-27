@@ -18,7 +18,7 @@ All the Lebanese university and scholarship info you'd normally have to dig thro
 - **Scholarships** — Eligibility, application windows, supported universities, benefits, and recipient contacts
 - **Bilingual** — Full English and Arabic (RTL) support, with content mirrored byte-for-byte for tables
 - **Sortable program tables** — Built-in `<MajorsTable>` MDX component with sortable columns and direct links to each program
-- **Local search** — Search across all content, no external service needed
+- **Search by meaning** — Finds pages by what you mean, not only the words you type ("coding degree" finds Computer Science), in English, Arabic and French, ordered by relevance. It runs in the browser with no search service, and falls back to exact-word search
 - **Open source** — Anyone can contribute corrections, updates, or new content
 
 ---
@@ -175,6 +175,12 @@ npm run serve                         # Serve the production build
 npm run typecheck                     # TypeScript check
 npm run clear                         # Clear cache (fix weird build issues)
 ```
+
+### Search
+
+The search box ranks pages by meaning. `plugins/semantic-search` builds its index during `npm run build`: every section of the university, scholarship and Stories pages, plus a vocabulary of English, Arabic and French words and phrases, embedded with the open model [multilingual-e5-small](https://huggingface.co/intfloat/multilingual-e5-small) (MIT). In the browser a query becomes the average of its words' vectors, so searching calls no API. The build needs no key: it downloads the model (135 MB) into `.cache/semantic-search/models/` once, and keeps embeddings in `.cache/semantic-search/vectors/`, so a rebuild only embeds what changed. Embedding everything takes about a minute on a laptop. If the model can't be downloaded or run, the site still builds, and search matches exact words only. The dev server has no index either: try search with `npm run build && npm run serve`.
+
+`node plugins/semantic-search/eval.ts` measures search on the real queries in `eval-queries.json`, against exact matching and against the model's own embedding of each whole query; `--model Xenova/multilingual-e5-base` tries a larger model. The cutoffs in `src/components/Search/engine.ts` come from its report.
 
 ## License
 

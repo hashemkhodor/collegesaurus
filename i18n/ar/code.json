@@ -919,5 +919,56 @@
   },
   "stories.author.count": {
     "message": "القصص: {count}"
+  },
+  "search.type.university": {
+    "message": "جامعة"
+  },
+  "search.type.scholarship": {
+    "message": "منحة"
+  },
+  "search.type.story": {
+    "message": "قصة"
+  },
+  "search.type.page": {
+    "message": "صفحة"
+  },
+  "search.keywordNote": {
+    "message": "نعرض الصفحات التي تحتوي على هذه الكلمات بالضبط.",
+    "description": "Shown above results when search by meaning could not answer and keyword search did"
+  },
+  "search.failed": {
+    "message": "تعذّر تحميل البحث. تحقّق من اتصالك وحاول مجددًا."
+  },
+  "search.searching": {
+    "message": "جارٍ البحث…"
+  },
+  "search.noMatch": {
+    "message": "لا توجد صفحات تطابق «{query}». جرّب كلمات أخرى."
+  },
+  "search.pageCount": {
+    "message": "{count} صفحة|صفحة واحدة|صفحتان|{count} صفحات|{count} صفحة|{count} صفحة"
+  },
+  "search.page.title": {
+    "message": "البحث"
+  },
+  "search.example.coding": {
+    "message": "شهادة في البرمجة"
+  },
+  "search.example.europe": {
+    "message": "دراسة مجانية في أوروبا"
+  },
+  "search.example.publicSchools": {
+    "message": "منح لطلاب المدارس الرسمية"
+  },
+  "search.hint": {
+    "message": "ابحث بما تقصده، لا بالكلمات نفسها فقط: جرّب {examples}.",
+    "description": "Shown on the search page before anything is typed; {examples} are links to example searches"
+  },
+  "search.section.overview": {
+    "message": "نظرة عامة"
+  },
+  "theme.SearchPage.inputLabel": {
+    "message": "بحث",
+    "description": "The ARIA label for the search page input"
   }
 }

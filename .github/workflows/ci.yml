@@ -4,6 +4,11 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  # onnxruntime-node (plugins/semantic-search) would otherwise download its
+  # CUDA binaries during npm ci on Linux; the build runs the model on the CPU.
+  ONNXRUNTIME_NODE_INSTALL: skip
+
 jobs:
   build:
     name: Build
@@ -29,6 +34,18 @@ jobs:
           GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
           GDRIVE_CONTENT_ROOT_ID: ${{ secrets.GDRIVE_CONTENT_ROOT_ID }}
       - run: npm ci
+      # Reuse the deploys' embedding model and embeddings
+      # (plugins/semantic-search); a pull request only reads the caches, it
+      # never saves its own copy.
+      - uses: actions/cache/restore@v4
+        with:
+          path: .cache/semantic-search/models
+          key: semantic-search-model-${{ hashFiles('plugins/semantic-search/embedder.ts') }}
+      - uses: actions/cache/restore@v4
+        with:
+          path: .cache/semantic-search/vectors
+          key: semantic-search-vectors-${{ github.run_id }}
+          restore-keys: semantic-search-vectors-
       - run: npm run build
 
   python-tests:
@@ -48,9 +65,11 @@ jobs:
       - run: pytest
 
   plugin-tests:
-    # Unit tests for the build plugins (the chatbot corpus, and the deadlines
-    # homepage-data reads from the pages) and for the landing page's date
-    # rules. Node 24 runs TypeScript directly, so no install step is needed.
+    # Unit tests for the build plugins (the chatbot corpus, the deadlines
+    # homepage-data reads from the pages, and the semantic search index), the
+    # landing page's date rules and the search box's engine. Node 24 runs
+    # TypeScript directly; the install is for @docusaurus/utils, whose slugger
+    # gives search results the pages' own heading ids.
     name: Plugin tests
     runs-on: ubuntu-latest
     steps:
@@ -58,4 +77,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - run: node --test --disable-warning=MODULE_TYPELESS_PACKAGE_JSON plugins/*/*.test.ts src/components/Homepage/UpcomingDeadlines/*.test.ts
+          cache: npm
+      - run: npm ci
+      - run: node --test --disable-warning=MODULE_TYPELESS_PACKAGE_JSON plugins/*/*.test.ts src/components/Homepage/UpcomingDeadlines/*.test.ts src/components/Search/*.test.ts

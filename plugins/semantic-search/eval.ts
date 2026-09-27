@@ -1,0 +1,245 @@
+/**
+ * Measures search on real queries (eval-queries.json) before it ships:
+ *
+ *   composed  the query as the weighted average of its words' vectors, which
+ *             is what the browser does
+ *   exact     the model's own embedding of the whole query, less the terms'
+ *             mean as the index's terms are: the upper bound
+ *   keyword   every query word must appear in the section, as the old search
+ *             required (an approximation of lunr, not lunr itself)
+ *
+ * Prints a summary and writes every ranking to --report.
+ *
+ *   node plugins/semantic-search/eval.ts [--model Xenova/multilingual-e5-base] [--site URL] [--report FILE]
+ */
+import fs from 'node:fs';
+import path from 'node:path';
+import {parseArgs} from 'node:util';
+import {encodeIndex, encodeShards} from '../../src/components/Search/format.ts';
+import {candidateKeys, coverQuery, queryTokens} from '../../src/components/Search/query.ts';
+import {rankPages, type RankedPage} from '../../src/components/Search/rank.ts';
+import {contentTokens, shardOf, tokenize, variants} from '../../src/components/Search/text.ts';
+import {composeQuery, dequantize, scoreAll, unit, type Quantized} from '../../src/components/Search/vectors.ts';
+import {buildIndex, prepare, readList, type BuiltIndex} from './build.ts';
+import {VectorCache, embedWithCache} from './cache.ts';
+import {MODEL, embedWith, loadModel, type TaskType} from './embedder.ts';
+import {SHARDS} from './index.ts';
+
+type Query = {q: string; locale: string; group: string; expect: string[] | string};
+type Row = {
+  method: string;
+  query: Query;
+  expected: string[];
+  rank: number;
+  top: [string, number][];
+  /** How far under the best page each expected page in the top 10 scored. */
+  gaps: number[];
+  note?: string;
+};
+
+const HERE = path.dirname(new URL(import.meta.url).pathname);
+const CACHE = path.resolve(HERE, '../../.cache/semantic-search');
+const OPEN = {limit: 100, perPage: 3, floor: -1, margin: 2, sectionMargin: 2};
+
+const args = parseArgs({
+  options: {
+    model: {type: 'string', default: MODEL},
+    site: {type: 'string', default: 'https://collegesaurus.org'},
+    report: {type: 'string'},
+  },
+}).values;
+const report = args.report ?? path.join(CACHE, `eval-${path.basename(args.model)}.json`);
+
+const round = (value: number) => Number(value.toFixed(3));
+
+function matrixOf(vectors: Quantized[], dims: number) {
+  const matrix = new Int8Array(vectors.length * dims);
+  vectors.forEach(({q}, i) => matrix.set(q, i * dims));
+  return {matrix, scales: vectors.map(({scale}) => scale)};
+}
+
+function wordMatches(word: string, term: string): boolean {
+  return word === term || (term.length >= 3 && word.startsWith(term)) || (word.length >= 4 && term.startsWith(word));
+}
+
+/** TF-IDF over sections that contain every query word; the rest score 0. */
+function keywordScores(query: string, sections: string[][]): Float32Array {
+  const terms = contentTokens(tokenize(query));
+  const df = terms.map((term) => sections.filter((words) => words.some((word) => wordMatches(word, term))).length);
+  return Float32Array.from(sections, (words) => {
+    if (terms.length === 0 || !terms.every((term) => words.some((word) => wordMatches(word, term)))) {
+      return 0;
+    }
+    return terms.reduce((sum, term, i) => {
+      const tf = words.filter((word) => wordMatches(word, term)).length;
+      return sum + (tf / Math.sqrt(words.length)) * Math.log(1 + sections.length / df[i]);
+    }, 0);
+  });
+}
+
+const model = await loadModel(path.join(CACHE, 'models'), args.model);
+const cache = await VectorCache.open(path.join(CACHE, 'vectors'), model.name, model.dims);
+const embed = (texts: string[], taskType: TaskType) =>
+  embedWithCache(texts, taskType, cache, (missing, task) => {
+    console.log(`  embedding ${missing.length} texts as ${task}`);
+    return embedWith(missing, task, model);
+  });
+const words = ['en', 'fr', 'ar'].flatMap((lang) => readList(path.join(HERE, 'words', `${lang}.txt`)));
+const phrases = readList(path.join(HERE, 'phrases.txt'));
+const {sets, queries} = JSON.parse(fs.readFileSync(path.join(HERE, 'eval-queries.json'), 'utf8')) as {
+  sets: Record<string, string[]>;
+  queries: Query[];
+};
+
+const locales = new Map<string, {built: BuiltIndex; ids: string[]; sections: string[][]}>();
+for (const locale of new Set(queries.map((query) => query.locale))) {
+  const corpus = await (await fetch(`${args.site}${locale === 'en' ? '' : `/${locale}`}/chatbot/corpus.json`)).json();
+  const started = performance.now();
+  let built: BuiltIndex;
+  try {
+    built = await buildIndex(corpus.docs, {embed, words, phrases});
+  } finally {
+    await cache.save();
+  }
+  const seconds = ((performance.now() - started) / 1000).toFixed(0);
+  console.log(`${locale}: ${corpus.docs.length} pages, ${built.chunks.length} sections, ${built.terms.length} terms (${seconds} s)`);
+  locales.set(locale, {
+    built,
+    ids: corpus.docs.map((doc: {type: string; slug: string}) => `${doc.type}/${doc.slug}`),
+    sections: prepare(corpus.docs).chunks.map((chunk) => tokenize(chunk.words)),
+  });
+}
+const exact = await embed(
+  queries.map((query) => query.q),
+  'RETRIEVAL_QUERY',
+);
+await cache.save();
+
+const rows: Row[] = [];
+const timings: number[] = [];
+const record = (method: string, query: Query, ranked: RankedPage[], ids: string[], note?: string) => {
+  const expected = typeof query.expect === 'string' ? sets[query.expect] : query.expect;
+  const at = ranked.findIndex((page) => expected.includes(ids[page.page]));
+  const top = ranked.slice(0, 10).map((page): [string, number] => [ids[page.page], round(page.score)]);
+  const best = ranked[0]?.score ?? 0;
+  const gaps = ranked
+    .slice(0, 10)
+    .filter((page) => expected.includes(ids[page.page]))
+    .map((page) => round(best - page.score));
+  rows.push({method, query, expected, rank: at < 0 ? 0 : at + 1, top, gaps, note});
+};
+
+const sizes: Record<string, unknown> = {};
+const prepared = new Map(
+  [...locales].map(([locale, {built}]) => {
+    const shards = encodeShards(built.terms, SHARDS).map((shard) => JSON.stringify(shard).length);
+    const index = encodeIndex({model: model.name, dims: model.dims, shards: SHARDS, pages: built.pages, chunks: built.chunks, vectors: built.vectors});
+    const total = shards.reduce((a, b) => a + b, 0);
+    sizes[locale] = {
+      indexBytes: JSON.stringify(index).length,
+      shardBytesTotal: total,
+      shardBytesAverage: Math.round(total / SHARDS),
+      terms: built.terms.length,
+    };
+    const terms = new Map(built.terms.map((term) => [term.key, term]));
+    return [locale, {...matrixOf(built.vectors, model.dims), terms, chunks: built.chunks, queryMean: built.queryMean}];
+  }),
+);
+queries.forEach((query, i) => {
+  const {matrix, scales, terms, chunks, queryMean} = prepared.get(query.locale)!;
+  const {ids, sections} = locales.get(query.locale)!;
+  const whole = unit(dequantize(exact[i]).map((value, d) => value - queryMean[d])) ?? queryMean;
+  record('exact', query, rankPages(scoreAll(whole, matrix, scales), chunks, OPEN), ids);
+  const started = performance.now();
+  const {keys, unknown} = coverQuery(queryTokens(query.q), (key) => terms.has(key));
+  const vector = composeQuery(keys.map((key) => terms.get(key)!));
+  const ranked = vector ? rankPages(scoreAll(vector, matrix, scales), chunks, OPEN) : [];
+  timings.push(performance.now() - started);
+  record('composed', query, ranked, ids, `${keys.join(' + ')}${unknown.length ? ` (unknown: ${unknown.join(', ')})` : ''}`);
+  record('keyword', query, rankPages(keywordScores(query.q, sections), chunks, {...OPEN, floor: 1e-9}), ids);
+});
+
+const shardsPerQuery = queries.map((query) => {
+  const tokens = queryTokens(query.q);
+  const keys = [...candidateKeys(tokens), ...contentTokens(tokens).flatMap(variants)];
+  return new Set(keys.map((key) => shardOf(key, SHARDS))).size;
+});
+
+const methods = [...new Set(rows.map((row) => row.method))];
+const groups = [...new Set(queries.filter((query) => query.group !== 'off-topic').map((query) => query.group)), 'all'];
+const metric = (selected: Row[]) => {
+  const n = selected.length || 1;
+  const hit1 = selected.filter((row) => row.rank === 1).length / n;
+  const hit3 = selected.filter((row) => row.rank >= 1 && row.rank <= 3).length / n;
+  const mrr = selected.reduce((sum, row) => sum + (row.rank >= 1 && row.rank <= 10 ? 1 / row.rank : 0), 0) / n;
+  return {hit1: round(hit1), hit3: round(hit3), mrr: round(mrr), n: selected.length};
+};
+const summary = Object.fromEntries(
+  methods.map((name) => [
+    name,
+    Object.fromEntries(
+      groups.map((group) => [
+        group,
+        metric(
+          rows.filter(
+            (row) =>
+              row.method === name &&
+              row.query.group !== 'off-topic' &&
+              (group === 'all' || row.query.group === group),
+          ),
+        ),
+      ]),
+    ),
+  ]),
+);
+
+console.log(`\n${model.name}, ${model.dims} dimensions. MRR@10 (hit@1 / hit@3), on-topic queries by group:`);
+console.log(['method', ...groups].join('\t'));
+for (const name of methods) {
+  console.log(
+    [name, ...groups.map((group) => {
+      const {mrr, hit1, hit3} = summary[name][group];
+      return `${mrr} (${hit1}/${hit3})`;
+    })].join('\t'),
+  );
+}
+
+const calibration = Object.fromEntries(
+  methods
+    .filter((name) => name !== 'keyword')
+    .map((name) => {
+      const mine = rows.filter((row) => row.method === name);
+      const onTopic = mine.filter((row) => row.expected.length).map((row) => row.top[0]?.[1] ?? 0).sort((a, b) => a - b);
+      const offTopic = mine.filter((row) => !row.expected.length).map((row) => row.top[0]?.[1] ?? 0);
+      const gaps = mine.flatMap((row) => row.gaps).sort((a, b) => a - b);
+      const at = (share: number) => gaps[Math.min(gaps.length - 1, Math.floor(share * gaps.length))];
+      return [
+        name,
+        {
+          onTopicTopScores: {min: onTopic[0], median: onTopic[Math.floor(onTopic.length / 2)], max: onTopic.at(-1)},
+          offTopicTopScores: offTopic,
+          expectedGapUnderTop: {median: at(0.5), p80: at(0.8), p90: at(0.9), max: gaps.at(-1)},
+        },
+      ];
+    }),
+);
+console.log('\nTop scores, on-topic vs off-topic:');
+console.log(JSON.stringify(calibration, null, 1));
+console.log('Sizes:', JSON.stringify(sizes));
+console.log(
+  `Composing and ranking one query in Node: median ${round(timings.sort((a, b) => a - b)[Math.floor(timings.length / 2)])} ms; shards per query: median ${shardsPerQuery.sort((a, b) => a - b)[Math.floor(shardsPerQuery.length / 2)]}`,
+);
+
+console.log('\nPer query (rank of the first expected page; 0 = not in the list):');
+for (const query of queries) {
+  const mine = rows.filter((row) => row.query === query);
+  const rank = (method: string) => mine.find((row) => row.method === method)!;
+  const composed = rank('composed');
+  console.log(
+    `${query.group.padEnd(13)} ${query.q.padEnd(44)} keyword ${rank('keyword').rank}  exact ${rank('exact').rank}  composed ${composed.rank}  top: ${composed.top.slice(0, 3).map(([id, score]) => `${id} ${score}`).join(', ')}  [${composed.note}]`,
+  );
+}
+
+fs.mkdirSync(path.dirname(report), {recursive: true});
+fs.writeFileSync(report, JSON.stringify({model: model.name, dims: model.dims, summary, calibration, sizes, rows}, null, 1));
+console.log(`\nReport: ${report}`);

@@ -20,6 +20,11 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+env:
+  # onnxruntime-node (plugins/semantic-search) would otherwise download its
+  # CUDA binaries during npm ci on Linux; the build runs the model on the CPU.
+  ONNXRUNTIME_NODE_INSTALL: skip
+
 jobs:
   check-drive:
     name: Check Drive for changes
@@ -73,6 +78,20 @@ jobs:
           GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
           GDRIVE_CONTENT_ROOT_ID: ${{ secrets.GDRIVE_CONTENT_ROOT_ID }}
       - run: npm ci
+      # The search index's embedding model (plugins/semantic-search),
+      # downloaded from Hugging Face once. embedder.ts names the model, so
+      # the key changes with it.
+      - uses: actions/cache@v4
+        with:
+          path: .cache/semantic-search/models
+          key: semantic-search-model-${{ hashFiles('plugins/semantic-search/embedder.ts') }}
+      # Embeddings already made, so a build only embeds the text that
+      # changed. Saved under a new key each run; the newest is restored.
+      - uses: actions/cache@v4
+        with:
+          path: .cache/semantic-search/vectors
+          key: semantic-search-vectors-${{ github.run_id }}
+          restore-keys: semantic-search-vectors-
       - run: npm run build
         env:
           # URL of the Collegesaurus AI chat page; the floating chat bubble
