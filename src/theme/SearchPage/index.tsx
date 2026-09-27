@@ -14,6 +14,7 @@ import Layout from '@theme/Layout';
 import useSearchQuery from '@theme/hooks/useSearchQuery';
 import type {Result} from '@site/src/components/Search/engine';
 import Highlighted from '@site/src/components/Search/Highlighted';
+import {maskProfanity} from '@site/src/components/Search/profanity';
 import ResultTile from '@site/src/components/Search/ResultTile';
 import {
   failedNote,
@@ -116,7 +117,10 @@ function SearchPageContent(): ReactNode {
   }, [query]);
 
   const title = query.trim()
-    ? translate({id: 'theme.SearchPage.existingResultsTitle', message: 'Search results for "{query}"'}, {query})
+    ? translate(
+        {id: 'theme.SearchPage.existingResultsTitle', message: 'Search results for "{query}"'},
+        {query: maskProfanity(query)},
+      )
     : translate({id: 'search.page.title', message: 'Search'});
 
   return (

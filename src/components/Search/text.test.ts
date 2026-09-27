@@ -2,7 +2,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 
-import {contentTokens, normalize, shardOf, tokenize, variants} from './text.ts';
+import {contentTokens, fnv1a, normalize, shardOf, tokenize, variants} from './text.ts';
 
 test('folds case and Latin accents', () => {
   assert.equal(normalize('Médecine à l’AUB'), 'medecine a l’aub');
@@ -82,4 +82,15 @@ test('puts every key in a shard within range, the same one every time', () => {
   assert.ok(shards.every((shard) => Number.isInteger(shard) && shard >= 0 && shard < 64));
   assert.deepEqual(keys.map((key) => shardOf(key, 64)), shards);
   assert.ok(new Set(shards).size > 1);
+});
+
+test('hashes a key to the same 32-bit number every time (FNV-1a)', () => {
+  assert.equal(fnv1a('aub'), 0x3b63f37b);
+  assert.equal(fnv1a(''), 0x811c9dc5);
+  assert.equal(fnv1a('aub'), fnv1a('aub'));
+  assert.notEqual(fnv1a('aub'), fnv1a('lau'));
+});
+
+test('shards with the low bits of the same hash fnv1a returns', () => {
+  assert.equal(shardOf('computer science', 64), fnv1a('computer science') % 64);
 });

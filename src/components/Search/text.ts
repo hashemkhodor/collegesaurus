@@ -116,12 +116,17 @@ export function variants(word: string): string[] {
   return out;
 }
 
-/** FNV-1a: which of `count` files holds a term's vector. */
-export function shardOf(key: string, count: number): number {
+/** FNV-1a, as an unsigned 32-bit number. */
+export function fnv1a(key: string): number {
   let hash = 0x811c9dc5;
   for (let i = 0; i < key.length; i += 1) {
     hash ^= key.charCodeAt(i);
     hash = Math.imul(hash, 0x01000193);
   }
-  return (hash >>> 0) % count;
+  return hash >>> 0;
+}
+
+/** Which of `count` files holds a term's vector. */
+export function shardOf(key: string, count: number): number {
+  return fnv1a(key) % count;
 }
