@@ -4,6 +4,11 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  # onnxruntime-node (plugins/semantic-search) would otherwise download its
+  # CUDA binaries during npm ci on Linux; the build runs the model on the CPU.
+  ONNXRUNTIME_NODE_INSTALL: skip
+
 jobs:
   build:
     name: Build
