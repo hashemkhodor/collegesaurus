@@ -50,3 +50,15 @@ const WORD = /[\p{L}\p{N}\p{M}]+/gu;
 export function maskProfanity(query: string): string {
   return query.replace(WORD, (word) => (isBadWord(normalize(word)) ? mask(word) : word));
 }
+
+/**
+ * Whether `query` contains a listed word. A masked query is still shown next
+ * to whatever real results the caller found for it, and the search engines
+ * here return their nearest matches rather than nothing for a query with no
+ * good match — so callers that show real results alongside the masked text
+ * must check this first and show none, or a masked slur ends up captioned
+ * over unrelated real pages instead of over an empty result set.
+ */
+export function containsBadWord(query: string): boolean {
+  return maskProfanity(query) !== query;
+}
