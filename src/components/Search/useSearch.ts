@@ -6,6 +6,7 @@ import {queryTerms, rankResults} from '@site/src/theme/SearchPage/ranking';
 import {createEngine, type Engine, type Result} from './engine';
 import {findResults, type Found} from './find';
 import {fromKeywordResults} from './keyword';
+import {containsBadWord} from './profanity';
 import {contentTokens, tokenize} from './text';
 
 export const MIN_QUERY = 2;
@@ -54,6 +55,13 @@ export function useSearch(query: string, {limit, enabled = true}: {limit: number
     const id = latest.current;
     if (!enabled || text.length < MIN_QUERY) {
       setState({...IDLE, query: text});
+      return undefined;
+    }
+    // Neither engine guarantees zero results for a query with no good match —
+    // they return their nearest candidates. A masked query must show none, or
+    // the masked text ends up captioned over real, unrelated pages.
+    if (containsBadWord(text)) {
+      setState({...IDLE, status: 'done', query: text});
       return undefined;
     }
     setState((previous) => ({...previous, status: 'loading', query: text}));

@@ -2,6 +2,7 @@ import {useCallback, useId, useLayoutEffect, useMemo, useRef, useState, type Rea
 import Heading from '@theme/Heading';
 import Icon from '@site/src/components/Homepage/ui/Icon';
 import type {MajorRow} from '@site/src/components/MajorsTable';
+import {containsBadWord} from '@site/src/components/Search/profanity';
 import {useGuide, type GuideStrings} from './strings';
 import {Ext, MoreButton, useRevealListener} from './parts';
 
@@ -87,14 +88,21 @@ export default function ProgramExplorer({groups: raw}: {groups: string}): ReactN
   const countId = useId();
 
   const q = norm(query.trim());
+  // A real program can still contain the query as a substring even when the
+  // query itself is a bad word (unlike the whole-word matching profanity.ts
+  // uses to decide what to mask) — so a masked query must show no matches at
+  // all, not real programs captioned with a masked slur.
+  const blocked = containsBadWord(query);
   const filtering = q !== '' || group !== '';
   let budget = filtering || expanded ? Infinity : PROGRAMS_SHOWN;
   let matches = 0;
   const rendered = groups.map((g, gi) => {
     if (group !== '' && String(gi) !== group) return null;
-    const rows = g.rows.filter(
-      (r) => !q || norm([r.program, r.degree, r.department, r.language].filter(Boolean).join(' ')).includes(q),
-    );
+    const rows = blocked
+      ? []
+      : g.rows.filter(
+          (r) => !q || norm([r.program, r.degree, r.department, r.language].filter(Boolean).join(' ')).includes(q),
+        );
     if (!rows.length) return null;
     matches += rows.length;
     const visible = Math.max(0, Math.min(rows.length, budget));

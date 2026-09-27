@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
-import {maskProfanity} from './profanity.ts';
+import {containsBadWord, maskProfanity} from './profanity.ts';
 
 test('masks a bad word, keeping its first letter and case', () => {
   assert.equal(maskProfanity('fuck'), 'f***');
@@ -46,6 +46,16 @@ test('leaves an ordinary Arabic phrase untouched', () => {
 
 test('returns an empty query unchanged', () => {
   assert.equal(maskProfanity(''), '');
+});
+
+test('containsBadWord flags a query maskProfanity would change, only', () => {
+  assert.equal(containsBadWord('fuck'), true);
+  assert.equal(containsBadWord('fuck tuition at AUB'), true);
+  assert.equal(containsBadWord('bitches'), true);
+  assert.equal(containsBadWord('شرموطة'), true);
+  assert.equal(containsBadWord('class assignment'), false);
+  assert.equal(containsBadWord('شروط الدخول'), false);
+  assert.equal(containsBadWord(''), false);
 });
 
 test('keeps no bad word as readable text in its own source', () => {
