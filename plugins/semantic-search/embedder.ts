@@ -10,6 +10,15 @@ import {unit} from '../../src/components/Search/vectors.ts';
 
 /** The ONNX export of intfloat/multilingual-e5-small. */
 export const MODEL = 'Xenova/multilingual-e5-small';
+// Pinned so a change on Hugging Face can't silently change what a build
+// downloads and runs; bump by hand after checking the new commit.
+export const REVISION = '761b726dd34fb83930e26aab4e9ac3899aa1fa78';
+// Also pinned: e5-base, the only other model plugins/semantic-search/eval.ts
+// benchmarks against. A model tried ad hoc downloads from its default branch.
+const REVISIONS: Record<string, string> = {
+  [MODEL]: REVISION,
+  'Xenova/multilingual-e5-base': '1ec9243030a27d1a115d5c340572074c125b58b2',
+};
 const FILES = ['tokenizer.json', 'tokenizer_config.json', 'onnx/model_quantized.onnx'];
 
 export type TaskType = 'RETRIEVAL_DOCUMENT' | 'RETRIEVAL_QUERY';
@@ -86,7 +95,7 @@ export async function downloadModel(dir: string, model = MODEL, send: typeof fet
     if (await exists(target)) {
       continue;
     }
-    const response = await send(`https://huggingface.co/${model}/resolve/main/${file}`);
+    const response = await send(`https://huggingface.co/${model}/resolve/${REVISIONS[model] ?? 'main'}/${file}`);
     if (!response.ok) {
       throw new Error(`${model}/${file}: HTTP ${response.status}`);
     }

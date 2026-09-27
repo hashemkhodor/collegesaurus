@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-import {MODEL, downloadModel, embedWith, loadModel, type Model} from './embedder.ts';
+import {MODEL, REVISION, downloadModel, embedWith, loadModel, type Model} from './embedder.ts';
 
 const BOS = 0;
 const EOS = 2;
@@ -97,11 +97,25 @@ test('downloads the model files once, into the cache', async () => {
   await downloadModel(dir, MODEL, fetch);
 
   assert.deepEqual(fetched, [
-    `https://huggingface.co/${MODEL}/resolve/main/tokenizer.json`,
-    `https://huggingface.co/${MODEL}/resolve/main/tokenizer_config.json`,
-    `https://huggingface.co/${MODEL}/resolve/main/onnx/model_quantized.onnx`,
+    `https://huggingface.co/${MODEL}/resolve/${REVISION}/tokenizer.json`,
+    `https://huggingface.co/${MODEL}/resolve/${REVISION}/tokenizer_config.json`,
+    `https://huggingface.co/${MODEL}/resolve/${REVISION}/onnx/model_quantized.onnx`,
   ]);
   assert.ok(fs.existsSync(path.join(dir, MODEL, 'onnx', 'model_quantized.onnx')));
+});
+
+test('downloads an unpinned model from its default branch', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'semantic-search-model-'));
+  made.push(dir);
+  const fetched: string[] = [];
+  const fetch = (async (url: string) => {
+    fetched.push(String(url));
+    return new Response('contents', {status: 200});
+  }) as typeof globalThis.fetch;
+
+  await downloadModel(dir, 'someone/unlisted-model', fetch);
+
+  assert.equal(fetched[0], 'https://huggingface.co/someone/unlisted-model/resolve/main/tokenizer.json');
 });
 
 test('fails when a model file cannot be downloaded, leaving nothing half-written', async () => {
