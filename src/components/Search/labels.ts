@@ -1,4 +1,5 @@
 import {translate} from '@docusaurus/Translate';
+import {maskProfanity} from './profanity.ts';
 
 export function typeLabel(type: string): string {
   switch (type) {
@@ -38,5 +39,8 @@ export function searchingNote(): string {
 }
 
 export function noMatchNote(query: string): string {
-  return translate({id: 'search.noMatch', message: 'No pages match “{query}”. Try other words.'}, {query});
+  return translate(
+    {id: 'search.noMatch', message: 'No pages match “{query}”. Try other words.'},
+    {query: maskProfanity(query)},
+  );
 }

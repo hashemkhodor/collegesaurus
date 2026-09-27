@@ -1,4 +1,5 @@
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import {maskProfanity} from '@site/src/components/Search/profanity';
 
 // Arabic number agreement: one, two, 3–10, 11–99, other.
 function ar(n: number, forms: [string, string, string, string, string]): string {
@@ -46,7 +47,7 @@ const en = {
   shown: (a: number, n: number) => `${a} of ${n} programs`,
   showAllPrograms: (n: number) => `Show all ${n} programs`,
   showFewerPrograms: 'Show fewer programs',
-  noMatch: (q: string) => `No program matches “${q}”.`,
+  noMatch: (q: string) => `No program matches “${maskProfanity(q)}”.`,
   clear: 'Clear the search',
   years: (n: string | number) => `${n} ${Number(n) === 1 ? 'year' : 'years'}`,
   credits: (n: string | number) => `${n} credits`,
@@ -114,7 +115,7 @@ const arStrings: GuideStrings = {
   shown: (a, n) => `${a} من ${n}`,
   showAllPrograms: (n) => `اعرض كل البرامج (${n})`,
   showFewerPrograms: 'اعرض برامج أقل',
-  noMatch: (q) => `لا يوجد برنامج يطابق «${q}».`,
+  noMatch: (q) => `لا يوجد برنامج يطابق «${maskProfanity(q)}».`,
   clear: 'امسح البحث',
   years: (n) => {
     const v = Number(n);
