@@ -185,3 +185,4 @@ The search box ranks pages by meaning. `plugins/semantic-search` builds its inde
 ## License
 
 [MIT](LICENSE)
+
