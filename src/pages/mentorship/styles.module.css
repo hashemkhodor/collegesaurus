@@ -101,7 +101,7 @@
 
 /* Columns: lane labels, Grade 10, Grade 11, then Grade 12 split into Apply
    and Results. Rows: 1 pipelines, 2 grades, 3 Apply/Results, 4-6 Grades 10-11
-   tracks, 7 profile hand-off, 8-10 Grade 12. */
+   tracks, 7 profile hand-off, 8 Grade 12. */
 .timeline {
   --lane: 10rem;
   margin-top: 1.5rem;
@@ -111,7 +111,7 @@
     minmax(0, 0.6fr);
   grid-template-rows:
     auto auto auto repeat(3, 3.25rem) 2.75rem
-    repeat(3, 3.25rem);
+    minmax(4rem, auto);
   row-gap: 0.6rem;
 }
 
@@ -136,7 +136,7 @@
 }
 
 .gridline {
-  grid-row: 2 / 11;
+  grid-row: 2 / 9;
   border-inline-start: 1px dashed var(--cs-divider);
 }
 
@@ -212,7 +212,7 @@
 }
 
 .lane2 {
-  grid-row: 8 / 11;
+  grid-row: 8;
 }
 
 .bar {
@@ -278,37 +278,26 @@
   --delay: 0.3s;
 }
 
-.majors {
+.applyBar {
   grid-row: 8;
   grid-column: 4;
+  padding-block: 0.6rem;
   --delay: 1.3s;
 }
 
-.universities {
-  grid-row: 9;
-  grid-column: 4;
-  --delay: 1.45s;
-}
-
-.scholarships {
-  grid-row: 10;
-  grid-column: 4;
-  --delay: 1.6s;
-}
-
 .resultsBar {
-  grid-row: 8 / 11;
+  grid-row: 8;
   grid-column: 5;
   flex-direction: column;
   justify-content: center;
   text-align: center;
   padding-inline: 0.5rem;
-  --delay: 2.3s;
+  --delay: 2.4s;
 }
 
 /* The profile from Grades 10-11 carries into Grade 12. */
 .handoff {
-  grid-row: 4 / 11;
+  grid-row: 4 / 9;
   grid-column: 4;
   border-inline-start: 2px solid var(--cs-brand);
   transform-origin: top;
@@ -442,7 +431,7 @@
       minmax(0, 0.9fr);
     grid-template-rows:
       auto auto auto auto repeat(3, 3rem) 2.75rem auto
-      repeat(3, 3rem);
+      minmax(4rem, auto);
   }
 
   .g10,
@@ -476,7 +465,7 @@
   }
 
   .gridline {
-    grid-row: 2 / 13;
+    grid-row: 2 / 11;
   }
 
   .lane {
@@ -511,7 +500,7 @@
   }
 
   .handoff {
-    grid-row: 5 / 13;
+    grid-row: 5 / 11;
     grid-column: 3;
   }
 
@@ -520,26 +509,13 @@
     grid-column: 3;
   }
 
-  .majors,
-  .universities,
-  .scholarships {
+  .applyBar {
+    grid-row: 10;
     grid-column: 3;
   }
 
-  .majors {
-    grid-row: 10;
-  }
-
-  .universities {
-    grid-row: 11;
-  }
-
-  .scholarships {
-    grid-row: 12;
-  }
-
   .resultsBar {
-    grid-row: 10 / 13;
+    grid-row: 10;
     grid-column: 4;
   }
 

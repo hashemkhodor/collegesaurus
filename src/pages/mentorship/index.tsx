@@ -51,30 +51,16 @@ const TRACKS: Bar[] = [
   },
 ];
 
-const APPLY: Bar[] = [
-  {
-    id: 'majors',
-    icon: 'book',
-    tone: 'solid',
-    title: <Translate id="mentorship.apply.majors">Majors</Translate>,
-  },
-  {
-    id: 'universities',
-    icon: 'university',
-    tone: 'solid',
-    title: (
-      <Translate id="mentorship.apply.universities">Universities</Translate>
-    ),
-  },
-  {
-    id: 'scholarships',
-    icon: 'wallet',
-    tone: 'solid',
-    title: (
-      <Translate id="mentorship.apply.scholarships">Scholarships</Translate>
-    ),
-  },
-];
+const APPLY: Bar = {
+  id: 'apply',
+  icon: 'university',
+  tone: 'solid',
+  title: (
+    <Translate id="mentorship.apply.bar">
+      Apply: universities, majors, scholarships
+    </Translate>
+  ),
+};
 
 const RESULTS: Bar = {
   id: 'results',
@@ -129,7 +115,6 @@ function TimelineBar({bar, className}: {bar: Bar; className: string}) {
 }
 
 const TRACK_SLOTS = [styles.goals, styles.sat, styles.selection];
-const APPLY_SLOTS = [styles.majors, styles.universities, styles.scholarships];
 
 function Timeline(): ReactNode {
   const [ref, state] = useReveal<HTMLDivElement>();
@@ -191,9 +176,7 @@ function Timeline(): ReactNode {
           </Translate>
         </span>
       </span>
-      {APPLY.map((bar, i) => (
-        <TimelineBar key={bar.id} bar={bar} className={APPLY_SLOTS[i]!} />
-      ))}
+      <TimelineBar bar={APPLY} className={styles.applyBar} />
       <TimelineBar bar={RESULTS} className={styles.resultsBar} />
     </div>
   );
