@@ -86,12 +86,17 @@ function useReveal<T extends Element>() {
     setState('idle');
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry?.isIntersecting) {
+        if (!entry) {
+          return;
+        }
+        // Plays whenever it scrolls into view; resets once fully off screen.
+        if (entry.intersectionRatio >= 0.4) {
           requestAnimationFrame(() => setState('run'));
-          observer.disconnect();
+        } else if (!entry.isIntersecting) {
+          setState('idle');
         }
       },
-      {threshold: 0.4},
+      {threshold: [0, 0.4]},
     );
     observer.observe(el);
     return () => observer.disconnect();
