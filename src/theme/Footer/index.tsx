@@ -178,6 +178,11 @@ export default function Footer(): ReactNode {
       ),
     },
     {
+      id: 'mentorship',
+      to: '/mentorship',
+      label: <Translate id="footer.explore.mentorship">Mentorship</Translate>,
+    },
+    {
       id: 'stories',
       to: '/stories',
       label: <Translate id="footer.explore.stories">Stories</Translate>,
