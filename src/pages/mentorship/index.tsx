@@ -150,7 +150,7 @@ function Timeline(): ReactNode {
         <span className={styles.laneTitle}>
           <Translate id="mentorship.timeline.lane1">Grades 10 & 11</Translate>
         </span>
-        <span className={styles.laneSub}>
+        <span className={styles.laneGoal}>
           <Translate id="mentorship.timeline.lane1.sub">
             Build your profile
           </Translate>
@@ -170,9 +170,14 @@ function Timeline(): ReactNode {
         <span className={styles.laneTitle}>
           <Translate id="mentorship.timeline.lane2">Grade 12</Translate>
         </span>
+        <span className={styles.laneGoal}>
+          <Translate id="mentorship.timeline.lane2.goal">
+            Apply & get results
+          </Translate>
+        </span>
         <span className={styles.laneSub}>
           <Translate id="mentorship.timeline.lane2.sub">
-            Apply. New students welcome.
+            New students welcome
           </Translate>
         </span>
       </span>
