@@ -27,7 +27,7 @@ const TRACKS: Item[] = [
   },
   {
     id: 'selection',
-    icon: 'compass',
+    icon: 'cap',
     tint: 'blue',
     title: (
       <Translate id="mentorship.tracks.selection">
