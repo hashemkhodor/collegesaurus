@@ -1075,5 +1075,8 @@
   },
   "mentorship.apply.bar": {
     "message": "التقديم: الجامعات، الاختصاصات، المنح"
+  },
+  "mentorship.timeline.build": {
+    "message": "ابنِ ملفّك"
   }
 }

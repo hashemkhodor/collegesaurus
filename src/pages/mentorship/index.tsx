@@ -139,6 +139,9 @@ function Timeline(): ReactNode {
       <span className={clsx(styles.tick, styles.g12)}>
         <Translate id="mentorship.timeline.grade12">Grade 12</Translate>
       </span>
+      <span className={clsx(styles.subtick, styles.build)}>
+        <Translate id="mentorship.timeline.build">Build your profile</Translate>
+      </span>
       <span className={clsx(styles.subtick, styles.apply)}>
         <Translate id="mentorship.timeline.apply">Apply</Translate>
       </span>
