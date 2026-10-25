@@ -18,11 +18,21 @@ import styles from './styles.module.css';
 type Bar = {
   id: string;
   icon: IconName;
-  tone: 'solid' | 'soft' | 'result';
+  tone: 'solid' | 'soft' | 'outline' | 'result';
   title: ReactNode;
 };
 
 const TRACKS: Bar[] = [
+  {
+    id: 'goals',
+    icon: 'check',
+    tone: 'outline',
+    title: (
+      <Translate id="mentorship.tracks.goals">
+        Setting goals: grades, SAT, activities
+      </Translate>
+    ),
+  },
   {
     id: 'sat',
     icon: 'pencil',
@@ -118,7 +128,7 @@ function TimelineBar({bar, className}: {bar: Bar; className: string}) {
   );
 }
 
-const TRACK_SLOTS = [styles.sat, styles.selection];
+const TRACK_SLOTS = [styles.goals, styles.sat, styles.selection];
 const APPLY_SLOTS = [styles.majors, styles.universities, styles.scholarships];
 
 function Timeline(): ReactNode {
@@ -284,9 +294,11 @@ export default function Mentorship(): ReactNode {
                 }
                 lead={
                   <Translate id="mentorship.p1.lead">
-                    Two things happen side by side: SAT tutoring, and help
-                    choosing a university and major. Together, they build
-                    your profile.
+                    We set goals with you for your school grades, the SAT
+                    and extracurricular activities, so you're ready to apply
+                    to universities, majors and scholarships. Alongside that,
+                    you get SAT tutoring and help choosing a university and
+                    major. Together, they build your profile.
                   </Translate>
                 }
               />
