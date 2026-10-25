@@ -1,4 +1,10 @@
-import type {ReactNode} from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from 'react';
 import clsx from 'clsx';
 import Translate, {translate} from '@docusaurus/Translate';
 import Heading from '@theme/Heading';
@@ -9,39 +15,70 @@ import {
   Icon,
   IconChip,
   type IconName,
-  type Tint,
 } from '@site/src/components/Homepage/ui';
 import ui from '@site/src/components/Homepage/ui/ui.module.css';
 import {MENTORSHIP_MAILTO} from '@site/src/data/mentorship';
 
 import styles from './styles.module.css';
 
-type Item = {id: string; icon: IconName; tint: Tint; title: ReactNode};
+type Tone = 'solid' | 'soft' | 'profile';
 
-const TRACKS: Item[] = [
+type Bar = {
+  id: string;
+  icon: IconName;
+  tone: Tone;
+  delay: number;
+  label?: ReactNode;
+  title: ReactNode;
+};
+
+const PROFILE = (
+  <Translate id="mentorship.profile.title">Student profile</Translate>
+);
+
+const TRACKS: Bar[] = [
   {
     id: 'sat',
     icon: 'pencil',
-    tint: 'green',
+    tone: 'solid',
+    delay: 0,
     title: <Translate id="mentorship.tracks.sat">SAT tutoring</Translate>,
   },
   {
     id: 'selection',
     icon: 'cap',
-    tint: 'blue',
+    tone: 'soft',
+    delay: 0,
     title: (
       <Translate id="mentorship.tracks.selection">
         University & major selection guidance
       </Translate>
     ),
   },
+  {
+    id: 'profile',
+    icon: 'document',
+    tone: 'profile',
+    delay: 0.9,
+    label: <Translate id="mentorship.p1.builds">Builds the</Translate>,
+    title: PROFILE,
+  },
 ];
 
-const STEPS: Item[] = [
+const STEPS: Bar[] = [
+  {
+    id: 'profile',
+    icon: 'document',
+    tone: 'profile',
+    delay: 0,
+    label: <Translate id="mentorship.p2.starts">Starts from the</Translate>,
+    title: PROFILE,
+  },
   {
     id: 'scholarships',
     icon: 'wallet',
-    tint: 'purple',
+    tone: 'solid',
+    delay: 0.35,
     title: (
       <Translate id="mentorship.steps.scholarships">Scholarships</Translate>
     ),
@@ -49,13 +86,15 @@ const STEPS: Item[] = [
   {
     id: 'majors',
     icon: 'book',
-    tint: 'orange',
+    tone: 'solid',
+    delay: 0.7,
     title: <Translate id="mentorship.steps.majors">Majors</Translate>,
   },
   {
     id: 'universities',
     icon: 'university',
-    tint: 'blue',
+    tone: 'solid',
+    delay: 1.05,
     title: (
       <Translate id="mentorship.steps.universities">
         University selection
@@ -63,6 +102,67 @@ const STEPS: Item[] = [
     ),
   },
 ];
+
+type Reveal = 'static' | 'idle' | 'run';
+
+// Bars render filled until hydration, so the diagram still reads without JS.
+function useReveal<T extends Element>() {
+  const ref = useRef<T>(null);
+  const [state, setState] = useState<Reveal>('static');
+  useEffect(() => {
+    const el = ref.current;
+    if (
+      !el ||
+      !('IntersectionObserver' in window) ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      return undefined;
+    }
+    setState('idle');
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          requestAnimationFrame(() => setState('run'));
+          observer.disconnect();
+        }
+      },
+      {threshold: 0.4},
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+  return [ref, state] as const;
+}
+
+function Bars({
+  bars,
+  layout,
+}: {
+  bars: Bar[];
+  layout: 'parallel' | 'sequence';
+}): ReactNode {
+  const [ref, state] = useReveal<HTMLOListElement>();
+  return (
+    <ol ref={ref} className={clsx(styles.bars, styles[layout])} data-reveal={state}>
+      {bars.map((bar) => (
+        <li
+          key={bar.id}
+          className={clsx(styles.bar, styles[bar.tone])}
+          style={{'--delay': `${bar.delay}s`} as CSSProperties}>
+          <span className={styles.fill}>
+            <Icon name={bar.icon} size={20} className={styles.barIcon} />
+            <span className={styles.barText}>
+              {bar.label && (
+                <span className={styles.barLabel}>{bar.label}</span>
+              )}
+              <span className={styles.barTitle}>{bar.title}</span>
+            </span>
+          </span>
+        </li>
+      ))}
+    </ol>
+  );
+}
 
 function Pipeline({
   id,
@@ -86,20 +186,6 @@ function Pipeline({
       <p className={styles.sectionLead}>{lead}</p>
       {children}
     </section>
-  );
-}
-
-function ProfileCard({label}: {label: ReactNode}): ReactNode {
-  return (
-    <div className={styles.profile}>
-      <IconChip icon="document" tint="green" size={40} />
-      <span className={styles.profileText}>
-        <span className={styles.profileLabel}>{label}</span>
-        <span className={styles.profileTitle}>
-          <Translate id="mentorship.profile.title">Student profile</Translate>
-        </span>
-      </span>
-    </div>
   );
 }
 
@@ -170,24 +256,7 @@ export default function Mentorship(): ReactNode {
                 profile, the core of this pipeline.
               </Translate>
             }>
-            <div className={styles.parallel}>
-              <ul className={styles.tracks}>
-                {TRACKS.map((track) => (
-                  <li key={track.id} className={clsx(ui.card, styles.node)}>
-                    <IconChip icon={track.icon} tint={track.tint} />
-                    <Heading as="h3" className={styles.nodeTitle}>
-                      {track.title}
-                    </Heading>
-                  </li>
-                ))}
-              </ul>
-              <div className={styles.merge} aria-hidden="true" />
-              <ProfileCard
-                label={
-                  <Translate id="mentorship.p1.builds">Builds the</Translate>
-                }
-              />
-            </div>
+            <Bars bars={TRACKS} layout="parallel" />
           </Pipeline>
 
           <Pipeline
@@ -209,26 +278,7 @@ export default function Mentorship(): ReactNode {
                 selection.
               </Translate>
             }>
-            <ol className={styles.flow}>
-              <li className={styles.flowStart}>
-                <ProfileCard
-                  label={
-                    <Translate id="mentorship.p2.starts">Starts from the</Translate>
-                  }
-                />
-              </li>
-              {STEPS.map((step) => (
-                <li key={step.id} className={styles.flowItem}>
-                  <Icon name="arrowRight" size={22} className={styles.flowArrow} />
-                  <div className={clsx(ui.card, styles.node)}>
-                    <IconChip icon={step.icon} tint={step.tint} />
-                    <Heading as="h3" className={styles.nodeTitle}>
-                      {step.title}
-                    </Heading>
-                  </div>
-                </li>
-              ))}
-            </ol>
+            <Bars bars={STEPS} layout="sequence" />
           </Pipeline>
 
           <section

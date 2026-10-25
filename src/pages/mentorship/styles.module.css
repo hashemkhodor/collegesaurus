@@ -97,125 +97,87 @@
   max-width: 44rem;
 }
 
-.node {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
+/* ---------- Pipeline bars ---------- */
 
-.nodeTitle {
-  margin: 0;
-  font-size: var(--cs-text-h3);
-  font-weight: 700;
-  line-height: 1.3;
-  color: var(--cs-ink);
-}
-
-.profile {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  background: var(--cs-green-soft);
-  border-radius: var(--cs-radius-lg);
-  padding: 1rem 1.5rem;
-}
-
-.profileText {
-  display: flex;
-  flex-direction: column;
-}
-
-.profileLabel {
-  font-size: var(--cs-text-xs);
-  font-weight: 600;
-  color: var(--cs-ink-muted);
-}
-
-.profileTitle {
-  font-size: var(--cs-text-h3);
-  font-weight: 700;
-  color: var(--cs-brand-strong);
-}
-
-/* ---------- Pipeline 1: two tracks merging into the profile ---------- */
-
-.parallel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 1.5rem;
-}
-
-.tracks {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--cs-gap);
-}
-
-/* Drops a line from the middle of each track and joins them over the profile. */
-.merge {
-  position: relative;
-  align-self: stretch;
-  height: 1.75rem;
-  margin-inline: 25%;
-  border: 2px solid var(--cs-brand);
-  border-top: 0;
-  border-radius: 0 0 var(--cs-radius-sm) var(--cs-radius-sm);
-  margin-bottom: 1.75rem;
-}
-
-.merge::after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  inset-inline-start: 50%;
-  width: 2px;
-  height: 1.75rem;
-  background: var(--cs-brand);
-  transform: translateX(-50%);
-}
-
-/* ---------- Pipeline 2: profile, then three steps ---------- */
-
-.flow {
+.bars {
   list-style: none;
   margin: 1.5rem 0 0;
   padding: 0;
   display: grid;
+  gap: 0.75rem;
+}
+
+.sequence {
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  column-gap: 2.5rem;
-  row-gap: 2.5rem;
-  align-items: stretch;
 }
 
-.flowStart,
-.flowItem {
+/* The profile is what both tracks add up to, so it sits apart from them. */
+.parallel .profile {
+  margin-top: 0.75rem;
+}
+
+.bar {
   display: flex;
+  min-height: 4rem;
+  background: var(--cs-surface-muted);
+  border-radius: var(--cs-radius-md);
+  overflow: hidden;
 }
 
-.flowStart > *,
-.flowItem > .node {
+.fill {
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  clip-path: inset(0);
+  transition: clip-path 1.1s var(--cs-ease) var(--delay, 0s);
 }
 
-.flowItem {
-  position: relative;
+[data-reveal='idle'] .fill {
+  clip-path: inset(0 100% 0 0);
+  transition: none;
 }
 
-.flowArrow {
-  position: absolute;
-  top: 50%;
-  inset-inline-end: calc(100% + 0.5rem);
-  translate: 0 -50%;
-  color: var(--cs-brand);
+[dir='rtl'] [data-reveal='idle'] .fill {
+  clip-path: inset(0 0 0 100%);
 }
 
-[dir='rtl'] .flowArrow {
-  transform: scaleX(-1);
+.solid .fill {
+  background: var(--cs-brand-fill);
+  color: #fff;
+}
+
+.soft .fill {
+  background: var(--cs-green-soft);
+  color: var(--cs-brand-strong);
+}
+
+.profile .fill {
+  background: var(--cs-pill-soon-bg);
+  color: var(--cs-pill-soon-fg);
+}
+
+.barIcon {
+  flex: none;
+}
+
+.barText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.barLabel {
+  font-size: var(--cs-text-xs);
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.barTitle {
+  font-size: var(--cs-text-h3);
+  font-weight: 700;
+  line-height: 1.3;
 }
 
 /* ---------- Contact ---------- */
@@ -248,18 +210,8 @@
    ===================================================== */
 
 @media (max-width: 996px) {
-  .flow {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .flowArrow,
-  [dir='rtl'] .flowArrow {
-    top: auto;
-    bottom: calc(100% + 0.5rem);
-    inset-inline-end: auto;
-    inset-inline-start: 50%;
-    translate: -50% 0;
-    transform: rotate(90deg);
+  .sequence {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .contact {
@@ -272,20 +224,8 @@
 }
 
 @media (max-width: 640px) {
-  .tracks {
+  .sequence {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  /* Stacked tracks: a single stem down to the profile. */
-  .merge {
-    border: 0;
-    margin: 0;
-    height: 2rem;
-  }
-
-  .merge::after {
-    top: 0;
-    height: 100%;
   }
 
   .actions > * {
