@@ -18,7 +18,7 @@ import styles from './styles.module.css';
 type Bar = {
   id: string;
   icon: IconName;
-  tone: 'solid' | 'soft';
+  tone: 'solid' | 'soft' | 'result';
   title: ReactNode;
 };
 
@@ -35,38 +35,43 @@ const TRACKS: Bar[] = [
     tone: 'soft',
     title: (
       <Translate id="mentorship.tracks.selection">
-        University & major selection guidance
+        Choosing a university and major
       </Translate>
     ),
   },
 ];
 
-const STEPS: Bar[] = [
-  {
-    id: 'scholarships',
-    icon: 'wallet',
-    tone: 'solid',
-    title: (
-      <Translate id="mentorship.steps.scholarships">Scholarships</Translate>
-    ),
-  },
+const APPLY: Bar[] = [
   {
     id: 'majors',
     icon: 'book',
     tone: 'solid',
-    title: <Translate id="mentorship.steps.majors">Majors</Translate>,
+    title: <Translate id="mentorship.apply.majors">Majors</Translate>,
   },
   {
     id: 'universities',
     icon: 'university',
     tone: 'solid',
     title: (
-      <Translate id="mentorship.steps.universities">
-        University selection
-      </Translate>
+      <Translate id="mentorship.apply.universities">Universities</Translate>
+    ),
+  },
+  {
+    id: 'scholarships',
+    icon: 'wallet',
+    tone: 'solid',
+    title: (
+      <Translate id="mentorship.apply.scholarships">Scholarships</Translate>
     ),
   },
 ];
+
+const RESULTS: Bar = {
+  id: 'results',
+  icon: 'star',
+  tone: 'result',
+  title: <Translate id="mentorship.results">Your results</Translate>,
+};
 
 type Reveal = 'static' | 'idle' | 'run';
 
@@ -114,15 +119,15 @@ function TimelineBar({bar, className}: {bar: Bar; className: string}) {
 }
 
 const TRACK_SLOTS = [styles.sat, styles.selection];
-const STEP_SLOTS = [styles.scholarships, styles.majors, styles.universities];
+const APPLY_SLOTS = [styles.majors, styles.universities, styles.scholarships];
 
 function Timeline(): ReactNode {
   const [ref, state] = useReveal<HTMLDivElement>();
   return (
     <div ref={ref} className={styles.timeline} data-reveal={state}>
-      <span className={clsx(styles.gridline, styles.col10)} aria-hidden="true" />
-      <span className={clsx(styles.gridline, styles.col11)} aria-hidden="true" />
-      <span className={clsx(styles.gridline, styles.col12)} aria-hidden="true" />
+      <span className={clsx(styles.gridline, styles.g10)} aria-hidden="true" />
+      <span className={clsx(styles.gridline, styles.g11)} aria-hidden="true" />
+      <span className={clsx(styles.gridline, styles.g12)} aria-hidden="true" />
 
       <span className={clsx(styles.phase, styles.phase1)}>
         <Translate id="mentorship.timeline.p1">Pipeline 1</Translate>
@@ -130,18 +135,31 @@ function Timeline(): ReactNode {
       <span className={clsx(styles.phase, styles.phase2)}>
         <Translate id="mentorship.timeline.p2">Pipeline 2</Translate>
       </span>
-      <span className={clsx(styles.tick, styles.col10)}>
+      <span className={clsx(styles.tick, styles.g10)}>
         <Translate id="mentorship.timeline.grade10">Grade 10</Translate>
       </span>
-      <span className={clsx(styles.tick, styles.col11)}>
+      <span className={clsx(styles.tick, styles.g11)}>
         <Translate id="mentorship.timeline.grade11">Grade 11</Translate>
       </span>
-      <span className={clsx(styles.tick, styles.col12)}>
+      <span className={clsx(styles.tick, styles.g12)}>
         <Translate id="mentorship.timeline.grade12">Grade 12</Translate>
+      </span>
+      <span className={clsx(styles.subtick, styles.apply)}>
+        <Translate id="mentorship.timeline.apply">Apply</Translate>
+      </span>
+      <span className={clsx(styles.subtick, styles.resultsCol)}>
+        <Translate id="mentorship.timeline.results">Results</Translate>
       </span>
 
       <span className={clsx(styles.lane, styles.lane1)}>
-        <Translate id="mentorship.timeline.lane1">Grades 10 & 11</Translate>
+        <span className={styles.laneTitle}>
+          <Translate id="mentorship.timeline.lane1">Grades 10 & 11</Translate>
+        </span>
+        <span className={styles.laneSub}>
+          <Translate id="mentorship.timeline.lane1.sub">
+            Build your profile
+          </Translate>
+        </span>
       </span>
       {TRACKS.map((bar, i) => (
         <TimelineBar key={bar.id} bar={bar} className={TRACK_SLOTS[i]!} />
@@ -150,15 +168,23 @@ function Timeline(): ReactNode {
       <span className={styles.handoff} aria-hidden="true" />
       <span className={styles.profile}>
         <Icon name="document" size={18} />
-        <Translate id="mentorship.profile.title">Student profile</Translate>
+        <Translate id="mentorship.profile.title">Your profile</Translate>
       </span>
 
       <span className={clsx(styles.lane, styles.lane2)}>
-        <Translate id="mentorship.timeline.lane2">Grade 12</Translate>
+        <span className={styles.laneTitle}>
+          <Translate id="mentorship.timeline.lane2">Grade 12</Translate>
+        </span>
+        <span className={styles.laneSub}>
+          <Translate id="mentorship.timeline.lane2.sub">
+            Apply. New students welcome.
+          </Translate>
+        </span>
       </span>
-      {STEPS.map((bar, i) => (
-        <TimelineBar key={bar.id} bar={bar} className={STEP_SLOTS[i]!} />
+      {APPLY.map((bar, i) => (
+        <TimelineBar key={bar.id} bar={bar} className={APPLY_SLOTS[i]!} />
       ))}
+      <TimelineBar bar={RESULTS} className={styles.resultsBar} />
     </div>
   );
 }
@@ -192,7 +218,7 @@ export default function Mentorship(): ReactNode {
       description={translate({
         id: 'mentorship.meta.description',
         message:
-          'Collegesaurus mentorship: SAT tutoring and university and major guidance in Grades 10 and 11, then scholarships, majors and university selection in Grade 12.',
+          'Collegesaurus mentorship. Grades 10 and 11: SAT tutoring and help choosing a university and major. Grade 12: help applying to majors, universities and scholarships.',
       })}>
       <main className={styles.page}>
         <header className={styles.hero}>
@@ -217,10 +243,9 @@ export default function Mentorship(): ReactNode {
             </Heading>
             <p className={styles.lead}>
               <Translate id="mentorship.hero.lead">
-                We mentor students through two pipelines. In Grades 10 and 11
-                we build the student's profile. In Grade 12 we build on that
-                profile to work through scholarships, majors and university
-                selection.
+                We help you get into university. In Grades 10 and 11, you build
+                your profile. In Grade 12, we help you apply and get your
+                results.
               </Translate>
             </p>
             <div className={styles.actions}>
@@ -240,7 +265,7 @@ export default function Mentorship(): ReactNode {
             </p>
             <Heading as="h2" id="how" className={styles.sectionTitle}>
               <Translate id="mentorship.timeline.title">
-                Two pipelines, one timeline
+                From Grade 10 to your results
               </Translate>
             </Heading>
             <Timeline />
@@ -254,13 +279,14 @@ export default function Mentorship(): ReactNode {
                 }
                 title={
                   <Translate id="mentorship.p1.title">
-                    Two tracks, one profile
+                    Build your profile
                   </Translate>
                 }
                 lead={
                   <Translate id="mentorship.p1.lead">
-                    Two tracks run in parallel. Together they build the
-                    student's profile, the core of this pipeline.
+                    Two things happen side by side: SAT tutoring, and help
+                    choosing a university and major. Together, they build
+                    your profile.
                   </Translate>
                 }
               />
@@ -273,14 +299,15 @@ export default function Mentorship(): ReactNode {
                 }
                 title={
                   <Translate id="mentorship.p2.title">
-                    Building on the profile
+                    Apply and get your results
                   </Translate>
                 }
                 lead={
                   <Translate id="mentorship.p2.lead">
-                    Students in this pipeline already have a profile from
-                    Pipeline 1. We build on it to cover scholarships, majors
-                    and university selection.
+                    We help you apply to majors, universities and
+                    scholarships. Then you get your results. Coming from
+                    Pipeline 1? You start with your profile. New in Grade 12?
+                    You can join too.
                   </Translate>
                 }
               />
@@ -299,7 +326,7 @@ export default function Mentorship(): ReactNode {
               </Heading>
               <p className={styles.sectionLead}>
                 <Translate id="mentorship.contact.description">
-                  Email us, and tell us which grade the student is in.
+                  Email us and tell us what grade you're in.
                 </Translate>
               </p>
             </div>

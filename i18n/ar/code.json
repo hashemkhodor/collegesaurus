@@ -975,7 +975,7 @@
     "message": "الإرشاد"
   },
   "mentorship.meta.description": {
-    "message": "الإرشاد في Collegesaurus: دروس SAT وتوجيه في اختيار الجامعة والاختصاص في الصفّين العاشر والحادي عشر، ثم المنح والاختصاصات واختيار الجامعة في الصفّ الثاني عشر."
+    "message": "الإرشاد في Collegesaurus. الصفّان العاشر والحادي عشر: دروس SAT ومساعدة في اختيار الجامعة والاختصاص. الصفّ الثاني عشر: مساعدة في التقديم إلى الاختصاصات والجامعات والمنح."
   },
   "mentorship.hero.eyebrow": {
     "message": "الإرشاد"
@@ -987,7 +987,7 @@
     "message": "من الصفّ العاشر إلى الصفّ الثاني عشر"
   },
   "mentorship.hero.lead": {
-    "message": "نرشد الطلاب عبر مسارين. في الصفّين العاشر والحادي عشر نبني الملف الشخصي للطالب. وفي الصفّ الثاني عشر ننطلق من هذا الملف لنعمل على المنح والاختصاصات واختيار الجامعة."
+    "message": "نساعدك على دخول الجامعة. في الصفّين العاشر والحادي عشر، تبني ملفّك. وفي الصفّ الثاني عشر، نساعدك على التقديم والحصول على نتائجك."
   },
   "mentorship.cta.button": {
     "message": "اسأل عن الإرشاد"
@@ -996,43 +996,34 @@
     "message": "دروس SAT"
   },
   "mentorship.tracks.selection": {
-    "message": "التوجيه في اختيار الجامعة والاختصاص"
-  },
-  "mentorship.steps.scholarships": {
-    "message": "المنح الدراسية"
-  },
-  "mentorship.steps.majors": {
-    "message": "الاختصاصات"
-  },
-  "mentorship.steps.universities": {
-    "message": "اختيار الجامعة"
+    "message": "اختيار الجامعة والاختصاص"
   },
   "mentorship.profile.title": {
-    "message": "الملف الشخصي للطالب"
+    "message": "ملفّك"
   },
   "mentorship.p1.eyebrow": {
     "message": "المسار الأول · الصفّان العاشر والحادي عشر"
   },
   "mentorship.p1.title": {
-    "message": "مساران متوازيان، ملف واحد"
+    "message": "ابنِ ملفّك"
   },
   "mentorship.p1.lead": {
-    "message": "يسير المساران بالتوازي، ويبنيان معًا الملف الشخصي للطالب، وهو جوهر هذا المسار."
+    "message": "أمران يسيران جنبًا إلى جنب: دروس SAT، ومساعدة في اختيار الجامعة والاختصاص. ومعًا يبنيان ملفّك."
   },
   "mentorship.p2.eyebrow": {
     "message": "المسار الثاني · الصفّ الثاني عشر"
   },
   "mentorship.p2.title": {
-    "message": "البناء على الملف الشخصي"
+    "message": "قدِّم واحصل على نتائجك"
   },
   "mentorship.p2.lead": {
-    "message": "لدى طلاب هذا المسار ملف شخصي من المسار الأول. نبني عليه لنغطّي المنح والاختصاصات واختيار الجامعة."
+    "message": "نساعدك على التقديم إلى الاختصاصات والجامعات والمنح، ثم تحصل على نتائجك. أنهيت المسار الأول؟ تبدأ بملفّك. جديد في الصفّ الثاني عشر؟ يمكنك الانضمام أيضًا."
   },
   "mentorship.contact.title": {
     "message": "مهتمّ بالإرشاد؟"
   },
   "mentorship.contact.description": {
-    "message": "راسلنا وأخبرنا في أيّ صفّ يدرس الطالب."
+    "message": "راسلنا وأخبرنا في أيّ صفّ أنت."
   },
   "footer.explore.mentorship": {
     "message": "الإرشاد"
@@ -1041,7 +1032,7 @@
     "message": "كيف يعمل"
   },
   "mentorship.timeline.title": {
-    "message": "مساران على خطّ زمني واحد"
+    "message": "من الصفّ العاشر إلى نتائجك"
   },
   "mentorship.timeline.p1": {
     "message": "المسار الأول"
@@ -1063,5 +1054,29 @@
   },
   "mentorship.timeline.lane2": {
     "message": "الصفّ الثاني عشر"
+  },
+  "mentorship.timeline.apply": {
+    "message": "التقديم"
+  },
+  "mentorship.timeline.results": {
+    "message": "النتائج"
+  },
+  "mentorship.timeline.lane1.sub": {
+    "message": "ابنِ ملفّك"
+  },
+  "mentorship.timeline.lane2.sub": {
+    "message": "التقديم. نرحّب بالطلاب الجدد."
+  },
+  "mentorship.apply.majors": {
+    "message": "الاختصاصات"
+  },
+  "mentorship.apply.universities": {
+    "message": "الجامعات"
+  },
+  "mentorship.apply.scholarships": {
+    "message": "المنح الدراسية"
+  },
+  "mentorship.results": {
+    "message": "نتائجك"
   }
 }
