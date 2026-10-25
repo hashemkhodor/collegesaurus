@@ -1067,19 +1067,13 @@
   "mentorship.timeline.lane2.sub": {
     "message": "التقديم. نرحّب بالطلاب الجدد."
   },
-  "mentorship.apply.majors": {
-    "message": "الاختصاصات"
-  },
-  "mentorship.apply.universities": {
-    "message": "الجامعات"
-  },
-  "mentorship.apply.scholarships": {
-    "message": "المنح الدراسية"
-  },
   "mentorship.results": {
     "message": "نتائجك"
   },
   "mentorship.tracks.goals": {
     "message": "وضع الأهداف: العلامات، SAT، الأنشطة"
+  },
+  "mentorship.apply.bar": {
+    "message": "التقديم: الجامعات، الاختصاصات، المنح"
   }
 }
