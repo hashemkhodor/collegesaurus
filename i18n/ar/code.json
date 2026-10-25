@@ -970,5 +970,77 @@
   "theme.SearchPage.inputLabel": {
     "message": "بحث",
     "description": "The ARIA label for the search page input"
+  },
+  "mentorship.meta.title": {
+    "message": "الإرشاد"
+  },
+  "mentorship.meta.description": {
+    "message": "الإرشاد في Collegesaurus: دروس SAT وتوجيه في اختيار الجامعة والاختصاص في الصفّين العاشر والحادي عشر، ثم المنح والاختصاصات واختيار الجامعة في الصفّ الثاني عشر."
+  },
+  "mentorship.hero.eyebrow": {
+    "message": "الإرشاد"
+  },
+  "mentorship.hero.title": {
+    "message": "إرشاد {grades}"
+  },
+  "mentorship.hero.accent": {
+    "message": "من الصفّ العاشر إلى الصفّ الثاني عشر"
+  },
+  "mentorship.hero.lead": {
+    "message": "نرشد الطلاب عبر مسارين. في الصفّين العاشر والحادي عشر نبني الملف الشخصي للطالب. وفي الصفّ الثاني عشر ننطلق من هذا الملف لنعمل على المنح والاختصاصات واختيار الجامعة."
+  },
+  "mentorship.cta.button": {
+    "message": "اسأل عن الإرشاد"
+  },
+  "mentorship.tracks.sat": {
+    "message": "دروس SAT"
+  },
+  "mentorship.tracks.selection": {
+    "message": "التوجيه في اختيار الجامعة والاختصاص"
+  },
+  "mentorship.steps.scholarships": {
+    "message": "المنح الدراسية"
+  },
+  "mentorship.steps.majors": {
+    "message": "الاختصاصات"
+  },
+  "mentorship.steps.universities": {
+    "message": "اختيار الجامعة"
+  },
+  "mentorship.profile.title": {
+    "message": "الملف الشخصي للطالب"
+  },
+  "mentorship.p1.eyebrow": {
+    "message": "المسار الأول · الصفّان العاشر والحادي عشر"
+  },
+  "mentorship.p1.title": {
+    "message": "مساران متوازيان، ملف واحد"
+  },
+  "mentorship.p1.lead": {
+    "message": "يسير المساران بالتوازي، ويبنيان معًا الملف الشخصي للطالب، وهو جوهر هذا المسار."
+  },
+  "mentorship.p1.builds": {
+    "message": "يبنيان"
+  },
+  "mentorship.p2.eyebrow": {
+    "message": "المسار الثاني · الصفّ الثاني عشر"
+  },
+  "mentorship.p2.title": {
+    "message": "البناء على الملف الشخصي"
+  },
+  "mentorship.p2.lead": {
+    "message": "لدى طلاب هذا المسار ملف شخصي من المسار الأول. نبني عليه لنغطّي المنح والاختصاصات واختيار الجامعة."
+  },
+  "mentorship.p2.starts": {
+    "message": "ينطلق من"
+  },
+  "mentorship.contact.title": {
+    "message": "مهتمّ بالإرشاد؟"
+  },
+  "mentorship.contact.description": {
+    "message": "راسلنا وأخبرنا في أيّ صفّ يدرس الطالب."
+  },
+  "footer.explore.mentorship": {
+    "message": "الإرشاد"
   }
 }

@@ -14,5 +14,9 @@
   "item.label.Stories": {
     "message": "قصص",
     "description": "Navbar item with label Stories"
+  },
+  "item.label.Mentorship": {
+    "message": "الإرشاد",
+    "description": "Navbar item with label Mentorship"
   }
 }
