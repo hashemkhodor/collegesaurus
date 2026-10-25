@@ -1,10 +1,4 @@
-import {
-  useEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-  type ReactNode,
-} from 'react';
+import {useEffect, useRef, useState, type ReactNode} from 'react';
 import clsx from 'clsx';
 import Translate, {translate} from '@docusaurus/Translate';
 import Heading from '@theme/Heading';
@@ -21,64 +15,37 @@ import {MENTORSHIP_MAILTO} from '@site/src/data/mentorship';
 
 import styles from './styles.module.css';
 
-type Tone = 'solid' | 'soft' | 'profile';
-
 type Bar = {
   id: string;
   icon: IconName;
-  tone: Tone;
-  delay: number;
-  label?: ReactNode;
+  tone: 'solid' | 'soft';
   title: ReactNode;
 };
-
-const PROFILE = (
-  <Translate id="mentorship.profile.title">Student profile</Translate>
-);
 
 const TRACKS: Bar[] = [
   {
     id: 'sat',
     icon: 'pencil',
     tone: 'solid',
-    delay: 0,
     title: <Translate id="mentorship.tracks.sat">SAT tutoring</Translate>,
   },
   {
     id: 'selection',
     icon: 'cap',
     tone: 'soft',
-    delay: 0,
     title: (
       <Translate id="mentorship.tracks.selection">
         University & major selection guidance
       </Translate>
     ),
   },
-  {
-    id: 'profile',
-    icon: 'document',
-    tone: 'profile',
-    delay: 0.9,
-    label: <Translate id="mentorship.p1.builds">Builds the</Translate>,
-    title: PROFILE,
-  },
 ];
 
 const STEPS: Bar[] = [
   {
-    id: 'profile',
-    icon: 'document',
-    tone: 'profile',
-    delay: 0,
-    label: <Translate id="mentorship.p2.starts">Starts from the</Translate>,
-    title: PROFILE,
-  },
-  {
     id: 'scholarships',
     icon: 'wallet',
     tone: 'solid',
-    delay: 0.35,
     title: (
       <Translate id="mentorship.steps.scholarships">Scholarships</Translate>
     ),
@@ -87,14 +54,12 @@ const STEPS: Bar[] = [
     id: 'majors',
     icon: 'book',
     tone: 'solid',
-    delay: 0.7,
     title: <Translate id="mentorship.steps.majors">Majors</Translate>,
   },
   {
     id: 'universities',
     icon: 'university',
     tone: 'solid',
-    delay: 1.05,
     title: (
       <Translate id="mentorship.steps.universities">
         University selection
@@ -105,7 +70,7 @@ const STEPS: Bar[] = [
 
 type Reveal = 'static' | 'idle' | 'run';
 
-// Bars render filled until hydration, so the diagram still reads without JS.
+// Bars render filled until hydration, so the timeline still reads without JS.
 function useReveal<T extends Element>() {
   const ref = useRef<T>(null);
   const [state, setState] = useState<Reveal>('static');
@@ -134,33 +99,62 @@ function useReveal<T extends Element>() {
   return [ref, state] as const;
 }
 
-function Bars({
-  bars,
-  layout,
-}: {
-  bars: Bar[];
-  layout: 'parallel' | 'sequence';
-}): ReactNode {
-  const [ref, state] = useReveal<HTMLOListElement>();
+function TimelineBar({bar, className}: {bar: Bar; className: string}) {
   return (
-    <ol ref={ref} className={clsx(styles.bars, styles[layout])} data-reveal={state}>
-      {bars.map((bar) => (
-        <li
-          key={bar.id}
-          className={clsx(styles.bar, styles[bar.tone])}
-          style={{'--delay': `${bar.delay}s`} as CSSProperties}>
-          <span className={styles.fill}>
-            <Icon name={bar.icon} size={20} className={styles.barIcon} />
-            <span className={styles.barText}>
-              {bar.label && (
-                <span className={styles.barLabel}>{bar.label}</span>
-              )}
-              <span className={styles.barTitle}>{bar.title}</span>
-            </span>
-          </span>
-        </li>
+    <div className={clsx(styles.bar, styles[bar.tone], className)}>
+      <Icon name={bar.icon} size={18} className={styles.barIcon} />
+      <span className={styles.barTitle}>{bar.title}</span>
+    </div>
+  );
+}
+
+const TRACK_SLOTS = [styles.sat, styles.selection];
+const STEP_SLOTS = [styles.scholarships, styles.majors, styles.universities];
+
+function Timeline(): ReactNode {
+  const [ref, state] = useReveal<HTMLDivElement>();
+  return (
+    <div ref={ref} className={styles.timeline} data-reveal={state}>
+      <span className={clsx(styles.gridline, styles.col10)} aria-hidden="true" />
+      <span className={clsx(styles.gridline, styles.col11)} aria-hidden="true" />
+      <span className={clsx(styles.gridline, styles.col12)} aria-hidden="true" />
+
+      <span className={clsx(styles.phase, styles.phase1)}>
+        <Translate id="mentorship.timeline.p1">Pipeline 1</Translate>
+      </span>
+      <span className={clsx(styles.phase, styles.phase2)}>
+        <Translate id="mentorship.timeline.p2">Pipeline 2</Translate>
+      </span>
+      <span className={clsx(styles.tick, styles.col10)}>
+        <Translate id="mentorship.timeline.grade10">Grade 10</Translate>
+      </span>
+      <span className={clsx(styles.tick, styles.col11)}>
+        <Translate id="mentorship.timeline.grade11">Grade 11</Translate>
+      </span>
+      <span className={clsx(styles.tick, styles.col12)}>
+        <Translate id="mentorship.timeline.grade12">Grade 12</Translate>
+      </span>
+
+      <span className={clsx(styles.lane, styles.lane1)}>
+        <Translate id="mentorship.timeline.lane1">Grades 10 & 11</Translate>
+      </span>
+      {TRACKS.map((bar, i) => (
+        <TimelineBar key={bar.id} bar={bar} className={TRACK_SLOTS[i]!} />
       ))}
-    </ol>
+
+      <span className={styles.handoff} aria-hidden="true" />
+      <span className={styles.profile}>
+        <Icon name="document" size={18} />
+        <Translate id="mentorship.profile.title">Student profile</Translate>
+      </span>
+
+      <span className={clsx(styles.lane, styles.lane2)}>
+        <Translate id="mentorship.timeline.lane2">Grade 12</Translate>
+      </span>
+      {STEPS.map((bar, i) => (
+        <TimelineBar key={bar.id} bar={bar} className={STEP_SLOTS[i]!} />
+      ))}
+    </div>
   );
 }
 
@@ -169,22 +163,19 @@ function Pipeline({
   eyebrow,
   title,
   lead,
-  children,
 }: {
   id: string;
   eyebrow: ReactNode;
   title: ReactNode;
   lead: ReactNode;
-  children: ReactNode;
 }): ReactNode {
   return (
-    <section className={styles.section} aria-labelledby={id}>
+    <section className={clsx(ui.card, styles.pipeline)} aria-labelledby={id}>
       <p className={ui.eyebrow}>{eyebrow}</p>
-      <Heading as="h2" id={id} className={styles.sectionTitle}>
+      <Heading as="h3" id={id} className={styles.pipelineTitle}>
         {title}
       </Heading>
       <p className={styles.sectionLead}>{lead}</p>
-      {children}
     </section>
   );
 }
@@ -238,48 +229,58 @@ export default function Mentorship(): ReactNode {
         </header>
 
         <div className={styles.container}>
-          <Pipeline
-            id="grades-10-11"
-            eyebrow={
-              <Translate id="mentorship.p1.eyebrow">
-                Pipeline 1 · Grades 10 & 11
+          <section className={styles.section} aria-labelledby="how">
+            <p className={ui.eyebrow}>
+              <Translate id="mentorship.timeline.eyebrow">How it works</Translate>
+            </p>
+            <Heading as="h2" id="how" className={styles.sectionTitle}>
+              <Translate id="mentorship.timeline.title">
+                Two pipelines, one timeline
               </Translate>
-            }
-            title={
-              <Translate id="mentorship.p1.title">
-                Two tracks, one profile
-              </Translate>
-            }
-            lead={
-              <Translate id="mentorship.p1.lead">
-                Two tracks run in parallel. Together they build the student's
-                profile, the core of this pipeline.
-              </Translate>
-            }>
-            <Bars bars={TRACKS} layout="parallel" />
-          </Pipeline>
-
-          <Pipeline
-            id="grade-12"
-            eyebrow={
-              <Translate id="mentorship.p2.eyebrow">
-                Pipeline 2 · Grade 12
-              </Translate>
-            }
-            title={
-              <Translate id="mentorship.p2.title">
-                Building on the profile
-              </Translate>
-            }
-            lead={
-              <Translate id="mentorship.p2.lead">
-                Students in this pipeline already have a profile from Pipeline
-                1. We build on it to cover scholarships, majors and university
-                selection.
-              </Translate>
-            }>
-            <Bars bars={STEPS} layout="sequence" />
-          </Pipeline>
+            </Heading>
+            <Timeline />
+            <div className={styles.pipelines}>
+              <Pipeline
+                id="grades-10-11"
+                eyebrow={
+                  <Translate id="mentorship.p1.eyebrow">
+                    Pipeline 1 · Grades 10 & 11
+                  </Translate>
+                }
+                title={
+                  <Translate id="mentorship.p1.title">
+                    Two tracks, one profile
+                  </Translate>
+                }
+                lead={
+                  <Translate id="mentorship.p1.lead">
+                    Two tracks run in parallel. Together they build the
+                    student's profile, the core of this pipeline.
+                  </Translate>
+                }
+              />
+              <Pipeline
+                id="grade-12"
+                eyebrow={
+                  <Translate id="mentorship.p2.eyebrow">
+                    Pipeline 2 · Grade 12
+                  </Translate>
+                }
+                title={
+                  <Translate id="mentorship.p2.title">
+                    Building on the profile
+                  </Translate>
+                }
+                lead={
+                  <Translate id="mentorship.p2.lead">
+                    Students in this pipeline already have a profile from
+                    Pipeline 1. We build on it to cover scholarships, majors
+                    and university selection.
+                  </Translate>
+                }
+              />
+            </div>
+          </section>
 
           <section
             className={clsx(ui.card, styles.section, styles.contact)}
