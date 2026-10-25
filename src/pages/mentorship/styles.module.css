@@ -1,0 +1,298 @@
+.page {
+  background: var(--cs-bg);
+  padding-bottom: var(--cs-section-space);
+  overflow-x: clip;
+}
+
+/* Keeps the last card clear of the floating chat button on a phone. */
+@media (max-width: 640px) {
+  .page {
+    padding-bottom: 5rem;
+  }
+}
+
+.container {
+  max-width: var(--cs-container);
+  margin-inline: auto;
+  padding-inline: var(--cs-gutter);
+}
+
+/* =====================================================
+   Hero
+   ===================================================== */
+
+.hero {
+  background:
+    radial-gradient(
+      45rem 22rem at 90% -20%,
+      var(--cs-blue-soft),
+      transparent 62%
+    ),
+    radial-gradient(30rem 20rem at 5% 0%, var(--cs-green-soft), transparent 58%),
+    var(--cs-bg);
+  padding-block: clamp(2rem, 6vw, 4rem) clamp(0.5rem, 2vw, 1rem);
+}
+
+.hero .container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+}
+
+.eyebrow {
+  background: var(--cs-green-soft);
+  border-radius: var(--cs-radius-pill);
+  padding: 0.4rem 0.85rem;
+}
+
+.title {
+  font-family: var(--cs-font-display);
+  font-size: clamp(2rem, 1.4rem + 2.6vw, 3.25rem);
+  line-height: var(--cs-lh-display);
+  letter-spacing: var(--cs-tracking-display);
+  font-weight: 800;
+  color: var(--cs-ink);
+  margin: 0;
+  max-width: 20ch;
+}
+
+.lead {
+  font-size: var(--cs-text-lead);
+  line-height: 1.6;
+  color: var(--cs-ink-muted);
+  max-width: 38rem;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* =====================================================
+   Sections
+   ===================================================== */
+
+.section {
+  margin-top: var(--cs-section-space);
+}
+
+.sectionTitle {
+  font-family: var(--cs-font-display);
+  font-size: var(--cs-text-h2);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--cs-ink);
+  margin: 0.5rem 0 0;
+}
+
+.sectionLead {
+  font-size: var(--cs-text-sm);
+  line-height: 1.6;
+  color: var(--cs-ink-muted);
+  margin: 0.5rem 0 0;
+  max-width: 44rem;
+}
+
+.node {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nodeTitle {
+  margin: 0;
+  font-size: var(--cs-text-h3);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--cs-ink);
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: var(--cs-green-soft);
+  border-radius: var(--cs-radius-lg);
+  padding: 1rem 1.5rem;
+}
+
+.profileText {
+  display: flex;
+  flex-direction: column;
+}
+
+.profileLabel {
+  font-size: var(--cs-text-xs);
+  font-weight: 600;
+  color: var(--cs-ink-muted);
+}
+
+.profileTitle {
+  font-size: var(--cs-text-h3);
+  font-weight: 700;
+  color: var(--cs-brand-strong);
+}
+
+/* ---------- Pipeline 1: two tracks merging into the profile ---------- */
+
+.parallel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+
+.tracks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--cs-gap);
+}
+
+/* Drops a line from the middle of each track and joins them over the profile. */
+.merge {
+  position: relative;
+  align-self: stretch;
+  height: 1.75rem;
+  margin-inline: 25%;
+  border: 2px solid var(--cs-brand);
+  border-top: 0;
+  border-radius: 0 0 var(--cs-radius-sm) var(--cs-radius-sm);
+  margin-bottom: 1.75rem;
+}
+
+.merge::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  inset-inline-start: 50%;
+  width: 2px;
+  height: 1.75rem;
+  background: var(--cs-brand);
+  transform: translateX(-50%);
+}
+
+/* ---------- Pipeline 2: profile, then three steps ---------- */
+
+.flow {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 2.5rem;
+  row-gap: 2.5rem;
+  align-items: stretch;
+}
+
+.flowStart,
+.flowItem {
+  display: flex;
+}
+
+.flowStart > *,
+.flowItem > .node {
+  flex: 1;
+}
+
+.flowItem {
+  position: relative;
+}
+
+.flowArrow {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: calc(100% + 0.5rem);
+  translate: 0 -50%;
+  color: var(--cs-brand);
+}
+
+[dir='rtl'] .flowArrow {
+  transform: scaleX(-1);
+}
+
+/* ---------- Contact ---------- */
+
+.contact {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.contactText {
+  flex: 1;
+  min-width: 0;
+}
+
+.contactTitle {
+  margin: 0;
+  font-size: var(--cs-text-h3);
+  font-weight: 700;
+  color: var(--cs-ink);
+}
+
+.contact > :first-child,
+.contact > :last-child {
+  flex: none;
+}
+
+/* =====================================================
+   Responsive
+   ===================================================== */
+
+@media (max-width: 996px) {
+  .flow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .flowArrow,
+  [dir='rtl'] .flowArrow {
+    top: auto;
+    bottom: calc(100% + 0.5rem);
+    inset-inline-end: auto;
+    inset-inline-start: 50%;
+    translate: -50% 0;
+    transform: rotate(90deg);
+  }
+
+  .contact {
+    flex-wrap: wrap;
+  }
+
+  .contactText {
+    flex-basis: 16rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .tracks {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Stacked tracks: a single stem down to the profile. */
+  .merge {
+    border: 0;
+    margin: 0;
+    height: 2rem;
+  }
+
+  .merge::after {
+    top: 0;
+    height: 100%;
+  }
+
+  .actions > * {
+    flex: 1 1 100%;
+  }
+
+  .contact {
+    align-items: flex-start;
+  }
+}

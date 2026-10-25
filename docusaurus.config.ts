@@ -187,6 +187,7 @@ const config: Config = {
           position: 'left',
           label: 'Scholarships',
         },
+        {to: '/mentorship', label: 'Mentorship', position: 'left'},
         {to: '/stories', label: 'Stories', position: 'left'},
         {to: '/contribute', label: 'Contribute', position: 'left'},
         {type: 'custom-docsYear', position: 'right'},
