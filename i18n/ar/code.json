@@ -1065,7 +1065,7 @@
     "message": "ابنِ ملفّك"
   },
   "mentorship.timeline.lane2.sub": {
-    "message": "نرحّب بالطلاب الجدد"
+    "message": "التقديم. نرحّب بالطلاب الجدد."
   },
   "mentorship.results": {
     "message": "نتائجك"
@@ -1075,8 +1075,5 @@
   },
   "mentorship.apply.bar": {
     "message": "التقديم: الجامعات، الاختصاصات، المنح"
-  },
-  "mentorship.timeline.lane2.goal": {
-    "message": "قدِّم واحصل على نتائجك"
   }
 }
