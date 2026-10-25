@@ -1019,9 +1019,6 @@
   "mentorship.p1.lead": {
     "message": "يسير المساران بالتوازي، ويبنيان معًا الملف الشخصي للطالب، وهو جوهر هذا المسار."
   },
-  "mentorship.p1.builds": {
-    "message": "يبنيان"
-  },
   "mentorship.p2.eyebrow": {
     "message": "المسار الثاني · الصفّ الثاني عشر"
   },
@@ -1031,9 +1028,6 @@
   "mentorship.p2.lead": {
     "message": "لدى طلاب هذا المسار ملف شخصي من المسار الأول. نبني عليه لنغطّي المنح والاختصاصات واختيار الجامعة."
   },
-  "mentorship.p2.starts": {
-    "message": "ينطلق من"
-  },
   "mentorship.contact.title": {
     "message": "مهتمّ بالإرشاد؟"
   },
@@ -1042,5 +1036,32 @@
   },
   "footer.explore.mentorship": {
     "message": "الإرشاد"
+  },
+  "mentorship.timeline.eyebrow": {
+    "message": "كيف يعمل"
+  },
+  "mentorship.timeline.title": {
+    "message": "مساران على خطّ زمني واحد"
+  },
+  "mentorship.timeline.p1": {
+    "message": "المسار الأول"
+  },
+  "mentorship.timeline.p2": {
+    "message": "المسار الثاني"
+  },
+  "mentorship.timeline.grade10": {
+    "message": "الصفّ العاشر"
+  },
+  "mentorship.timeline.grade11": {
+    "message": "الصفّ الحادي عشر"
+  },
+  "mentorship.timeline.grade12": {
+    "message": "الصفّ الثاني عشر"
+  },
+  "mentorship.timeline.lane1": {
+    "message": "الصفّان العاشر والحادي عشر"
+  },
+  "mentorship.timeline.lane2": {
+    "message": "الصفّ الثاني عشر"
   }
 }
