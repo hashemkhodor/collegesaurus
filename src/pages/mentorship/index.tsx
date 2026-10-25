@@ -236,9 +236,9 @@ export default function Mentorship(): ReactNode {
             </Heading>
             <p className={styles.lead}>
               <Translate id="mentorship.hero.lead">
-                We help you get into university. In Grades 10 and 11, you build
-                your profile. In Grade 12, we help you apply and get your
-                results.
+                We help you get into university with scholarships. In Grades 10
+                and 11, you build your profile. In Grade 12, we help you apply
+                and get your results.
               </Translate>
             </p>
             <div className={styles.actions}>
