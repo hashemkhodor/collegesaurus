@@ -15,26 +15,26 @@ import DataTable, {type ColumnSpec, type Row} from '@site/src/components/DataTab
 
 type TableProps = {rows: Row[]; [key: string]: unknown};
 
-const col = (key: string, en: string, ar: string, extra: Partial<ColumnSpec> = {}): ColumnSpec => ({
+const col = (key: string, en: string, ar: string, fr: string, extra: Partial<ColumnSpec> = {}): ColumnSpec => ({
   key,
-  labels: {en, ar},
+  labels: {en, ar, fr},
   ...extra,
 });
 
-const REFERENCE = col('reference', 'Reference', 'المرجع', {link: true, sortable: false});
-const SOURCE = col('source', 'Source', 'المصدر', {link: true, sortable: false});
+const REFERENCE = col('reference', 'Reference', 'المرجع', "Référence", {link: true, sortable: false});
+const SOURCE = col('source', 'Source', 'المصدر', "Source", {link: true, sortable: false});
 
 export function TuitionTable({rows}: TableProps): ReactNode {
   return (
     <DataTable
       rows={rows}
       columns={[
-        col('faculty', 'Faculty / School', 'الكلية'),
-        col('faculty_school', 'Faculty / School', 'الكلية'),
-        col('program', 'Program', 'البرنامج'),
-        col('usd_per_credit', 'USD per credit', 'دولار لكل ساعة'),
-        col('usd_per_year', 'USD per year', 'دولار سنويًا'),
-        col('notes', 'Notes', 'ملاحظات'),
+        col('faculty', 'Faculty / School', 'الكلية', "Faculté / École"),
+        col('faculty_school', 'Faculty / School', 'الكلية', "Faculté / École"),
+        col('program', 'Program', 'البرنامج', "Programme"),
+        col('usd_per_credit', 'USD per credit', 'دولار لكل ساعة', "USD par crédit"),
+        col('usd_per_year', 'USD per year', 'دولار سنويًا', "USD par an"),
+        col('notes', 'Notes', 'ملاحظات', "Notes"),
         REFERENCE,
         SOURCE,
       ]}
@@ -47,11 +47,11 @@ export function ApplicationWindows({rows}: TableProps): ReactNode {
     <DataTable
       rows={rows}
       columns={[
-        col('term', 'Term', 'الفصل'),
-        col('opens', 'Opens', 'يفتح'),
-        col('closes', 'Closes', 'يقفل'),
-        col('decisions', 'Decisions', 'القرارات'),
-        col('latest_sat', 'Latest SAT', 'آخر موعد SAT'),
+        col('term', 'Term', 'الفصل', "Semestre"),
+        col('opens', 'Opens', 'يفتح', "Ouverture"),
+        col('closes', 'Closes', 'يقفل', "Clôture"),
+        col('decisions', 'Decisions', 'القرارات', "Décisions"),
+        col('latest_sat', 'Latest SAT', 'آخر موعد SAT', "Dernier SAT"),
         REFERENCE,
       ]}
     />
@@ -63,10 +63,10 @@ export function FeeTable({rows}: TableProps): ReactNode {
     <DataTable
       rows={rows}
       columns={[
-        col('fee', 'Fee', 'الرسم'),
-        col('amount', 'Amount (USD)', 'المبلغ (دولار)'),
-        col('amount_usd', 'Amount (USD)', 'المبلغ (دولار)'),
-        col('notes', 'Notes', 'ملاحظات'),
+        col('fee', 'Fee', 'الرسم', "Frais"),
+        col('amount', 'Amount (USD)', 'المبلغ (دولار)', "Montant (USD)"),
+        col('amount_usd', 'Amount (USD)', 'المبلغ (دولار)', "Montant (USD)"),
+        col('notes', 'Notes', 'ملاحظات', "Notes"),
         REFERENCE,
       ]}
     />
@@ -78,12 +78,12 @@ export function ContactsTable({rows}: TableProps): ReactNode {
     <DataTable
       rows={rows}
       columns={[
-        col('department', 'Department', 'القسم'),
-        col('office', 'Office', 'المكتب'),
-        col('campus', 'Campus', 'الحرم'),
-        col('phone', 'Phone', 'الهاتف'),
-        col('email', 'Email', 'البريد الإلكتروني'),
-        col('notes', 'Notes', 'ملاحظات'),
+        col('department', 'Department', 'القسم', "Département"),
+        col('office', 'Office', 'المكتب', "Bureau"),
+        col('campus', 'Campus', 'الحرم', "Campus"),
+        col('phone', 'Phone', 'الهاتف', "Téléphone"),
+        col('email', 'Email', 'البريد الإلكتروني', "E-mail"),
+        col('notes', 'Notes', 'ملاحظات', "Notes"),
       ]}
     />
   );
@@ -94,10 +94,10 @@ export function ScholarshipOffers({rows}: TableProps): ReactNode {
     <DataTable
       rows={rows}
       columns={[
-        col('scholarship', 'Scholarship', 'المنحة'),
-        col('coverage', 'Coverage', 'التغطية'),
-        col('eligibility', 'Eligibility', 'شروط الأهلية'),
-        col('conditions', 'Conditions', 'الشروط'),
+        col('scholarship', 'Scholarship', 'المنحة', "Bourse"),
+        col('coverage', 'Coverage', 'التغطية', "Couverture"),
+        col('eligibility', 'Eligibility', 'شروط الأهلية', "Conditions d’éligibilité"),
+        col('conditions', 'Conditions', 'الشروط', "Conditions"),
         REFERENCE,
       ]}
     />

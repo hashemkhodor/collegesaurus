@@ -39,9 +39,9 @@ const HEADING = /^##(?!#)\s+(.*)$/;
 const SEPARATOR = /^\s*\|(?:\s*:?-{3,}:?\s*\|)+\s*$/;
 // Of a scholarship's stages, the one that is the deadline.
 const CLOSING_STAGE =
-  /clos|deadline|last day|إقفال|إغلاق|يغلق|يُغلق|يقفل|تقفل|الموعد النهائي|آخر يوم/i;
+  /clos|clôture|cloture|ferme|deadline|last day|date limite|dernier jour|إقفال|إغلاق|يغلق|يُغلق|يقفل|تقفل|الموعد النهائي|آخر يوم/i;
 // A university's own scholarship or aid round, rather than an admission round.
-const AID = /scholarship|financial aid|منح|مساعد/i;
+const AID = /scholarship|financial aid|bourse|aide financière|منح|مساعد/i;
 const REFS = new Set(REF_HEADERS.map(normalize));
 
 /** Cell text as the page shows it: no links, tags, emphasis or escapes. */

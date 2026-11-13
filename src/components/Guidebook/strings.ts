@@ -149,7 +149,74 @@ const arStrings: GuideStrings = {
   hideClosed: 'أخفِ المواعيد المنتهية',
 };
 
-const STRINGS: Record<string, GuideStrings> = {en, ar: arStrings};
+const frStrings: GuideStrings = {
+  year: (y) => `Informations ${y}`,
+  apply: (host) => `Postuler sur ${host}`,
+  applyShort: 'Postuler',
+  applyNow: 'Postuler maintenant',
+  programsIn: (n, units) =>
+    units > 1 && units <= 12
+      ? `${n > 1 ? 'programmes' : 'programme'} dans ${units} facultés`
+      : n > 1
+        ? 'programmes répertoriés'
+        : 'programme répertorié',
+  applications: (host) => `Candidatures : ${host}`,
+  programsCount: (n) => `${n} ${n > 1 ? 'programmes' : 'programme'}`,
+  perCredit: 'par crédit',
+  perCreditNotes: 'par crédit, voir les notes',
+  chips: {
+    faculty: 'Programmes',
+    application: 'Candidature',
+    tuition: 'Frais de scolarité',
+    scholarships: 'Bourses',
+    requirements: 'Conditions',
+    contacts: 'Contact',
+    overview: 'Présentation',
+    grades: 'Conditions',
+    window: 'Candidature',
+    universities: 'Universités',
+    benefits: 'Avantages',
+    recipients: 'Bénéficiaires',
+  },
+  provider: 'Organisme',
+  type: 'Type',
+  universitiesCount: (n) => (n > 1 ? 'universités répertoriées' : 'université répertoriée'),
+  passed: 'Terminé',
+  inDays: (n) => (n === 0 ? 'Aujourd’hui' : n === 1 ? 'Demain' : `Dans ${n} jours`),
+  searchPrograms: (n) => `Rechercher parmi ${n} programmes`,
+  facultyFilter: 'Filtrer par faculté',
+  allFaculties: (n) => `Toutes les facultés (${n})`,
+  shown: (a, n) => `${a} sur ${n} programmes`,
+  showAllPrograms: (n) => `Afficher les ${n} programmes`,
+  showFewerPrograms: 'Afficher moins de programmes',
+  noMatch: (q) => `Aucun programme ne correspond à « ${maskProfanity(q)} ».`,
+  clear: 'Effacer la recherche',
+  years: (n) => `${n} ${Number(n) > 1 ? 'ans' : 'an'}`,
+  credits: (n) => `${n} ${Number(n) > 1 ? 'crédits' : 'crédit'}`,
+  programPage: 'Page du programme',
+  sourceNamed: (label) => `Source : ${label}`,
+  showMore: (n) => `Afficher ${n} de plus`,
+  showFewer: 'Afficher moins',
+  showMoreSections: (n) => `Afficher ${n} ${n > 1 ? 'sections' : 'section'} de plus`,
+  showFewerSections: 'Afficher moins de sections',
+  source: 'Source',
+  sources: 'Sources',
+  glance: 'En un coup d’œil',
+  onPage: 'Sur cette page',
+  correction: 'Proposer une correction',
+  open: 'Ouvert maintenant',
+  closing: (n) => (n === 1 ? '1 jour restant' : `${n} jours restants`),
+  opening: (n) => (n === 1 ? 'Ouvre dans 1 jour' : `Ouvre dans ${n} jours`),
+  closed: 'Clôturé',
+  closes: (d) => `Clôture le ${d}`,
+  opensOn: (d) => `Ouvre le ${d}`,
+  applyBy: 'Postuler avant le',
+  closesTba: 'Date de clôture à annoncer',
+  showClosed: (n) => `Afficher ${n} ${n > 1 ? 'périodes closes' : 'période close'}`,
+  hideClosed: 'Masquer les périodes closes',
+};
+
+const STRINGS: Record<string, GuideStrings> = {en, ar: arStrings, fr: frStrings};
 
 export function useGuide(): {s: GuideStrings; locale: string} {
   const {i18n} = useDocusaurusContext();

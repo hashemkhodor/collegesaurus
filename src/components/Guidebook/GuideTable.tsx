@@ -208,7 +208,7 @@ export function GuideTable(props: Props): ReactNode {
   }
 
   if (props.shape === 'kv') {
-    const plainNote = /^(notes?|ملاحظات)$/i;
+    const plainNote = /^(notes?|remarques?|ملاحظات)$/i;
     const kvRow = (row: Row, i: number) => (
       <div className="kv-row" key={i}>
         <dt>
@@ -316,7 +316,7 @@ function WindowList({rows, head, texts, refs, windows: w, sharedRef, s, locale}:
   useCollapsible(overflow, fold && !expanded, open);
 
   const TERM = /(Fall|Spring|Summer|Winter)\s+\d{4}(?:-\d{2,4})?/i;
-  const NOTE = /^(notes?|ملاحظات)$/i;
+  const NOTE = /^(notes?|remarques?|ملاحظات)$/i;
 
   // "Freshman - Early Merit (Fall 2027-28)" becomes a title plus a term, so cards can be grouped by term.
   const split = (i: number): {main: string | null; term: string | null} => {
