@@ -1,10 +1,11 @@
 import type {ReactNode} from 'react';
 import useBaseUrl from '@docusaurus/useBaseUrl';
-import {UNIVERSITY_LOGOS} from '@site/src/data/homepage/logos';
+import {SCHOLARSHIP_LOGOS, UNIVERSITY_LOGOS} from '@site/src/data/homepage/logos';
 
 export default function SidebarTile({slug, label}: {slug: string; label: string}): ReactNode {
-  const logo = UNIVERSITY_LOGOS[slug];
-  const src = useBaseUrl(logo ? `/img/universities/${logo.file}` : '/');
+  const university = UNIVERSITY_LOGOS[slug];
+  const logo = university ?? SCHOLARSHIP_LOGOS[slug];
+  const src = useBaseUrl(logo ? `/img/${university ? 'universities' : 'scholarships'}/${logo.file}` : '/');
   if (!logo) {
     return (
       <span className="menu-tile menu-tile-initials" aria-hidden="true">

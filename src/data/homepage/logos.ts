@@ -112,3 +112,35 @@ export const UNIVERSITY_LOGOS: Record<string, UniversityLogo> = {
     verifiedOn: CHECKED,
   },
 };
+
+/**
+ * Scholarship marks, same rules as above. Files live in
+ * `static/img/scholarships/`. A scholarship with no entry falls back to its
+ * initials: the programs whose own sites publish no usable mark (Fulbright,
+ * MEPI-TL, TOMOOH, USAID USP) or only a wide wordmark that is unreadable in a
+ * 32px tile (ULYP) are left out rather than redrawn.
+ */
+export const SCHOLARSHIP_LOGOS: Record<string, UniversityLogo> = {
+  amideast: {
+    file: 'amideast.png',
+    source: 'https://www.amideast.org/sites/default/files/images/og_logo.png',
+    verifiedOn: '2026-11-13',
+  },
+  laser: {
+    file: 'laser.png',
+    source:
+      'https://laser-lb.org/wp-content/uploads/2024/06/cropped-LASeR-icon-1-01-1-192x192.png',
+    verifiedOn: '2026-11-13',
+  },
+  life: {
+    file: 'life.png',
+    source: 'https://www.lifelebanon.com/images/reupload-logo.png',
+    verifiedOn: '2026-11-13',
+  },
+  'stipendium-hungaricum': {
+    file: 'stipendium-hungaricum.png',
+    source:
+      'https://stipendiumhungaricum.hu/wp-content/uploads/2026/11/cropped-favicon-32x32-transparent-180x180.png',
+    verifiedOn: '2026-11-13',
+  },
+};
