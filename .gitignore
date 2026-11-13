@@ -175,6 +175,12 @@ i18n/ar/docusaurus-plugin-content-docs-universities/version-*/
 i18n/ar/docusaurus-plugin-content-docs-scholarships/version-*/
 i18n/ar/docusaurus-plugin-content-docs-universities/version-*.json
 i18n/ar/docusaurus-plugin-content-docs-scholarships/version-*.json
+i18n/fr/docusaurus-plugin-content-docs-universities/current/*.mdx
+i18n/fr/docusaurus-plugin-content-docs-scholarships/current/*.mdx
+i18n/fr/docusaurus-plugin-content-docs-universities/version-*/
+i18n/fr/docusaurus-plugin-content-docs-scholarships/version-*/
+i18n/fr/docusaurus-plugin-content-docs-universities/version-*.json
+i18n/fr/docusaurus-plugin-content-docs-scholarships/version-*.json
 static/attachments/
 
 # Symlink forms; the dir-only patterns above don't match them (worktree.config).

@@ -804,13 +804,13 @@
     "message": "منحة جديدة"
   },
   "contribute.add.scholarship.count": {
-    "message": "ملفان"
+    "message": "٣ ملفات"
   },
   "contribute.add.university": {
     "message": "جامعة جديدة"
   },
   "contribute.add.university.count": {
-    "message": "٤ ملفات"
+    "message": "٦ ملفات"
   },
   "contribute.add.templates": {
     "message": "افتح القوالب"
@@ -1078,5 +1078,11 @@
   },
   "mentorship.timeline.build": {
     "message": "ابنِ ملفّك"
+  },
+  "contribute.files.info.fr": {
+    "message": "الصفحة النصية، بالفرنسية"
+  },
+  "contribute.files.majors.fr": {
+    "message": "البرامج الدراسية، بالفرنسية"
   }
 }

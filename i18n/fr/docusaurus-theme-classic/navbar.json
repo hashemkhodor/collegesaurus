@@ -1,0 +1,26 @@
+{
+  "title": {
+    "message": "Collegesaurus",
+    "description": "The title in the navbar"
+  },
+  "item.label.Universities": {
+    "message": "Universités",
+    "description": "Navbar item with label Universities"
+  },
+  "item.label.Scholarships": {
+    "message": "Bourses",
+    "description": "Navbar item with label Scholarships"
+  },
+  "item.label.Mentorship": {
+    "message": "Mentorat",
+    "description": "Navbar item with label Mentorship"
+  },
+  "item.label.Stories": {
+    "message": "Témoignages",
+    "description": "Navbar item with label Stories"
+  },
+  "item.label.Contribute": {
+    "message": "Contribuer",
+    "description": "Navbar item with label Contribute"
+  }
+}

@@ -1,0 +1,1089 @@
+{
+  "homepage.meta.description": {
+    "message": "Un guide étudiant des universités et des bourses externes au Liban.",
+    "description": "The homepage meta description"
+  },
+  "stories.readingTime": {
+    "message": "{minutes} min de lecture"
+  },
+  "stories.kind.contributor": {
+    "message": "Contributeur"
+  },
+  "stories.kind.awardee": {
+    "message": "Lauréat d’une bourse"
+  },
+  "search.type.university": {
+    "message": "Université"
+  },
+  "search.type.scholarship": {
+    "message": "Bourse"
+  },
+  "search.type.story": {
+    "message": "Témoignage"
+  },
+  "search.type.page": {
+    "message": "Page"
+  },
+  "search.section.overview": {
+    "message": "Présentation"
+  },
+  "search.keywordNote": {
+    "message": "Affichage des pages qui contiennent exactement ces mots.",
+    "description": "Shown above results when search by meaning could not answer and keyword search did"
+  },
+  "search.failed": {
+    "message": "La recherche n’a pas pu se charger. Vérifiez votre connexion et réessayez."
+  },
+  "search.searching": {
+    "message": "Recherche en cours…"
+  },
+  "search.noMatch": {
+    "message": "Aucune page ne correspond à « {query} ». Essayez d’autres mots."
+  },
+  "homepage.majors.computerScience": {
+    "message": "Informatique"
+  },
+  "homepage.majors.engineering": {
+    "message": "Ingénierie"
+  },
+  "homepage.majors.medicine": {
+    "message": "Médecine"
+  },
+  "homepage.majors.nursing": {
+    "message": "Soins infirmiers"
+  },
+  "homepage.majors.business": {
+    "message": "Gestion"
+  },
+  "homepage.majors.law": {
+    "message": "Droit"
+  },
+  "homepage.majors.architecture": {
+    "message": "Architecture"
+  },
+  "homepage.majors.arts": {
+    "message": "Arts et design"
+  },
+  "homepage.majors.psychology": {
+    "message": "Psychologie"
+  },
+  "homepage.majors.education": {
+    "message": "Éducation"
+  },
+  "homepage.search.computerScience": {
+    "message": "Informatique"
+  },
+  "homepage.search.medicine": {
+    "message": "Médecine"
+  },
+  "homepage.search.engineering": {
+    "message": "Ingénierie"
+  },
+  "contribute.ways.correction.title": {
+    "message": "Signaler une correction"
+  },
+  "contribute.ways.correction.description": {
+    "message": "Un montant de frais de scolarité vous semble faux, une date a changé, un contact a bougé ? Indiquez ce qui ne va pas et où vous avez vu une meilleure information. Vous n’avez pas à le corriger vous-même."
+  },
+  "contribute.ways.correction.cta": {
+    "message": "Signaler une erreur"
+  },
+  "contribute.ways.add.title": {
+    "message": "Ajouter une bourse ou une université"
+  },
+  "contribute.ways.add.description": {
+    "message": "Vous connaissez une bourse à laquelle les étudiants libanais peuvent postuler, ou un établissement qui devrait figurer sur le site ? Remplissez un petit modèle et envoyez-le."
+  },
+  "contribute.ways.add.cta": {
+    "message": "Voir ce qu’il faut fournir"
+  },
+  "contribute.ways.story.title": {
+    "message": "Partager votre témoignage"
+  },
+  "contribute.ways.story.description": {
+    "message": "Vous avez été admis dans un programme, obtenu une bourse ou appris quelque chose à la dure ? Racontez-nous, nous pourrons le publier sous forme de témoignage."
+  },
+  "contribute.ways.story.cta": {
+    "message": "Envoyer votre expérience"
+  },
+  "contribute.ways.editor.title": {
+    "message": "Devenir éditeur"
+  },
+  "contribute.ways.editor.description": {
+    "message": "Vous travaillez dans un service des admissions, ou vous êtes bénévole et souhaitez tenir une page à jour ? Demandez un accès en modification au bon dossier Drive."
+  },
+  "contribute.ways.editor.cta": {
+    "message": "Nous écrire"
+  },
+  "contribute.steps.submit.title": {
+    "message": "Vous l’envoyez"
+  },
+  "contribute.steps.submit.description": {
+    "message": "Via le formulaire, ou directement dans Drive si vous êtes éditeur."
+  },
+  "contribute.steps.review.title": {
+    "message": "Nous le vérifions"
+  },
+  "contribute.steps.review.description": {
+    "message": "Le mainteneur examine les propositions tous les quelques jours et vérifie chaque modification auprès d’une source officielle."
+  },
+  "contribute.steps.live.title": {
+    "message": "C’est en ligne"
+  },
+  "contribute.steps.live.description": {
+    "message": "Les modifications approuvées apparaissent après la prochaine reconstruction du matin. Vous êtes crédité comme vous l’avez choisi : par votre nom, anonymement ou pas du tout."
+  },
+  "contribute.rules.metadata": {
+    "message": "Chaque fichier info.docx commence par un titre {h1} suivi d’un tableau clé/valeur."
+  },
+  "contribute.rules.university": {
+    "message": "Les pages d’université gardent leurs sections dans cet ordre : Introduction, Application, Tuition, Scholarships, Requirements, Contacts."
+  },
+  "contribute.rules.scholarship": {
+    "message": "Pour les pages de bourse, seul le bloc Metadata est imposé. Renommez, réorganisez, ajoutez ou supprimez librement les autres sections."
+  },
+  "contribute.rules.majors": {
+    "message": "Le fichier majors.xlsx conserve ses en-têtes de colonnes ; program, degree et faculty sont obligatoires."
+  },
+  "contribute.files.info.en": {
+    "message": "Page de texte, en anglais"
+  },
+  "contribute.files.info.ar": {
+    "message": "Page de texte, en arabe"
+  },
+  "contribute.meta.title": {
+    "message": "Contribuer"
+  },
+  "contribute.meta.description": {
+    "message": "Comment aider Collegesaurus à rester exact : signaler une correction, ajouter une page, partager un témoignage ou devenir éditeur."
+  },
+  "contribute.hero.eyebrow": {
+    "message": "Contribuer"
+  },
+  "contribute.hero.title": {
+    "message": "Aidez Collegesaurus à rester {accurate}"
+  },
+  "contribute.hero.accent": {
+    "message": "fiable"
+  },
+  "contribute.hero.lead": {
+    "message": "Collegesaurus est tenu par des bénévoles, et chacun peut aider. Pas besoin de savoir coder, et la plupart de ces contributions prennent moins de cinq minutes."
+  },
+  "contribute.hero.primary": {
+    "message": "Signaler une correction"
+  },
+  "contribute.hero.secondary": {
+    "message": "Parcourir les données"
+  },
+  "contribute.ways.title": {
+    "message": "Comment aider"
+  },
+  "contribute.add.title": {
+    "message": "Ajouter une page : ce qu’il vous faut"
+  },
+  "contribute.add.lead": {
+    "message": "Téléchargez le modèle, remplissez-le et envoyez-le via le formulaire. Un jeu de fichiers par page, un fichier par langue."
+  },
+  "contribute.add.scholarship": {
+    "message": "Nouvelle bourse"
+  },
+  "contribute.add.scholarship.count": {
+    "message": "3 fichiers"
+  },
+  "contribute.add.templates": {
+    "message": "Ouvrir les modèles"
+  },
+  "contribute.add.university": {
+    "message": "Nouvelle université"
+  },
+  "contribute.add.university.count": {
+    "message": "6 fichiers"
+  },
+  "contribute.files.majors.en": {
+    "message": "Programmes de diplôme, une ligne par spécialité, en anglais"
+  },
+  "contribute.files.majors.ar": {
+    "message": "Programmes de diplôme, en arabe"
+  },
+  "contribute.rules.title": {
+    "message": "Respectez la structure du modèle"
+  },
+  "contribute.rules.lead": {
+    "message": "La synchronisation du matin lit ces fichiers automatiquement : ne modifiez pas leur forme."
+  },
+  "contribute.add.signin": {
+    "message": "L’envoi de fichiers nécessite de se connecter avec Google."
+  },
+  "contribute.add.submit": {
+    "message": "Proposer une bourse ou une université"
+  },
+  "contribute.steps.title": {
+    "message": "Comment ça marche"
+  },
+  "contribute.source.title": {
+    "message": "Consulter la source"
+  },
+  "contribute.source.description": {
+    "message": "Chaque page d’université et de bourse est générée à partir d’un simple fichier .docx ou .xlsx dans un dossier Google Drive. Il est ouvert à la lecture sans connexion, et le site en est reconstruit chaque matin vers 7 h, heure de Beyrouth."
+  },
+  "contribute.source.cta": {
+    "message": "Ouvrir le dossier Drive"
+  },
+  "contribute.thanks": {
+    "message": "Merci. Chaque correction, même minime, aide un étudiant à décider en meilleure connaissance de cause."
+  },
+  "mentorship.tracks.goals": {
+    "message": "Fixer des objectifs : notes, SAT, activités"
+  },
+  "mentorship.tracks.sat": {
+    "message": "Cours de préparation au SAT"
+  },
+  "mentorship.tracks.selection": {
+    "message": "Choisir une université et une spécialité"
+  },
+  "mentorship.apply.bar": {
+    "message": "Postuler : universités, spécialités, bourses"
+  },
+  "mentorship.results": {
+    "message": "Vos résultats"
+  },
+  "mentorship.timeline.p1": {
+    "message": "Parcours 1"
+  },
+  "mentorship.timeline.p2": {
+    "message": "Parcours 2"
+  },
+  "mentorship.timeline.grade10": {
+    "message": "10e année"
+  },
+  "mentorship.timeline.grade11": {
+    "message": "11e année"
+  },
+  "mentorship.timeline.grade12": {
+    "message": "12e année"
+  },
+  "mentorship.timeline.build": {
+    "message": "Construisez votre profil"
+  },
+  "mentorship.timeline.apply": {
+    "message": "Candidature"
+  },
+  "mentorship.timeline.results": {
+    "message": "Résultats"
+  },
+  "mentorship.timeline.lane1": {
+    "message": "10e et 11e années"
+  },
+  "mentorship.timeline.lane1.sub": {
+    "message": "Construisez votre profil"
+  },
+  "mentorship.profile.title": {
+    "message": "Votre profil"
+  },
+  "mentorship.timeline.lane2": {
+    "message": "12e année"
+  },
+  "mentorship.timeline.lane2.sub": {
+    "message": "Postulez. Les nouveaux élèves sont les bienvenus."
+  },
+  "mentorship.meta.title": {
+    "message": "Mentorat"
+  },
+  "mentorship.meta.description": {
+    "message": "Le mentorat Collegesaurus. 10e et 11e années : cours de SAT et aide pour choisir une université et une spécialité. 12e année : aide pour postuler aux spécialités, aux universités et aux bourses."
+  },
+  "mentorship.hero.eyebrow": {
+    "message": "Mentorat"
+  },
+  "mentorship.hero.title": {
+    "message": "Un mentorat de {grades}"
+  },
+  "mentorship.hero.accent": {
+    "message": "la 10e à la 12e année"
+  },
+  "mentorship.hero.lead": {
+    "message": "Nous vous aidons à entrer à l’université avec des bourses. En 10e et 11e années, vous construisez votre profil. En 12e année, nous vous aidons à postuler et à obtenir vos résultats."
+  },
+  "mentorship.cta.button": {
+    "message": "Se renseigner sur le mentorat"
+  },
+  "mentorship.timeline.eyebrow": {
+    "message": "Comment ça marche"
+  },
+  "mentorship.timeline.title": {
+    "message": "De la 10e année à vos résultats"
+  },
+  "mentorship.p1.eyebrow": {
+    "message": "Parcours 1 · 10e et 11e années"
+  },
+  "mentorship.p1.title": {
+    "message": "Construisez votre profil"
+  },
+  "mentorship.p1.lead": {
+    "message": "Nous fixons avec vous des objectifs pour vos notes, le SAT et vos activités extrascolaires, afin que vous soyez prêt à postuler aux universités, aux spécialités et aux bourses. En parallèle, vous bénéficiez de cours de SAT et d’une aide pour choisir une université et une spécialité. Ensemble, ils construisent votre profil."
+  },
+  "mentorship.p2.eyebrow": {
+    "message": "Parcours 2 · 12e année"
+  },
+  "mentorship.p2.title": {
+    "message": "Postulez et obtenez vos résultats"
+  },
+  "mentorship.p2.lead": {
+    "message": "Nous vous aidons à postuler aux spécialités, aux universités et aux bourses. Ensuite, vous recevez vos résultats. Vous venez du Parcours 1 ? Vous partez de votre profil. Vous êtes nouveau en 12e année ? Vous pouvez nous rejoindre aussi."
+  },
+  "mentorship.contact.title": {
+    "message": "Le mentorat vous intéresse ?"
+  },
+  "mentorship.contact.description": {
+    "message": "Écrivez-nous et dites-nous dans quelle classe vous êtes."
+  },
+  "theme.blog.archive.title": {
+    "message": "Archives",
+    "description": "The page & hero title of the blog archive page"
+  },
+  "stories.hero.eyebrow": {
+    "message": "Témoignages"
+  },
+  "stories.hero.lead": {
+    "message": "Des expériences vécues par des étudiants passés par les admissions, les bourses et les études supérieures au Liban et à l’étranger."
+  },
+  "stories.topics.label": {
+    "message": "Parcourir les témoignages par thème"
+  },
+  "stories.tag.eyebrow": {
+    "message": "Thème"
+  },
+  "stories.tag.all": {
+    "message": "Tous les thèmes"
+  },
+  "footer.contribute.guide": {
+    "message": "Comment contribuer"
+  },
+  "footer.contribute.correction": {
+    "message": "Proposer une correction"
+  },
+  "footer.contribute.addition": {
+    "message": "Ajouter une bourse ou une université"
+  },
+  "footer.contribute.experience": {
+    "message": "Partager votre expérience"
+  },
+  "theme.IconExternalLink.ariaLabel": {
+    "message": "(s’ouvre dans un nouvel onglet)",
+    "description": "The ARIA label for the external link icon"
+  },
+  "footer.explore.universities": {
+    "message": "Universités"
+  },
+  "footer.explore.scholarships": {
+    "message": "Bourses"
+  },
+  "footer.explore.mentorship": {
+    "message": "Mentorat"
+  },
+  "footer.explore.stories": {
+    "message": "Témoignages"
+  },
+  "footer.contact.github": {
+    "message": "Collegesaurus sur GitHub"
+  },
+  "footer.contact.email": {
+    "message": "Écrire à Collegesaurus"
+  },
+  "footer.contact.feed": {
+    "message": "Flux RSS des témoignages"
+  },
+  "footer.tagline": {
+    "message": "Un guide gratuit, conçu par des étudiants, des universités et des bourses au Liban."
+  },
+  "footer.explore.title": {
+    "message": "Explorer"
+  },
+  "footer.contribute.title": {
+    "message": "Contribuer"
+  },
+  "footer.copyright": {
+    "message": "© {year} Collegesaurus"
+  },
+  "footer.license": {
+    "message": "Licence MIT"
+  },
+  "footer.disclaimer": {
+    "message": "Un projet étudiant indépendant, sans lien avec aucune université ni aucun organisme de bourses."
+  },
+  "theme.docs.versionBadge.label": {
+    "message": "Version : {versionLabel}"
+  },
+  "theme.SearchBar.label": {
+    "message": "Rechercher",
+    "description": "The ARIA label and placeholder for search button"
+  },
+  "search.pageCount": {
+    "message": "1 page|{count} pages"
+  },
+  "theme.SearchBar.seeAll": {
+    "message": "Voir tous les résultats"
+  },
+  "homepage.benefits.sourced.title": {
+    "message": "Issu des pages officielles"
+  },
+  "homepage.benefits.sourced.description": {
+    "message": "Chaque information renvoie à la page d’où elle provient, et chaque page indique l’année universitaire qu’elle couvre."
+  },
+  "homepage.benefits.together.title": {
+    "message": "Tout au même endroit"
+  },
+  "homepage.benefits.together.description": {
+    "message": "Universités, spécialités, conditions d’admission, frais de scolarité et bourses, présentés partout de la même façon."
+  },
+  "homepage.benefits.forYou.title": {
+    "message": "Conçu pour les étudiants libanais"
+  },
+  "homepage.benefits.forYou.description": {
+    "message": "Créé par des étudiants qui sont passés par là, pour vous aider à choisir en confiance."
+  },
+  "homepage.benefits.free.title": {
+    "message": "100 % gratuit"
+  },
+  "homepage.benefits.free.description": {
+    "message": "Sans inscription et sans frais. Tout le site est open source."
+  },
+  "homepage.benefits.title": {
+    "message": "Pourquoi Collegesaurus"
+  },
+  "homepage.majors.title": {
+    "message": "Explorer par spécialité"
+  },
+  "homepage.majors.subtitle": {
+    "message": "Parcourez les domaines populaires et trouvez la voie qui vous convient."
+  },
+  "homepage.hero.searchPlaceholder": {
+    "message": "Rechercher des universités, bourses, spécialités…"
+  },
+  "homepage.hero.searchLabel": {
+    "message": "Rechercher des universités et des bourses"
+  },
+  "homepage.hero.searchButton": {
+    "message": "Rechercher"
+  },
+  "homepage.hero.popularLabel": {
+    "message": "Recherches populaires"
+  },
+  "homepage.hero.popularTitle": {
+    "message": "Recherches populaires"
+  },
+  "homepage.hero.eyebrow": {
+    "message": "Toute l’info. Zéro approximation."
+  },
+  "homepage.hero.titleLine1": {
+    "message": "Votre avenir."
+  },
+  "homepage.hero.titleLine2": {
+    "message": "Votre choix."
+  },
+  "homepage.hero.titleLine3": {
+    "message": "Nous le rendons {accent}"
+  },
+  "homepage.hero.titleAccent": {
+    "message": "simple."
+  },
+  "homepage.hero.lead": {
+    "message": "Collegesaurus aide les étudiants libanais à découvrir les universités, les spécialités et les bourses, au même endroit."
+  },
+  "homepage.universities.programs": {
+    "message": "{count} programme|{count} programmes",
+    "description": "Program count on a university card, by plural form"
+  },
+  "homepage.universities.title": {
+    "message": "Universités populaires"
+  },
+  "homepage.universities.viewAll": {
+    "message": "Tout voir"
+  },
+  "homepage.universities.trackLabel": {
+    "message": "Universités, défilement horizontal"
+  },
+  "search.example.coding": {
+    "message": "diplôme en programmation"
+  },
+  "search.example.europe": {
+    "message": "études gratuites en Europe"
+  },
+  "search.example.publicSchools": {
+    "message": "bourses pour élèves d’écoles publiques"
+  },
+  "search.hint": {
+    "message": "Cherchez par le sens, pas seulement par les mots exacts : essayez {examples}.",
+    "description": "Shown on the search page before anything is typed; {examples} are links to example searches"
+  },
+  "theme.SearchPage.existingResultsTitle": {
+    "message": "Résultats de recherche pour « {query} »",
+    "description": "The search page title for non-empty query"
+  },
+  "search.page.title": {
+    "message": "Recherche"
+  },
+  "theme.SearchPage.inputLabel": {
+    "message": "Rechercher"
+  },
+  "homepage.quick.kicker": {
+    "message": "Trouvez une"
+  },
+  "homepage.quick.university.title": {
+    "message": "Université"
+  },
+  "homepage.quick.university.description": {
+    "message": "Explorez les universités du Liban"
+  },
+  "homepage.quick.major.title": {
+    "message": "Spécialité"
+  },
+  "homepage.quick.major.description": {
+    "message": "Découvrez des programmes qui vous plairont"
+  },
+  "homepage.quick.scholarship.title": {
+    "message": "Bourse"
+  },
+  "homepage.quick.scholarship.description": {
+    "message": "Financez vos études"
+  },
+  "homepage.stats.universities": {
+    "message": "Université|Universités",
+    "description": "Label under the university count, by plural form"
+  },
+  "homepage.stats.scholarships": {
+    "message": "Bourse|Bourses",
+    "description": "Label under the scholarship count, by plural form"
+  },
+  "homepage.stats.languages": {
+    "message": "Langue|Langues",
+    "description": "Label under the language count, by plural form"
+  },
+  "homepage.stats.programs": {
+    "message": "Programme|Programmes",
+    "description": "Label under the program count, by plural form"
+  },
+  "homepage.stats.title": {
+    "message": "Tout ce qu’il vous faut, {accent}"
+  },
+  "homepage.stats.titleAccent": {
+    "message": "au même endroit."
+  },
+  "homepage.deadlines.copied": {
+    "message": "Copié",
+    "description": "In place of \"Copy the link\" once the calendar's address is copied"
+  },
+  "homepage.deadlines.moreRounds": {
+    "message": "et {count} autre|et {count} autres",
+    "description": "Under the first rounds that close on the same day, by plural form"
+  },
+  "homepage.deadlines.addOne": {
+    "message": "Ajouter au calendrier",
+    "description": "On a deadline's card: opens the ways to add it to a calendar"
+  },
+  "homepage.deadlines.addOneLabel": {
+    "message": "Ajouter {name} à mon calendrier",
+    "description": "The card's Add button, for screen readers"
+  },
+  "homepage.deadlines.addOneNote": {
+    "message": "Une copie ponctuelle : elle ne changera pas si la date change.",
+    "description": "Under the ways to add one deadline to a calendar"
+  },
+  "homepage.deadlines.dayLabel": {
+    "message": "{date} : {count} échéance|{date} : {count} échéances",
+    "description": "A calendar day with deadlines, for screen readers, by plural form"
+  },
+  "homepage.deadlines.calendarTitle": {
+    "message": "Calendrier des échéances"
+  },
+  "homepage.deadlines.legendApplications": {
+    "message": "Candidatures"
+  },
+  "homepage.deadlines.legendScholarships": {
+    "message": "Bourses et aides"
+  },
+  "homepage.deadlines.addAll": {
+    "message": "Tout ajouter à mon calendrier",
+    "description": "Under the calendar: opens the ways to subscribe to every deadline"
+  },
+  "homepage.deadlines.addAllIntro": {
+    "message": "Les échéances nouvelles ou modifiées apparaissent d’elles-mêmes.",
+    "description": "Over the ways to subscribe to every deadline"
+  },
+  "homepage.deadlines.closingOn": {
+    "message": "Clôture le {date}",
+    "description": "Over the deadlines of the day picked in the calendar"
+  },
+  "homepage.deadlines.inMonth": {
+    "message": "En {month}",
+    "description": "Over the deadlines of the month shown in the calendar"
+  },
+  "homepage.deadlines.showMonth": {
+    "message": "Voir tout {month}",
+    "description": "Widens the list from the picked day back to its whole month"
+  },
+  "homepage.deadlines.emptyMonth": {
+    "message": "Rien ne se clôture en {month}.",
+    "description": "Beside the calendar when the month shown has no deadlines"
+  },
+  "homepage.deadlines.nextDeadline": {
+    "message": "Prochaine : {date}",
+    "description": "Jumps the calendar to the next deadline"
+  },
+  "homepage.deadlines.previousMonth": {
+    "message": "Mois précédent"
+  },
+  "homepage.deadlines.nextMonth": {
+    "message": "Mois suivant"
+  },
+  "homepage.deadlines.open": {
+    "message": "Ouvert maintenant"
+  },
+  "homepage.deadlines.closesToday": {
+    "message": "Clôture aujourd’hui"
+  },
+  "homepage.deadlines.closing": {
+    "message": "{count} jour restant|{count} jours restants",
+    "description": "Days until a deadline closes, by plural form"
+  },
+  "homepage.deadlines.opening": {
+    "message": "Ouvre dans {count} jour|Ouvre dans {count} jours",
+    "description": "Days until a deadline opens, by plural form"
+  },
+  "homepage.deadlines.closed": {
+    "message": "Clôturé"
+  },
+  "homepage.deadlines.closes": {
+    "message": "Clôture le {date}"
+  },
+  "homepage.deadlines.title": {
+    "message": "Prochaines échéances"
+  },
+  "homepage.deadlines.seeCalendar": {
+    "message": "Voir le calendrier"
+  },
+  "homepage.deadlines.empty": {
+    "message": "Aucune échéance dans les prochaines semaines."
+  },
+  "homepage.deadlines.emptyLink": {
+    "message": "Chaque page d’université indique ses périodes de candidature."
+  },
+  "homepage.deadlines.googleCalendar": {
+    "message": "Google Agenda"
+  },
+  "homepage.deadlines.appleCalendar": {
+    "message": "Calendrier Apple"
+  },
+  "homepage.deadlines.appleHint": {
+    "message": "iPhone, iPad et Mac"
+  },
+  "homepage.deadlines.outlookHint": {
+    "message": "Outlook sur le web"
+  },
+  "homepage.deadlines.googleSubscribeHint": {
+    "message": "Depuis un ordinateur. Sur Android, activez ensuite la synchronisation pour ce calendrier dans l’application.",
+    "description": "How to subscribe with Google Calendar, which works from a computer only"
+  },
+  "homepage.deadlines.androidHint": {
+    "message": "Avec l’application ICSx⁵"
+  },
+  "homepage.deadlines.copyLink": {
+    "message": "Copier le lien"
+  },
+  "homepage.deadlines.copyLinkHint": {
+    "message": "Pour toute autre application de calendrier"
+  },
+  "homepage.deadlines.googleEventHint": {
+    "message": "Android et le web"
+  },
+  "homepage.deadlines.otherCalendar": {
+    "message": "Autre application de calendrier"
+  },
+  "homepage.deadlines.fileHint": {
+    "message": "Télécharge un fichier .ics"
+  },
+  "button.newTab": {
+    "message": "(s’ouvre dans un nouvel onglet)"
+  },
+  "stories.author.count": {
+    "message": "Témoignages : {count}"
+  },
+  "stories.author.eyebrow": {
+    "message": "Auteur"
+  },
+  "stories.author.all": {
+    "message": "Tous les auteurs"
+  },
+  "theme.ErrorPageContent.title": {
+    "message": "Cette page a rencontré une erreur.",
+    "description": "The title of the fallback page when the page crashed"
+  },
+  "theme.BackToTopButton.buttonAriaLabel": {
+    "message": "Retour au début de la page",
+    "description": "The ARIA label for the back to top button"
+  },
+  "theme.blog.archive.description": {
+    "message": "Archive",
+    "description": "The page & hero description of the blog archive page"
+  },
+  "theme.blog.paginator.navAriaLabel": {
+    "message": "Pagination de la liste des articles du blog",
+    "description": "The ARIA label for the blog pagination"
+  },
+  "theme.blog.paginator.newerEntries": {
+    "message": "Nouvelles entrées",
+    "description": "The label used to navigate to the newer blog posts page (previous page)"
+  },
+  "theme.blog.paginator.olderEntries": {
+    "message": "Anciennes entrées",
+    "description": "The label used to navigate to the older blog posts page (next page)"
+  },
+  "theme.blog.post.paginator.navAriaLabel": {
+    "message": "Pagination des articles du blog",
+    "description": "The ARIA label for the blog posts pagination"
+  },
+  "theme.blog.post.paginator.newerPost": {
+    "message": "Article plus récent",
+    "description": "The blog post button label to navigate to the newer/previous post"
+  },
+  "theme.blog.post.paginator.olderPost": {
+    "message": "Article plus ancien",
+    "description": "The blog post button label to navigate to the older/next post"
+  },
+  "theme.tags.tagsPageLink": {
+    "message": "Voir tous les tags",
+    "description": "The label of the link targeting the tag list page"
+  },
+  "theme.colorToggle.ariaLabel.mode.system": {
+    "message": "mode système",
+    "description": "The name for the system color mode"
+  },
+  "theme.colorToggle.ariaLabel.mode.light": {
+    "message": "mode clair",
+    "description": "The name for the light color mode"
+  },
+  "theme.colorToggle.ariaLabel.mode.dark": {
+    "message": "mode sombre",
+    "description": "The name for the dark color mode"
+  },
+  "theme.colorToggle.ariaLabel": {
+    "message": "Basculer entre le mode sombre et clair (actuellement {mode})",
+    "description": "The ARIA label for the color mode toggle"
+  },
+  "theme.docs.breadcrumbs.navAriaLabel": {
+    "message": "Fil d'Ariane",
+    "description": "The ARIA label for the breadcrumbs"
+  },
+  "theme.docs.paginator.navAriaLabel": {
+    "message": "Pages de documentation",
+    "description": "The ARIA label for the docs pagination"
+  },
+  "theme.docs.paginator.previous": {
+    "message": "Précédent",
+    "description": "The label used to navigate to the previous doc"
+  },
+  "theme.docs.paginator.next": {
+    "message": "Suivant",
+    "description": "The label used to navigate to the next doc"
+  },
+  "theme.docs.tagDocListPageTitle.nDocsTagged": {
+    "message": "Un document tagué|{count} documents tagués",
+    "description": "Pluralized label for \"{count} docs tagged\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.docs.tagDocListPageTitle": {
+    "message": "{nDocsTagged} avec \"{tagName}\"",
+    "description": "The title of the page for a docs tag"
+  },
+  "theme.docs.versions.unreleasedVersionLabel": {
+    "message": "Ceci est la documentation de la prochaine version {versionLabel} de {siteTitle}.",
+    "description": "The label used to tell the user that he's browsing an unreleased doc version"
+  },
+  "theme.docs.versions.unmaintainedVersionLabel": {
+    "message": "Ceci est la documentation de {siteTitle} {versionLabel}, qui n'est plus activement maintenue.",
+    "description": "The label used to tell the user that he's browsing an unmaintained doc version"
+  },
+  "theme.docs.versions.latestVersionSuggestionLabel": {
+    "message": "Pour une documentation à jour, consultez la {latestVersionLink} ({versionLabel}).",
+    "description": "The label used to tell the user to check the latest version"
+  },
+  "theme.docs.versions.latestVersionLinkLabel": {
+    "message": "dernière version",
+    "description": "The label used for the latest version suggestion link label"
+  },
+  "theme.common.editThisPage": {
+    "message": "Éditer cette page",
+    "description": "The link label to edit the current page"
+  },
+  "theme.common.headingLinkTitle": {
+    "message": "Lien direct vers {heading}",
+    "description": "Title for link to heading"
+  },
+  "theme.lastUpdated.atDate": {
+    "message": " le {date}",
+    "description": "The words used to describe on which date a page has been last updated"
+  },
+  "theme.lastUpdated.byUser": {
+    "message": " par {user}",
+    "description": "The words used to describe by who the page has been last updated"
+  },
+  "theme.lastUpdated.lastUpdatedAtBy": {
+    "message": "Dernière mise à jour{atDate}{byUser}",
+    "description": "The sentence used to display when a page has been last updated, and by who"
+  },
+  "theme.NotFound.title": {
+    "message": "Page introuvable",
+    "description": "The title of the 404 page"
+  },
+  "theme.navbar.mobileVersionsDropdown.label": {
+    "message": "Versions",
+    "description": "The label for the navbar versions dropdown on mobile view"
+  },
+  "theme.tags.tagsListLabel": {
+    "message": "Tags :",
+    "description": "The label alongside a tag list"
+  },
+  "theme.admonition.caution": {
+    "message": "attention",
+    "description": "The default label used for the Caution admonition (:::caution)"
+  },
+  "theme.admonition.danger": {
+    "message": "danger",
+    "description": "The default label used for the Danger admonition (:::danger)"
+  },
+  "theme.admonition.info": {
+    "message": "info",
+    "description": "The default label used for the Info admonition (:::info)"
+  },
+  "theme.admonition.note": {
+    "message": "remarque",
+    "description": "The default label used for the Note admonition (:::note)"
+  },
+  "theme.admonition.tip": {
+    "message": "astuce",
+    "description": "The default label used for the Tip admonition (:::tip)"
+  },
+  "theme.admonition.warning": {
+    "message": "attention",
+    "description": "The default label used for the Warning admonition (:::warning)"
+  },
+  "theme.AnnouncementBar.closeButtonAriaLabel": {
+    "message": "Fermer",
+    "description": "The ARIA label for close button of announcement bar"
+  },
+  "theme.blog.sidebar.navAriaLabel": {
+    "message": "Navigation article de blog récent",
+    "description": "The ARIA label for recent posts in the blog sidebar"
+  },
+  "theme.DocSidebarItem.expandCategoryAriaLabel": {
+    "message": "Développer la catégorie '{label}' de la barre latérale",
+    "description": "The ARIA label to expand the sidebar category"
+  },
+  "theme.DocSidebarItem.collapseCategoryAriaLabel": {
+    "message": "Réduire la catégorie '{label}' de la barre latérale",
+    "description": "The ARIA label to collapse the sidebar category"
+  },
+  "theme.NavBar.navAriaLabel": {
+    "message": "Principale",
+    "description": "The ARIA label for the main navigation"
+  },
+  "theme.NotFound.p1": {
+    "message": "Nous n'avons pas trouvé ce que vous recherchez.",
+    "description": "The first paragraph of the 404 page"
+  },
+  "theme.NotFound.p2": {
+    "message": "Veuillez contacter le propriétaire du site qui vous a lié à l'URL d'origine et leur faire savoir que leur lien est cassé.",
+    "description": "The 2nd paragraph of the 404 page"
+  },
+  "theme.navbar.mobileLanguageDropdown.label": {
+    "message": "Langues",
+    "description": "The label for the mobile language switcher dropdown"
+  },
+  "theme.TOCCollapsible.toggleButtonLabel": {
+    "message": "Sur cette page",
+    "description": "The label used by the button on the collapsible TOC component"
+  },
+  "theme.blog.post.readMore": {
+    "message": "Lire plus",
+    "description": "The label used in blog post item excerpts to link to full blog posts"
+  },
+  "theme.blog.post.readMoreLabel": {
+    "message": "En savoir plus sur {title}",
+    "description": "The ARIA label for the link to full blog posts from excerpts"
+  },
+  "theme.blog.post.readingTime.plurals": {
+    "message": "Une minute de lecture|{readingTime} minutes de lecture",
+    "description": "Pluralized label for \"{readingTime} min read\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.CodeBlock.copy": {
+    "message": "Copier",
+    "description": "The copy button label on code blocks"
+  },
+  "theme.CodeBlock.copied": {
+    "message": "Copié",
+    "description": "The copied button label on code blocks"
+  },
+  "theme.CodeBlock.copyButtonAriaLabel": {
+    "message": "Copier le code",
+    "description": "The ARIA label for copy code blocks button"
+  },
+  "theme.CodeBlock.wordWrapToggle": {
+    "message": "Activer/désactiver le retour à la ligne",
+    "description": "The title attribute for toggle word wrapping button of code block lines"
+  },
+  "theme.docs.breadcrumbs.home": {
+    "message": "Page d'accueil",
+    "description": "The ARIA label for the home page in the breadcrumbs"
+  },
+  "theme.docs.sidebar.navAriaLabel": {
+    "message": "Barre latérale de la documentation",
+    "description": "The ARIA label for the sidebar navigation"
+  },
+  "theme.docs.sidebar.collapseButtonTitle": {
+    "message": "Réduire le menu latéral",
+    "description": "The title attribute for collapse button of doc sidebar"
+  },
+  "theme.docs.sidebar.collapseButtonAriaLabel": {
+    "message": "Réduire le menu latéral",
+    "description": "The title attribute for collapse button of doc sidebar"
+  },
+  "theme.docs.sidebar.closeSidebarButtonAriaLabel": {
+    "message": "Fermer la barre de navigation",
+    "description": "The ARIA label for close button of mobile sidebar"
+  },
+  "theme.navbar.mobileSidebarSecondaryMenu.backButtonLabel": {
+    "message": "← Retour au menu principal",
+    "description": "The label of the back button to return to main menu, inside the mobile navbar sidebar secondary menu (notably used to display the docs sidebar)"
+  },
+  "theme.docs.sidebar.toggleSidebarButtonAriaLabel": {
+    "message": "Ouvrir/fermer la barre de navigation",
+    "description": "The ARIA label for hamburger menu button of mobile navigation"
+  },
+  "theme.navbar.mobileDropdown.collapseButton.expandAriaLabel": {
+    "message": "Déplier la liste déroulante",
+    "description": "The ARIA label of the button to expand the mobile dropdown navbar item"
+  },
+  "theme.navbar.mobileDropdown.collapseButton.collapseAriaLabel": {
+    "message": "Replier la liste déroulante",
+    "description": "The ARIA label of the button to collapse the mobile dropdown navbar item"
+  },
+  "theme.docs.sidebar.expandButtonTitle": {
+    "message": "Déplier le menu latéral",
+    "description": "The ARIA label and title attribute for expand button of doc sidebar"
+  },
+  "theme.docs.sidebar.expandButtonAriaLabel": {
+    "message": "Déplier le menu latéral",
+    "description": "The ARIA label and title attribute for expand button of doc sidebar"
+  },
+  "theme.SearchBar.noResultsText": {
+    "message": "Aucun résultat"
+  },
+  "theme.SearchBar.seeAllOutsideContext": {
+    "message": "Voir tous les résultats hors de « {context} »"
+  },
+  "theme.SearchBar.searchInContext": {
+    "message": "Voir tous les résultats dans « {context} »"
+  },
+  "theme.SearchPage.emptyResultsTitle": {
+    "message": "Rechercher dans la documentation",
+    "description": "The search page title for empty query"
+  },
+  "theme.SearchPage.searchContext.everywhere": {
+    "message": "Partout"
+  },
+  "theme.SearchPage.documentsFound.plurals": {
+    "message": "1 document trouvé|{count} documents trouvés",
+    "description": "Pluralized label for \"{count} documents found\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.SearchPage.noResultsText": {
+    "message": "Aucun document trouvé",
+    "description": "The paragraph for empty search result"
+  },
+  "theme.blog.post.plurals": {
+    "message": "Un article|{count} articles",
+    "description": "Pluralized label for \"{count} posts\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.blog.tagTitle": {
+    "message": "{nPosts} tagués avec « {tagName} »",
+    "description": "The title of the page for a blog tag"
+  },
+  "theme.blog.author.pageTitle": {
+    "message": "{authorName} - {nPosts}",
+    "description": "The title of the page for a blog author"
+  },
+  "theme.blog.authorsList.pageTitle": {
+    "message": "Auteurs",
+    "description": "The title of the authors page"
+  },
+  "theme.blog.authorsList.viewAll": {
+    "message": "Voir tous les auteurs",
+    "description": "The label of the link targeting the blog authors page"
+  },
+  "theme.blog.author.noPosts": {
+    "message": "Cet auteur n’a pas encore écrit d’articles.",
+    "description": "The text for authors with 0 blog post"
+  },
+  "theme.contentVisibility.unlistedBanner.title": {
+    "message": "Page non répertoriée",
+    "description": "The unlisted content banner title"
+  },
+  "theme.contentVisibility.unlistedBanner.message": {
+    "message": "Cette page n'est pas répertoriée. Les moteurs de recherche ne l'indexeront pas, et seuls les utilisateurs ayant un lien direct peuvent y accéder.",
+    "description": "The unlisted content banner message"
+  },
+  "theme.contentVisibility.draftBanner.title": {
+    "message": "Page brouillon",
+    "description": "The draft content banner title"
+  },
+  "theme.contentVisibility.draftBanner.message": {
+    "message": "Cette page est un brouillon. Elle n’est visible qu’en développement et sera exclue de la version de production.",
+    "description": "The draft content banner message"
+  },
+  "theme.docs.DocCard.categoryDescription.plurals": {
+    "message": "1 élément|{count} éléments",
+    "description": "The default description for a category card in the generated index about how many items this category includes"
+  },
+  "theme.ErrorPageContent.tryAgain": {
+    "message": "Réessayer",
+    "description": "The label of the button to try again rendering when the React error boundary captures an error"
+  },
+  "theme.common.skipToMainContent": {
+    "message": "Aller au contenu principal",
+    "description": "The skip to content label used for accessibility, allowing to rapidly navigate to main content with keyboard tab/enter navigation"
+  },
+  "theme.tags.tagsPageTitle": {
+    "message": "Tags",
+    "description": "The title of the tag list page"
+  },
+  "homepage.deadline.aubTransferSpring": {
+    "message": "Candidatures de transfert, printemps 2026-27"
+  },
+  "homepage.deadline.mepiTl": {
+    "message": "Tomorrow’s Leaders, période prévue"
+  },
+  "homepage.deadline.stipendiumHungaricum": {
+    "message": "Prochaine session, échéance prévue"
+  },
+  "homepage.universities.page": {
+    "message": "Page {page} sur {total}"
+  },
+  "homepage.deadlines.feedName": {
+    "description": "The deadlines calendar's name in the reader's calendar app",
+    "message": "Échéances Collegesaurus"
+  },
+  "homepage.deadlines.feedEvent": {
+    "description": "A deadline's title in the reader's calendar app",
+    "message": "Échéance : {name}"
+  },
+  "homepage.deadlines.feedOpens": {
+    "description": "In a deadline's notes in the reader's calendar app, when applications open",
+    "message": "Ouverture le {date}"
+  },
+  "contribute.files.info.fr": {
+    "message": "Page de texte, en français",
+    "description": "The label of a file in the files list"
+  },
+  "contribute.files.majors.fr": {
+    "message": "Programmes de diplôme, en français",
+    "description": "The label of a file in the files list"
+  }
+}

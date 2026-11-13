@@ -1,0 +1,14 @@
+{
+  "title": {
+    "message": "Témoignages",
+    "description": "The title for the blog used in SEO"
+  },
+  "description": {
+    "message": "Expériences vécues par des étudiants qui ont traversé l’enseignement supérieur libanais et les bourses externes.",
+    "description": "The description for the blog used in SEO"
+  },
+  "sidebar.title": {
+    "message": "Derniers témoignages",
+    "description": "The label for the left sidebar"
+  }
+}
