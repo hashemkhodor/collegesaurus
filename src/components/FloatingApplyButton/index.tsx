@@ -20,6 +20,7 @@ type Props = {
 const LABELS: Record<string, string> = {
   en: 'Apply Now',
   ar: 'قدّم الآن',
+  fr: 'Postuler',
 };
 
 /**

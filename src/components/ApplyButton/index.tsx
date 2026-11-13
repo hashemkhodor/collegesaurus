@@ -10,6 +10,7 @@ type ApplyButtonProps = {
 const DEFAULT_LABELS: Record<string, string> = {
   en: 'Apply Now',
   ar: 'قدّم الآن',
+  fr: 'Postuler',
 };
 
 export default function ApplyButton({href, label}: ApplyButtonProps): ReactNode {

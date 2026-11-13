@@ -34,10 +34,10 @@ export type DataTableProps = {
   linkKeys?: string[];
 };
 
-const LINK_LABEL: Record<string, string> = {en: 'Link', ar: 'الرابط'};
+const LINK_LABEL: Record<string, string> = {en: 'Link', ar: 'الرابط', fr: 'Lien'};
 
 /** Keys that hold a URL in practice across the corpus. */
-const DEFAULT_LINK_KEYS = ['source', 'reference', 'link', 'url', 'المرجع'];
+const DEFAULT_LINK_KEYS = ['source', 'reference', 'link', 'url', 'المرجع', 'référence', 'lien'];
 
 /** `usd_per_credit` → `USD per credit`. Only used when nothing better exists. */
 function humanize(key: string): string {

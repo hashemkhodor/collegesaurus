@@ -20,6 +20,7 @@ type CustomFields = {
 
 const LABELS: Record<string, string> = {
   ar: 'اسأل الآن',
+  fr: 'Demander à l’IA',
 };
 const DEFAULT_LABEL = 'Ask AI';
 // Matches the full-screen breakpoint in styles.module.css: phones, held

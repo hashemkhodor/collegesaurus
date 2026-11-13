@@ -67,6 +67,47 @@ def test_local_mirror_picks_up_arabic_counterparts(tmp_path: Path) -> None:
     assert aub.majors_ar and aub.majors_ar.name == "majors.ar.xlsx"
 
 
+def test_local_mirror_picks_up_french_counterparts(tmp_path: Path) -> None:
+    root = _make_mirror(
+        tmp_path,
+        {
+            f"v2/universities/{YEAR}/aub/info.docx": "x",
+            f"v2/universities/{YEAR}/aub/majors.xlsx": "x",
+            f"v2/universities/{YEAR}/aub/info.fr.docx": "x",
+            f"v2/universities/{YEAR}/aub/majors.fr.xlsx": "x",
+            f"v2/scholarships/{YEAR}/fulbright/info.docx": "x",
+            f"v2/scholarships/{YEAR}/fulbright/info.fr.docx": "x",
+        },
+    )
+    report = ParseReport()
+    tree = load_local_content_root(str(root), report)
+    aub = _uni(tree, "aub")
+    assert aub.info_fr and aub.info_fr.name == "info.fr.docx"
+    assert aub.majors_fr and aub.majors_fr.name == "majors.fr.xlsx"
+    assert aub.info_for("fr") is aub.info_fr
+    assert aub.majors_for("fr") is aub.majors_fr
+    assert tree.scholarships[YEAR]["fulbright"].info_fr is not None
+    assert not report.has_errors()
+
+
+def test_french_majors_fall_back_to_english(tmp_path: Path) -> None:
+    root = _make_mirror(
+        tmp_path,
+        {
+            f"v2/universities/{YEAR}/aub/info.docx": "x",
+            f"v2/universities/{YEAR}/aub/majors.xlsx": "x",
+            f"v2/universities/{YEAR}/aub/info.fr.docx": "x",
+        },
+    )
+    report = ParseReport()
+    tree = load_local_content_root(str(root), report)
+    aub = _uni(tree, "aub")
+    assert aub.majors_for("fr") is aub.majors_en
+    preflight_check(tree, report)
+    assert report.count("warning") == 1
+    assert report.count("error") == 0
+
+
 def test_multiple_years_are_kept_separate(tmp_path: Path) -> None:
     root = _make_mirror(
         tmp_path,

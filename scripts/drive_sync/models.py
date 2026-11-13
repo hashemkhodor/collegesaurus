@@ -229,7 +229,7 @@ class FacultyGroup(BaseModel):
 # ---------------------------------------------------------------------------
 
 
-Locale = Literal["en", "ar"]
+Locale = Literal["en", "ar", "fr"]
 
 
 class Section(BaseModel):

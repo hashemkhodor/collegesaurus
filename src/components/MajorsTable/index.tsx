@@ -66,11 +66,21 @@ const COL_HEADERS_BY_LOCALE: Record<string, Record<keyof MajorRow, string>> = {
     language: 'لغة التدريس',
     source: 'المصدر',
   },
+  fr: {
+    program: 'Programme',
+    degree: 'Diplôme',
+    department: 'Département',
+    credits: 'Crédits',
+    years: 'Durée (années)',
+    language: 'Langue',
+    source: 'Source',
+  },
 };
 
 const LINK_LABEL: Record<string, string> = {
   en: 'Link',
   ar: 'الرابط',
+  fr: 'Lien',
 };
 
 function sortNatural(a: string | number, b: string | number): number {

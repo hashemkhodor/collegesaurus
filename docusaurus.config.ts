@@ -1,7 +1,6 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
-// @ts-expect-error — local ESM plugin without types
 import rehypeTableDataLabels from './src/remark/rehypeTableDataLabels.mjs';
 import remarkGuidebook from './src/remark/remarkGuidebook.mjs';
 
@@ -39,10 +38,11 @@ const config: Config = {
 
   i18n: {
     defaultLocale: 'en',
-    locales: ['en', 'ar'],
+    locales: ['en', 'ar', 'fr'],
     localeConfigs: {
       en: {label: 'English', direction: 'ltr', htmlLang: 'en-US'},
       ar: {label: 'العربية', direction: 'rtl', htmlLang: 'ar'},
+      fr: {label: 'Français', direction: 'ltr', htmlLang: 'fr-FR', path: 'fr'},
     },
   },
 
@@ -93,7 +93,7 @@ const config: Config = {
       {
         hashed: true,
         indexBlog: true,
-        language: ['en', 'ar'],
+        language: ['en', 'ar', 'fr'],
         docsRouteBasePath: ['universities', 'scholarships'],
         docsDir: ['universities_versioned_docs', 'scholarships_versioned_docs'],
         blogRouteBasePath: 'stories',

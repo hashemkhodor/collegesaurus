@@ -19,15 +19,16 @@ import fs from 'node:fs';
 
 const MAPPING = new URL('../../scripts/drive_sync/mapping.toml', import.meta.url);
 
-export const REF_HEADERS = ['reference', 'source', 'link', 'references', 'المرجع', 'المصدر', 'الرابط'];
-const SOURCES_LINE = /^(?:Reference|References|Source|Sources|المرجع|المراجع|المصدر)\s*:\s*/;
+export const REF_HEADERS = ['reference', 'source', 'link', 'references', 'المرجع', 'المصدر', 'الرابط', 'référence', 'références', 'lien'];
+const SOURCES_LINE = /^(?:Reference|References|Source|Sources|Référence|Références|المرجع|المراجع|المصدر)\s*:\s*/;
 const EMAIL = /[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g;
 const PHONE = /\+\d{1,3}(?:[ -]?\d){6,14}/g;
 const MONEY =
   /(?<cur>\$|€|USD|EUR|LBP)\s?(?<num>\d[\d,]*(?:\.\d+)?)|(?<num2>\d[\d,]*(?:\.\d+)?)\s?(?<cur2>\$|€|ل\.ل)/;
-const PER_CREDIT = /per credit|credit hour|لكل ساعة|بالساعة|للساعة|سعر الساعة/i;
-export const OPENS = /^(opens?|يفتح|تفتح|يُفتح|تُفتح)$/i;
-export const CLOSES = /^(closes?|يغلق|يُغلق|تقفل|تُقفل|يقفل)$|deadline|last day|الموعد النهائي|آخر يوم/i;
+const PER_CREDIT = /per credit|credit hour|par crédit|prix du crédit|لكل ساعة|بالساعة|للساعة|سعر الساعة/i;
+export const OPENS = /^(opens?|ouvre|ouverture|يفتح|تفتح|يُفتح|تُفتح)$/i;
+export const CLOSES =
+  /^(closes?|ferme|fermeture|clôture|cloture|يغلق|يُغلق|تقفل|تُقفل|يقفل)$|deadline|last day|date limite|dernier jour|الموعد النهائي|آخر يوم/i;
 const EN_MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
 const AR_MONTHS = {
   'كانون الثاني': 1,
@@ -42,6 +43,28 @@ const AR_MONTHS = {
   'تشرين الأول': 10,
   'تشرين الثاني': 11,
   'كانون الأول': 12,
+};
+const FR_MONTHS = {
+  janvier: 1,
+  janv: 1,
+  fevrier: 2,
+  fevr: 2,
+  mars: 3,
+  avril: 4,
+  avr: 4,
+  mai: 5,
+  juin: 6,
+  juillet: 7,
+  juil: 7,
+  aout: 8,
+  septembre: 9,
+  sept: 9,
+  octobre: 10,
+  oct: 10,
+  novembre: 11,
+  nov: 11,
+  decembre: 12,
+  dec: 12,
 };
 export const DATE_HEADER = /\bdate\b|تاريخ|التاريخ|الموعد/i;
 const SECTION_HEADINGS_SHOWN = 3;
@@ -87,7 +110,7 @@ export const normalize = (text) => text.toLowerCase().replace(/[^\p{L}\p{N}]+/gu
 const REF_NORMALIZED = new Set(REF_HEADERS.map(normalize));
 
 export function sectionKey(title, kind) {
-  const text = title.replace(/\s*\((?:AY|للعام)\s[^)]*\)\s*$/, '').trim();
+  const text = title.replace(/\s*\((?:AY|année universitaire|للعام)\s[^)]*\)\s*$/, '').trim();
   const rules = loadSectionRules(kind);
   const exact = rules.find((rule) => Object.values(rule.labels).includes(text));
   if (exact) return exact.key;
@@ -134,6 +157,12 @@ const headingId = (node) => node.data?.id ?? node.data?.hProperties?.id;
 export function parseDate(value) {
   const t = value.trim().replace(/\s*\([^)]*\)\s*$/, '');
   const pad = (n) => String(n).padStart(2, '0');
+  const fr = t.match(/^(\d{1,2})(?:er)?\s+([A-Za-zÀ-ÿ]{3,9})\.?,?\s+(\d{4})$/);
+  if (fr) {
+    const month = FR_MONTHS[fr[2].normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()];
+    const d = Number(fr[1]);
+    if (month && d >= 1 && d <= 31) return `${fr[3]}-${pad(month)}-${pad(d)}`;
+  }
   const m =
     t.match(/^([A-Za-z]{3,9})\.?\s+(\d{1,2}),?\s+(\d{4})$/) ??
     t.match(/^(\d{1,2})\s+([A-Za-z]{3,9})\.?,?\s+(\d{4})$/);
@@ -534,11 +563,11 @@ function money(value) {
 
 function deriveFee(section) {
   for (const table of section?.tables ?? []) {
-    if (!/fee|الرسم/i.test(table.head[0] ?? '')) continue;
-    const found = table.head.findIndex((h) => /amount|القيمة|المبلغ/i.test(h));
+    if (!/fee|frais|الرسم/i.test(table.head[0] ?? '')) continue;
+    const found = table.head.findIndex((h) => /amount|montant|القيمة|المبلغ/i.test(h));
     const amountCol = found >= 0 ? found : 1;
     for (const row of table.rows) {
-      if (/application|admission|تقديم|طلب|القبول/i.test(row[0]) && /\d/.test(row[amountCol] ?? '')) {
+      if (/application|admission|candidature|dossier|inscription|تقديم|طلب|القبول/i.test(row[0]) && /\d/.test(row[amountCol] ?? '')) {
         return {value: row[amountCol], label: row[0]};
       }
     }
@@ -555,7 +584,7 @@ function deriveTuition(section) {
       if (col < 0 && values.length) break;
       const cells = col >= 0 ? [row[col]] : PER_CREDIT.test(row[0]) ? row.slice(1) : [];
       for (const cell of cells) {
-        if (/year|flat|semester|سنة|سنوي|ثابت|فصل/i.test(cell ?? '')) continue;
+        if (/year|flat|semester|par an|annuel|forfait|semestre|سنة|سنوي|ثابت|فصل/i.test(cell ?? '')) continue;
         const parsed = money(cell ?? '');
         if (parsed) values.push(parsed);
       }
@@ -570,7 +599,7 @@ function deriveTuition(section) {
 
 function deriveContact(section) {
   for (const table of section?.tables ?? []) {
-    const phoneCol = table.head.findIndex((h) => /phone|الهاتف|tel/i.test(h));
+    const phoneCol = table.head.findIndex((h) => /phone|الهاتف|tel|tél/i.test(h));
     const order = table.rows
       .map((row, i) => i)
       .sort((a, b) => Number(!/admission|القبول/i.test(table.rows[a][0])) - Number(!/admission|القبول/i.test(table.rows[b][0])));
@@ -636,7 +665,7 @@ function scholarshipFacts(byKey) {
     .filter((table) => /universit|الجامع/i.test(table.head[0] ?? ''))
     .reduce((n, table) => n + table.rows.length, 0);
   return {
-    provider: firstClause(field(/^(provider|الجهة المانحة|المموّل|المانح)/i)),
+    provider: firstClause(field(/^(provider|fournisseur|organisme|bailleur|الجهة المانحة|المموّل|المانح)/i)),
     type: firstClause(field(/^(type|النوع)$/i)),
     universities: universities || null,
   };

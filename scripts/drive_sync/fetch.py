@@ -45,7 +45,7 @@ def _normalize_folder_id(value: str) -> str:
 
 
 Kind = Literal["university", "scholarship"]
-Locale = Literal["en", "ar"]
+Locale = Literal["en", "ar", "fr"]
 
 DEFAULT_CONTENT_PREFIX = "v2"
 
@@ -63,8 +63,15 @@ YEAR_RE = re.compile(r"^\d{4}-\d{4}$")
 
 UNVERSIONED_YEAR = "unversioned"
 
-_RECOGNIZED_UNIVERSITY = ("info.docx", "info.ar.docx", "majors.xlsx", "majors.ar.xlsx")
-_RECOGNIZED_SCHOLARSHIP = ("info.docx", "info.ar.docx")
+_RECOGNIZED_UNIVERSITY = (
+    "info.docx",
+    "info.ar.docx",
+    "info.fr.docx",
+    "majors.xlsx",
+    "majors.ar.xlsx",
+    "majors.fr.xlsx",
+)
+_RECOGNIZED_SCHOLARSHIP = ("info.docx", "info.ar.docx", "info.fr.docx")
 
 
 def is_valid_year(name: str) -> bool:
@@ -106,6 +113,20 @@ class SlugFiles:
 
     majors_ar: DriveFileMeta | None = None
     """majors.ar.xlsx — optional Arabic counterpart (universities only)."""
+
+    info_fr: DriveFileMeta | None = None
+    """info.fr.docx — optional French counterpart."""
+
+    majors_fr: DriveFileMeta | None = None
+    """majors.fr.xlsx — optional French counterpart (universities only)."""
+
+    def info_for(self, locale: str) -> DriveFileMeta | None:
+        return {"en": self.info_en, "ar": self.info_ar, "fr": self.info_fr}[locale]
+
+    def majors_for(self, locale: str) -> DriveFileMeta | None:
+        """The locale's majors sheet, or the English one when it has none."""
+        own = {"en": self.majors_en, "ar": self.majors_ar, "fr": self.majors_fr}[locale]
+        return own if own is not None else self.majors_en
 
     attachments: list[DriveFileMeta] = field(default_factory=list)
     """Files under `<slug>/attachments/`, published as static assets."""
@@ -297,7 +318,7 @@ def _record_local_cache_paths(tree: ContentTree) -> None:
 
 
 def _all_files(sf: SlugFiles) -> Iterator[DriveFileMeta]:
-    for meta in (sf.info_en, sf.majors_en, sf.info_ar, sf.majors_ar):
+    for meta in (sf.info_en, sf.majors_en, sf.info_ar, sf.majors_ar, sf.info_fr, sf.majors_fr):
         if meta is not None:
             yield meta
     yield from sf.attachments
@@ -454,6 +475,10 @@ def _classify(
             sf.majors_en = meta
         elif lower == "majors.ar.xlsx":
             sf.majors_ar = meta
+        elif lower == "info.fr.docx":
+            sf.info_fr = meta
+        elif lower == "majors.fr.xlsx":
+            sf.majors_fr = meta
 
 
 # ---------------------------------------------------------------------------
@@ -583,7 +608,7 @@ def download_all(drive, tree: ContentTree, cache_dir: str, concurrency: int) -> 
 
     jobs: list[tuple[SlugFiles, DriveFileMeta, bool]] = []
     for sf in tree.iter_slugs():
-        for meta in (sf.info_en, sf.majors_en, sf.info_ar, sf.majors_ar):
+        for meta in (sf.info_en, sf.majors_en, sf.info_ar, sf.majors_ar, sf.info_fr, sf.majors_fr):
             if meta is not None:
                 jobs.append((sf, meta, False))
         for meta in sf.attachments:
@@ -684,12 +709,16 @@ def preflight_check(tree: ContentTree, report: ParseReport) -> None:
         if sf.kind == "university":
             if sf.majors_en is None:
                 report.error(where, "missing required `majors.xlsx`")
-            if sf.info_ar is not None and sf.majors_ar is None:
-                report.warn(
-                    where,
-                    "has `info.ar.docx` but no `majors.ar.xlsx` — "
-                    "Arabic page will fall back to English majors",
-                )
+            for code, name, info, majors in (
+                ("ar", "Arabic", sf.info_ar, sf.majors_ar),
+                ("fr", "French", sf.info_fr, sf.majors_fr),
+            ):
+                if info is not None and majors is None:
+                    report.warn(
+                        where,
+                        f"has `info.{code}.docx` but no `majors.{code}.xlsx` — "
+                        f"{name} page will fall back to English majors",
+                    )
 
 
 # ---------------------------------------------------------------------------

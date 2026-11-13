@@ -5,7 +5,7 @@
 # to restore — this just deletes the artifacts:
 #   .drive-cache/, parse-report.json, build/, .docusaurus/,
 #   <plugin>_versioned_docs/, <plugin>_versioned_sidebars/, <plugin>_versions.json,
-#   the i18n/ar version-* counterparts, and static/attachments/.
+#   the i18n/ar and i18n/fr version-* counterparts, and static/attachments/.
 # - Does NOT touch ~/.gcloud-keys/ — that is a persistent local resource,
 #   not a run artifact.
 #
@@ -44,11 +44,11 @@ for plugin in universities scholarships; do
     paths+=("${plugin}_versioned_docs" "${plugin}_versioned_sidebars" "${plugin}_versions.json")
     paths+=("${plugin}"/*.mdx)
 done
-# Generated per-version Arabic mirrors + their version label files.
-for d in i18n/ar/docusaurus-plugin-content-docs-*/version-*; do
+# Generated per-version translated mirrors + their version label files.
+for d in i18n/ar/docusaurus-plugin-content-docs-*/version-* i18n/fr/docusaurus-plugin-content-docs-*/version-*; do
     [ -e "$d" ] && paths+=("$d")
 done
-for d in i18n/ar/docusaurus-plugin-content-docs-*/current; do
+for d in i18n/ar/docusaurus-plugin-content-docs-*/current i18n/fr/docusaurus-plugin-content-docs-*/current; do
     [ -e "$d" ] && paths+=("$d")
 done
 

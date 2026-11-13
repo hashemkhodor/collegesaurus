@@ -55,14 +55,20 @@ def test_carry_forward_does_not_leak_backwards() -> None:
 
 def test_output_paths_match_the_docusaurus_contract() -> None:
     plan = plan_versions(_tree(("university", NEW, "aub"), ("scholarship", NEW, "life")))
-    paths = {(e.files.slug, loc): e.output_path(loc) for e in plan.entries for loc in ("en", "ar")}
+    paths = {(e.files.slug, loc): e.output_path(loc) for e in plan.entries for loc in ("en", "ar", "fr")}
     assert paths[("aub", "en")] == f"universities_versioned_docs/version-{NEW}/aub.mdx"
     assert paths[("aub", "ar")] == (
         f"i18n/ar/docusaurus-plugin-content-docs-universities/version-{NEW}/aub.mdx"
     )
+    assert paths[("aub", "fr")] == (
+        f"i18n/fr/docusaurus-plugin-content-docs-universities/version-{NEW}/aub.mdx"
+    )
     assert paths[("life", "en")] == f"scholarships_versioned_docs/version-{NEW}/life.mdx"
     assert paths[("life", "ar")] == (
         f"i18n/ar/docusaurus-plugin-content-docs-scholarships/version-{NEW}/life.mdx"
+    )
+    assert paths[("life", "fr")] == (
+        f"i18n/fr/docusaurus-plugin-content-docs-scholarships/version-{NEW}/life.mdx"
     )
 
 
@@ -88,6 +94,10 @@ def test_manifests_are_written(tmp_path: Path) -> None:
         (tmp_path / f"i18n/ar/docusaurus-plugin-content-docs-universities/version-{NEW}.json").read_text()
     )
     assert label["version.label"]["message"] == NEW
+    fr_label = json.loads(
+        (tmp_path / f"i18n/fr/docusaurus-plugin-content-docs-universities/version-{NEW}.json").read_text()
+    )
+    assert fr_label["version.label"]["message"] == NEW
 
 
 def test_stale_banner_is_localized_and_names_both_years() -> None:
@@ -98,6 +108,10 @@ def test_stale_banner_is_localized_and_names_both_years() -> None:
     ar = emit_stale_banner("ar", NEW, OLD)
     assert NEW in ar and OLD in ar
     assert any("؀" <= ch <= "ۿ" for ch in ar), "Arabic banner must be in Arabic"
+
+    fr = emit_stale_banner("fr", NEW, OLD)
+    assert NEW in fr and OLD in fr
+    assert "mise à jour" in fr, "French banner must be in French"
 
 
 def test_validate_does_not_parse(tmp_path, monkeypatch) -> None:

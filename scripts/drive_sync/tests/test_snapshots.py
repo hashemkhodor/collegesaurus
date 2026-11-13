@@ -256,6 +256,27 @@ def test_fulbright_pipeline_idempotent(fulbright_paths) -> None:
     assert a == b
 
 
+def test_french_locale_gets_french_section_labels(aub_paths, fulbright_paths) -> None:
+    """The English fixtures run as `fr`: headings come from the registry's French labels."""
+    uni, _ = _build_university_mdx(
+        aub_paths["info_en"],
+        aub_paths["majors_en"],
+        slug="aub",
+        locale="fr",
+        file_label="universities/aub/info.fr.docx",
+    )
+    assert "## Facultés" in uni
+    assert "## Candidature" in uni
+    assert "## Frais de scolarité (année universitaire 2025-2026)" in uni
+    schol, _ = _build_scholarship_mdx(
+        fulbright_paths["info_en"],
+        slug="fulbright",
+        locale="fr",
+        file_label="scholarships/fulbright/info.fr.docx",
+    )
+    assert "## Présentation" in schol
+
+
 # ---------------------------------------------------------------------------
 # T-4.8 — Arabic / RTL preservation (T-R.6)
 # ---------------------------------------------------------------------------

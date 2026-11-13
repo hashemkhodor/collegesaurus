@@ -39,6 +39,39 @@ test('reads the Arabic page, whose dates use Levantine month names', () => {
   });
 });
 
+test('reads a French page: its headings, columns and month names', () => {
+  const mdx = page(
+    'Candidature',
+    [
+      '| Session | Ouverture | Clôture | Référence |',
+      '| --- | --- | --- | --- |',
+      '| Première année, rentrée 2027-28 | 1er septembre 2026 | 31 octobre 2026 | [Dates](https://example.edu) |',
+      '| Transfert, printemps 2026-27 | 15 février 2027 | 30 avril 2027 | [Dates](https://example.edu) |',
+      '| Bourse de mérite, rentrée 2027-28 | 1 déc. 2026 | 15 juillet 2027 | [Dates](https://example.edu) |',
+      '| Admission tardive | — | 15 août 2027 (à confirmer) | [Dates](https://example.edu) |',
+      '| Session suivante | — | À annoncer | [Dates](https://example.edu) |',
+    ].join('\n'),
+  );
+
+  assert.deepEqual(pageDeadlines(mdx, 'university'), [
+    {title: 'Première année, rentrée 2027-28', opens: '2026-09-01', closes: '2026-10-31', kind: 'application'},
+    {title: 'Transfert, printemps 2026-27', opens: '2027-02-15', closes: '2027-04-30', kind: 'application'},
+    {title: 'Bourse de mérite, rentrée 2027-28', opens: '2026-12-01', closes: '2027-07-15', kind: 'scholarship'},
+    {title: 'Admission tardive', opens: null, closes: '2027-08-15', kind: 'application'},
+  ]);
+});
+
+test('reads a French scholarship timeline', () => {
+  const mdx = page(
+    'Période de candidature',
+    '| Étape | Date |\n| --- | --- |\n| Ouverture des candidatures | 1er mars 2026 |\n| Date limite de candidature | 4 mai 2026 |',
+  );
+
+  assert.deepEqual(pageDeadlines(mdx, 'scholarship'), [
+    {title: 'Date limite de candidature', opens: null, closes: '2026-05-04', kind: 'scholarship'},
+  ]);
+});
+
 test('takes only the closing stage of a scholarship timeline', () => {
   assert.deepEqual(pageDeadlines(fixture('fulbright.mdx'), 'scholarship'), [
     {title: 'Applications close', opens: null, closes: '2026-05-04', kind: 'scholarship'},

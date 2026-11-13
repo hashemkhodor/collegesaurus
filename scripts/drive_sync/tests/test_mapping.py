@@ -57,6 +57,24 @@ def test_longest_alias_wins() -> None:
     assert m.section_for("scholarship", "Contacts of recipients").key == "recipients"
 
 
+def test_french_headings_resolve_and_get_french_labels() -> None:
+    m = load_mapping()
+    expected = {
+        "Facultés": "faculty",
+        "Candidature": "application",
+        "Frais de scolarité": "tuition",
+        "Bourses": "scholarships",
+        "Conditions d\u2019admission": "requirements",
+        "Coordonnées": "contacts",
+    }
+    for heading, key in expected.items():
+        rule = m.section_for("university", heading)
+        assert rule is not None and rule.key == key, heading
+        assert rule.label("fr", "x") != rule.label("en", "x") or key == "contacts"
+    rule = m.section_for("scholarship", "Contacts des bénéficiaires")
+    assert rule is not None and rule.key == "recipients"
+
+
 def test_unknown_section_is_unmatched_not_rejected() -> None:
     assert load_mapping().section_for("university", "Rankings") is None
 
@@ -72,12 +90,13 @@ def test_year_suffix_is_localized() -> None:
     assert m.format_year("en", "2025-2026") == "AY 2025-2026"
     assert "2025-2026" in m.format_year("ar", "2025-2026")
     assert m.format_year("ar", "2025-2026") != m.format_year("en", "2025-2026")
+    assert m.format_year("fr", "2025-2026") == "année universitaire 2025-2026"
 
 
 def test_labels_fall_back_to_english_then_to_the_heading() -> None:
     rule = load_mapping().sections_by_key("university")["tuition"]
     assert rule.label("en", "x") == "Tuition"
-    assert rule.label("fr", "x") == "Tuition", "unknown locale falls back to en"
+    assert rule.label("de", "x") == "Tuition", "unknown locale falls back to en"
 
 
 def test_normalize_heading_keeps_unicode_letters() -> None:

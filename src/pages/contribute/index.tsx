@@ -206,6 +206,9 @@ export default function Contribute(): ReactNode {
   const arabic = (
     <Translate id="contribute.files.info.ar">Prose page, Arabic</Translate>
   );
+  const french = (
+    <Translate id="contribute.files.info.fr">Prose page, French</Translate>
+  );
   return (
     <Layout
       title={translate({id: 'contribute.meta.title', message: 'Contribute'})}
@@ -306,7 +309,7 @@ export default function Contribute(): ReactNode {
                   </Translate>
                   <span className={styles.count}>
                     <Translate id="contribute.add.scholarship.count">
-                      2 files
+                      3 files
                     </Translate>
                   </span>
                 </Heading>
@@ -314,6 +317,7 @@ export default function Contribute(): ReactNode {
                   files={[
                     {name: 'info.docx', purpose: english},
                     {name: 'info.ar.docx', purpose: arabic},
+                    {name: 'info.fr.docx', purpose: french},
                   ]}
                 />
                 <Button to={SCHOLARSHIP_TEMPLATES_URL} variant="soft">
@@ -329,7 +333,7 @@ export default function Contribute(): ReactNode {
                   </Translate>
                   <span className={styles.count}>
                     <Translate id="contribute.add.university.count">
-                      4 files
+                      6 files
                     </Translate>
                   </span>
                 </Heading>
@@ -337,6 +341,7 @@ export default function Contribute(): ReactNode {
                   files={[
                     {name: 'info.docx', purpose: english},
                     {name: 'info.ar.docx', purpose: arabic},
+                    {name: 'info.fr.docx', purpose: french},
                     {
                       name: 'majors.xlsx',
                       purpose: (
@@ -350,6 +355,14 @@ export default function Contribute(): ReactNode {
                       purpose: (
                         <Translate id="contribute.files.majors.ar">
                           Degree programmes, Arabic
+                        </Translate>
+                      ),
+                    },
+                    {
+                      name: 'majors.fr.xlsx',
+                      purpose: (
+                        <Translate id="contribute.files.majors.fr">
+                          Degree programmes, French
                         </Translate>
                       ),
                     },
