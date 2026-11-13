@@ -9,7 +9,7 @@ import {mdxToMarkdown} from './clean.ts';
  * posts, for the Collegesaurus AI chatbot (the collegesaurus-ai repo), which
  * indexes them for search:
  *
- *   /chatbot/corpus.json, /ar/chatbot/corpus.json   one per locale
+ *   /chatbot/corpus.json, /ar/chatbot/corpus.json, /fr/chatbot/corpus.json   one per locale
  *   /chatbot/version.json                            polled every minute
  *
  * corpus.json: {schema: 1, locale, content_sha, docs: [{type, slug, title,

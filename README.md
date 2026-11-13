@@ -10,13 +10,13 @@ Spot something wrong? [Report it](https://github.com/hashemkhodor/collegesaurus/
 
 ## About
 
-All the Lebanese university and scholarship info you'd normally have to dig through a dozen websites to find — deadlines, tuition, requirements, financial aid, contacts — collected in one place. Bilingual (English + Arabic), open source, and always looking for contributors to keep things accurate.
+All the Lebanese university and scholarship info you'd normally have to dig through a dozen websites to find — deadlines, tuition, requirements, financial aid, contacts — collected in one place. Available in English, Arabic and French, open source, and always looking for contributors to keep things accurate.
 
 ## Features
 
 - **Universities** — Detailed pages covering programs, application windows and fees, tuition, scholarships, requirements, and contacts. Every program row links to its official catalog/program page; each page has a floating **Apply** button that opens the university's portal.
 - **Scholarships** — Eligibility, application windows, supported universities, benefits, and recipient contacts
-- **Bilingual** — Full English and Arabic (RTL) support, with content mirrored byte-for-byte for tables
+- **Multilingual** — Full English, Arabic (RTL) and French support, with content mirrored byte-for-byte for tables
 - **Sortable program tables** — Built-in `<MajorsTable>` MDX component with sortable columns and direct links to each program
 - **Search by meaning** — Finds pages by what you mean, not only the words you type ("coding degree" finds Computer Science), in English, Arabic and French, ordered by relevance. It runs in the browser with no search service, and falls back to exact-word search
 - **Open source** — Anyone can contribute corrections, updates, or new content
@@ -153,6 +153,8 @@ Look at existing files for detailed examples — `universities/aub.mdx` (large m
 
 **Arabic mirror.** Every university file at `universities/<x>.mdx` has a translated mirror at `i18n/ar/docusaurus-plugin-content-docs-universities/current/<x>.mdx`. Mirror `<MajorsTable>` blocks **byte-for-byte** (rows are not translated — column headers swap automatically based on locale); translate only the prose, section headers, and table-cell labels in non-program tables.
 
+**French mirror.** French pages follow the same rule at `i18n/fr/docusaurus-plugin-content-docs-<universities|scholarships>/...`: tables and `<MajorsTable>` rows are mirrored exactly, only the prose, section headers and non-program table labels are translated, and official university and scholarship names stay in their original form. Like the other pages they are generated from Drive (`info.fr.docx`, `majors.fr.xlsx`; see `scripts/drive_sync/README.md`), so French content is added there. A page with no French file falls back to its English version.
+
 **References are mandatory.** Every factual claim — tuition rate, deadline, fee, contact number, ranking — must include a reference link in the same row/sentence. If a claim can't be sourced, mark it as `> TODO: [description]` rather than guessing. Run an HTTP audit before committing — a quick `curl -sk -o /dev/null -w "%{http_code}" -L <url>` per link catches the broken ones.
 
 #### Submitting your changes
@@ -170,6 +172,7 @@ The PR description should call out any **TODO blockquotes** that remained (info 
 ```bash
 npm run start                         # Dev server (English)
 npm run start -- --locale ar          # Dev server (Arabic, RTL)
+npm run start -- --locale fr          # Dev server (French)
 npm run build                         # Production build (all locales)
 npm run serve                         # Serve the production build
 npm run typecheck                     # TypeScript check
