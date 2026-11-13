@@ -91,47 +91,53 @@ ordered = true
 
 [[sections.university]]
 key = "faculty"
-aliases = ["Introduction", "Faculty", "الكلية", "الكليات"]
+aliases = ["Introduction", "Faculty", "الكلية", "الكليات", "Faculté", "Facultés"]
 majors = true          # the <MajorsTable> blocks are appended to this section
 [sections.university.labels]
 en = "Faculty"
 ar = "الكليات"
+fr = "Facultés"
 
 [[sections.university]]
 key = "application"
-aliases = ["Application", "التقديم"]
+aliases = ["Application", "التقديم", "Candidature"]
 [sections.university.labels]
 en = "Application"
 ar = "التقديم"
+fr = "Candidature"
 
 [[sections.university]]
 key = "tuition"
-aliases = ["Tuition", "الأقساط"]
+aliases = ["Tuition", "الأقساط", "Frais de scolarité"]
 year_suffix = true     # renders the academic year from the content path
 [sections.university.labels]
 en = "Tuition"
 ar = "الأقساط"
+fr = "Frais de scolarité"
 
 [[sections.university]]
 key = "scholarships"
-aliases = ["Scholarships", "المنح"]
+aliases = ["Scholarships", "المنح", "Bourses"]
 [sections.university.labels]
 en = "Scholarships"
 ar = "المنح"
+fr = "Bourses"
 
 [[sections.university]]
 key = "requirements"
-aliases = ["Requirements", "المتطلبات"]
+aliases = ["Requirements", "المتطلبات", "Conditions d’admission"]
 [sections.university.labels]
 en = "Requirements"
 ar = "المتطلبات"
+fr = "Conditions d’admission"
 
 [[sections.university]]
 key = "contacts"
-aliases = ["Contacts", "جهات الاتصال", "جهات اتصال"]
+aliases = ["Contacts", "جهات الاتصال", "جهات اتصال", "Coordonnées"]
 [sections.university.labels]
 en = "Contacts"
 ar = "جهات الاتصال"
+fr = "Contacts"
 
 # Scholarships have always been open-ended (amideast's H1s are program cards,
 # not canonical sections). These entries only supply localized labels for the
@@ -139,45 +145,51 @@ ar = "جهات الاتصال"
 
 [[sections.scholarship]]
 key = "overview"
-aliases = ["Overview", "نظرة عامة"]
+aliases = ["Overview", "نظرة عامة", "Présentation", "Aperçu"]
 [sections.scholarship.labels]
 en = "Overview"
 ar = "نظرة عامة"
+fr = "Présentation"
 
 [[sections.scholarship]]
 key = "grades"
-aliases = ["Grade & background requirements", "Grade and background", "شروط العلامات"]
+aliases = ["Grade & background requirements", "Grade and background", "شروط العلامات", "Conditions de notes", "Notes et profil"]
 [sections.scholarship.labels]
 en = "Grade & background requirements"
 ar = "شروط العلامات والخلفية"
+fr = "Conditions de notes et de profil"
 
 [[sections.scholarship]]
 key = "window"
-aliases = ["Application window", "نافذة التقديم"]
+aliases = ["Application window", "نافذة التقديم", "Période de candidature", "Calendrier de candidature"]
 [sections.scholarship.labels]
 en = "Application window"
 ar = "نافذة التقديم"
+fr = "Période de candidature"
 
 [[sections.scholarship]]
 key = "universities"
-aliases = ["Supported universities", "الجامعات المدعومة", "الجامعات المشاركة"]
+aliases = ["Supported universities", "الجامعات المدعومة", "الجامعات المشاركة", "Universités participantes", "Universités partenaires"]
 [sections.scholarship.labels]
 en = "Supported universities"
 ar = "الجامعات المشاركة"
+fr = "Universités participantes"
 
 [[sections.scholarship]]
 key = "benefits"
-aliases = ["Benefits", "المنافع", "الفوائد"]
+aliases = ["Benefits", "المنافع", "الفوائد", "Avantages"]
 [sections.scholarship.labels]
 en = "Benefits"
 ar = "الفوائد"
+fr = "Avantages"
 
 [[sections.scholarship]]
 key = "recipients"
-aliases = ["Contacts of recipients", "جهات اتصال المستفيدين"]
+aliases = ["Contacts of recipients", "جهات اتصال المستفيدين", "Contacts des bénéficiaires", "Coordonnées des bénéficiaires"]
 [sections.scholarship.labels]
 en = "Contacts of recipients"
 ar = "جهات اتصال المستفيدين"
+fr = "Contacts des bénéficiaires"
 
 # --------------------------------------------------------------------------
 # Localized bits the emitter needs
@@ -186,3 +198,4 @@ ar = "جهات اتصال المستفيدين"
 [year_suffix]
 en = "AY {year}"
 ar = "للعام {year}"
+fr = "année universitaire {year}"

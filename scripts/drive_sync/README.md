@@ -13,14 +13,17 @@ the Docusaurus site builds from. Nothing it emits is committed.
         aub/
           info.docx          # required — prose + metadata, English
           info.ar.docx       # optional — the Arabic page
+          info.fr.docx       # optional — the French page
           majors.xlsx        # required for universities
           majors.ar.xlsx     # optional
+          majors.fr.xlsx     # optional
           attachments/       # optional — PDFs, images; published as-is
     scholarships/
       2025-2026/
         fulbright/
           info.docx
           info.ar.docx
+          info.fr.docx
 ```
 
 The year folder is the unit of versioning: each one becomes a Docusaurus docs
@@ -52,8 +55,8 @@ a heading the registry does not know still renders, under its own text. The
 canonical six (Faculty, Application, Tuition, Scholarships, Requirements,
 Contacts) get localized headings and are warned about when missing.
 
-Write section headings in either language — `Faculty`, `الكلية`, or
-`الكلية (Faculty)` all resolve.
+Write section headings in any of the languages — `Faculty`, `الكلية`, `Facultés`
+or `الكلية (Faculty)` all resolve.
 
 The academic year is taken from the folder path, so do **not** write
 `Tuition (AY 2025-26)`; just `Tuition`.
@@ -65,14 +68,14 @@ pages at build time, so a deadline shows there once its page states it in a
 table:
 
 - **Universities:** in the Application section, a table with a **Closes**
-  column (or Deadline / Last day; `يغلق` / `تُقفل`) and, if known, an
+  column (or Deadline / Last day; `يغلق` / `تُقفل` / `Clôture`) and, if known, an
   **Opens** column. The first other column names the row, e.g.
   `Freshman – Regular (Fall 2027-28)`.
 - **Scholarships:** the same table in the Application window section, or a
   `Stage | Date` table with a closing row, e.g.
-  `Applications close | 25 November 2026` (`إقفال التقديم`).
+  `Applications close | 25 November 2026` (`إقفال التقديم`, `Date limite | 25 novembre 2026`).
 - **Full dates only:** `Nov 30, 2026`, `30 November 2026` or
-  `30 تشرين الثاني 2026`, optionally followed by a note in brackets. `TBA`,
+  `30 تشرين الثاني 2026` or `30 novembre 2026` (`1er` works too), optionally followed by a note in brackets. `TBA`,
   `Rolling`, `Mid-Jan 2027` or a date without a year stay on the page but
   never reach the calendar.
 - A row named as a Scholarship or Financial aid (`منحة`, `مساعدات`) is shown
@@ -83,7 +86,7 @@ marks as open is what the landing page lists. A deadline no page gives yet can
 go in `src/data/homepage/deadlines.ts`; a page row for the same day replaces it.
 
 The same deadlines go out as a calendar students can subscribe to
-(`/deadlines.ics`, `/ar/deadlines.ics`), so a corrected date reaches their
+(`/deadlines.ics`, `/ar/deadlines.ics`, `/fr/deadlines.ics`), so a corrected date reaches their
 calendars the next time their calendar app checks, usually within a day.
 
 ## Naming a component

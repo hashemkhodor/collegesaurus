@@ -35,6 +35,7 @@ from loguru import logger
 from drive_sync.emit.scholarship import emit_scholarship
 from drive_sync.emit.university import emit_university
 from drive_sync.emit.versions import (
+    TRANSLATED_LOCALES,
     VersionPlan,
     plan_versions,
     write_version_manifests,
@@ -263,20 +264,17 @@ def _process_university(entry, report: ParseReport, args: Args) -> int:
     n = 0
     if _process_university_locale(entry, "en", report, args):
         n += 1
-    if sf.info_ar is not None:
-        if _process_university_locale(entry, "ar", report, args):
-            n += 1
+    for locale in TRANSLATED_LOCALES:
+        if sf.info_for(locale) is not None:
+            if _process_university_locale(entry, locale, report, args):
+                n += 1
     return n
 
 
 def _process_university_locale(entry, locale: str, report: ParseReport, args: Args) -> bool:
     sf: SlugFiles = entry.files
-    info = sf.info_en if locale == "en" else sf.info_ar
-    majors = (
-        sf.majors_en
-        if locale == "en"
-        else (sf.majors_ar if sf.majors_ar is not None else sf.majors_en)
-    )
+    info = sf.info_for(locale)
+    majors = sf.majors_for(locale)
     assert info is not None and majors is not None
 
     label = f"{sf.label}/{locale}"
@@ -334,15 +332,16 @@ def _process_scholarship(entry, report: ParseReport, args: Args) -> int:
     n = 0
     if _process_scholarship_locale(entry, "en", report, args):
         n += 1
-    if sf.info_ar is not None:
-        if _process_scholarship_locale(entry, "ar", report, args):
-            n += 1
+    for locale in TRANSLATED_LOCALES:
+        if sf.info_for(locale) is not None:
+            if _process_scholarship_locale(entry, locale, report, args):
+                n += 1
     return n
 
 
 def _process_scholarship_locale(entry, locale: str, report: ParseReport, args: Args) -> bool:
     sf: SlugFiles = entry.files
-    info = sf.info_en if locale == "en" else sf.info_ar
+    info = sf.info_for(locale)
     assert info is not None
     label = f"{sf.label}/{locale}"
     logger.debug("[{}] parsing {}", label, info.name)
